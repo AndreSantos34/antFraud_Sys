@@ -189,10 +189,10 @@ else:
         check("Agente 1 — escala com >= 3 critérios",
               r_susp.get("escalate_to_investigation") == True,
               f"total_criteria_met={total_met}")
-        check("Agente 1 — retorna criteria_evaluation",
-              "criteria_evaluation" in r_susp)
-        check("Agente 1 — retorna confidence",
-              "confidence" in r_susp and 0 <= r_susp["confidence"] <= 1)
+        check("Agente 1 — retorna criteria_flags",
+              "criteria_flags" in r_susp)
+        check("Agente 1 — retorna llm_confidence (ou None quando sem LLM)",
+              "llm_confidence" in r_susp)
     except Exception as e:
         check("Agente 1 — execução", False, traceback.format_exc()[-200:])
 
@@ -221,28 +221,30 @@ else:
         pipeline_result = analyze_transaction(tx_susp_full)
 
         check("Pipeline — Agente 1 executou",
-              pipeline_result.get("agent_1_risk") is not None)
+              pipeline_result.get("agent_1_detection") is not None)
         check("Pipeline — transação escalada",
               pipeline_result.get("escalated") == True,
               f"total_criteria_met={pipeline_result.get('total_criteria_met')}")
         check("Pipeline — Agente 2 executou",
               pipeline_result.get("agent_2_investigation") is not None)
         check("Pipeline — Agente 3 executou",
-              pipeline_result.get("agent_3_evidence") is not None)
+              pipeline_result.get("agent_3_risk") is not None)
         check("Pipeline — Agente 4 (IA Mestre) executou",
               pipeline_result.get("agent_4_master") is not None)
 
         master = pipeline_result.get("agent_4_master", {})
-        score = master.get("risk_score", -1)
+        score = master.get("final_risk_score", pipeline_result.get("final_risk_score", -1))
         check("IA Mestre — Score de risco gerado (0-100)",
               0 <= score <= 100, f"score={score}")
         check("IA Mestre — Nível de risco definido",
-              master.get("risk_level") in ["minimo","baixo","medio","alto","critico"],
-              f"risk_level={master.get('risk_level')}")
-        check("IA Mestre — Alerta Cybersecurity gerado",
-              bool(master.get("cybersecurity_alert", {}).get("message")))
+              master.get("final_risk_level",
+                         pipeline_result.get("final_risk_level", "")) in
+              ["minimo","baixo","medio","alto","critico"],
+              f"final_risk_level={master.get('final_risk_level', pipeline_result.get('final_risk_level'))}")
+        check("IA Mestre — Relatório executivo gerado",
+              bool(master.get("executive_report", {}).get("full_narrative")))
         check("IA Mestre — Ações imediatas definidas",
-              len(master.get("cybersecurity_alert", {}).get("immediate_actions", [])) > 0)
+              len(master.get("immediate_actions", [])) > 0)
         check("Pipeline — Caso persistido em disco",
               pipeline_result.get("case_persisted") == True)
     except Exception as e:

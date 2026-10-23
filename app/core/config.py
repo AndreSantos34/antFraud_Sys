@@ -1,18 +1,24 @@
 """
 Configurações centrais da aplicação lidas do arquivo .env
 """
-from pydantic_settings import BaseSettings
 from functools import lru_cache
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     # ── Google Gemini ─────────────────────────────────────────────────────────
     gemini_api_key: str = ""
-    # Modelos por agente — podem ser sobrescritos no .env
-    gemini_model_agent1: str = "gemini-3.8-flash"   # triagem rápida e determinística
-    gemini_model_agent2: str = "gemini-3.8-flash"   # investigação contextual
-    gemini_model_agent3: str = "gemini-3.8-flash"   # consolidação de evidências
-    gemini_model_agent4: str = "gemini-3.5-flash"   # IA Mestre — maior capacidade
+    # Aliases recomendados — compatíveis com a maioria das contas gratuitas.
+    # Execute: GET https://generativelanguage.googleapis.com/v1beta/models?key=SUA_CHAVE
+    # para ver os modelos disponíveis na sua conta.
+    gemini_model_agent1: str = "gemini-flash-lite-latest"  # Agente 1: detecção (justificativa)
+    gemini_model_agent2: str = "gemini-flash-lite-latest"  # Agente 2: investigação + correlação
+    gemini_model_agent3: str = "gemini-flash-lite-latest"  # Agente 3: risco + recomendações
+    gemini_model_agent4: str = "gemini-flash-lite-latest"  # Agente 4: relatório executivo
+
+    # ── Retry do cliente Gemini ───────────────────────────────────────────────
+    gemini_retry_attempts: int = 2       # tentativas extras em caso de erro transitório
+    gemini_retry_delay_s:  float = 3.0   # espera entre tentativas (segundos)
 
     # ── API ───────────────────────────────────────────────────────────────────
     app_port: int = 8000
@@ -26,16 +32,17 @@ class Settings(BaseSettings):
     # ── Segurança ─────────────────────────────────────────────────────────────
     api_secret_key: str = "nuclea-dev-key-change-in-production"
 
-    # ── Thresholds de detecção ────────────────────────────────────────────────
+    # ── Thresholds de detecção determinística ────────────────────────────────
     high_value_threshold: float = 5000.00
-    unusual_hour_start: int = 22
-    unusual_hour_end: int = 6
-    high_freq_max_tx: int = 3
+    unusual_hour_start:   int = 22
+    unusual_hour_end:     int = 6
+    high_freq_max_tx:     int = 3
     high_freq_window_min: int = 10
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
 
 @lru_cache()

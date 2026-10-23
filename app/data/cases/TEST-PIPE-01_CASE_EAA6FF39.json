@@ -1,0 +1,181 @@
+{
+  "case_id": "TEST-PIPE-01_CASE_EAA6FF39",
+  "trace_id": "eaa6ff39-de71-4857-9f72-4f4b8bb122c9",
+  "transaction_id": "TEST-PIPE-01",
+  "transaction": {
+    "transaction_id": "TEST-PIPE-01",
+    "customer_id": "CLI-PIPE",
+    "receiver_id": "CLI-RECV",
+    "amount": 9800.0,
+    "datetime": "2024-06-10T02:37:00",
+    "location": "Miami, EUA",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido"
+  },
+  "agent_1_detection": {
+    "transaction_id": "TEST-PIPE-01",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 9,800.00 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 9.800,00, que excede o limiar de R$ 5.000,00, combinado com a realização em horário incomum às 02h37. Além disso, a operação foi executada a partir de um dispositivo desconhecido, o que reforça o alerta de risco.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "TEST-PIPE-01",
+    "sender_profile": {
+      "customer_id": "CLI-PIPE",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 9,800.00 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-RECV",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 9.800,00 cruza com o horário incomum (02:37) e o uso de dispositivo desconhecido.",
+      "O desvio comportamental pontuado em 0.5 reforça as anomalias detectadas de valor e horário."
+    ],
+    "correlated_events": [
+      "Transação realizada no canal internet_banking a partir de um dispositivo desconhecido e localizado em Miami, EUA, fora do horário habitual do cliente."
+    ],
+    "investigation_summary": "A transação TEST-PIPE-01 de R$ 9.800,00 apresenta indicadores de risco como valor elevado, horário incomum (02h37) e origem em um dispositivo desconhecido em Miami, EUA. O perfil do remetente CLI-PIPE aponta um desvio comportamental de 0.5 com anomalias confirmadas para valor e horário. O destinatário CLI-RECV não possui histórico em outras transações suspeitas registradas.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "Histórico do remetente (0 transações disponíveis)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "TEST-PIPE-01",
+    "case_id": "TEST-PIPE-01_CASE_EAA6FF39",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado de R$ 9.800,00, que supera o limiar de referência de R$ 5.000,00, associado a um desvio comportamental pontuado em 0.5.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média em virtude da combinação de horário incomum (02h37), localização em Miami, EUA, e utilização de um dispositivo desconhecido via internet banking.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de dados históricos detalhados do remetente (typical_amount_range, typical_hours, typical_locations e known_devices)."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 9.800,00, excedendo o limiar de R$ 5.000,00.",
+      "Horário da transação às 02h37, fora do horário habitual.",
+      "Uso de dispositivo desconhecido localizado em Miami, EUA."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental pontuado em 0.5.",
+      "Canal utilizado: internet_banking."
+    ],
+    "weak_evidence": [
+      "O destinatário CLI-RECV não possui histórico em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "O destinatário não aparece em outras listas de transações suspeitas registradas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente na sessão de internet banking.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente sobre a realização da transação a partir de Miami, EUA.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta em monitoramento intensivo para novas atividades atípicas.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "Histórico do remetente (0 transações disponíveis)"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "TEST-PIPE-01",
+    "case_id": "TEST-PIPE-01_CASE_EAA6FF39",
+    "trace_id": "eaa6ff39-de71-4857-9f72-4f4b8bb122c9",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação TEST-PIPE-01 foi realizada pelo cliente CLI-PIPE para o destinatário CLI-RECV no valor de R$ 9.800,00.",
+        "A operação ocorreu em 2024-06-10T02:37:00, no canal internet_banking, a partir da localização de Miami, EUA.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido'.",
+        "O histórico do remetente possui 0 transações disponíveis no sistema, e o destinatário CLI-RECV não possui histórico em outras transações suspeitas registradas."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a transação apresenta indicadores de suspeita devido ao valor elevado que excede o limiar de referência de R$ 5.000,00.",
+        "É possível que o horário de execução (02h37) e a origem em Miami, EUA, via dispositivo desconhecido representem um desvio comportamental do cliente, o qual foi pontuado em 0.5.",
+        "Os dados sugerem que a ausência de histórico detalhado do remetente limita a certeza sobre o perfil habitual de uso, resultando em um score de risco moderado (42/100)."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range) do cliente.",
+        "Ausência de horários habituais (typical_hours) de transação.",
+        "Ausência de localizações habituais (typical_locations).",
+        "Ausência de lista de dispositivos conhecidos (known_devices).",
+        "Histórico do remetente com 0 transações disponíveis."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela combinação de um valor elevado de R$ 9.800,00, horário incomum às 02h37, localização em Miami, EUA, e uso de um dispositivo desconhecido. A confiança na análise é de 50% devido às lacunas no histórico do cliente.",
+      "full_narrative": "O presente relatório analisa a transação TEST-PIPE-01, executada em 10 de junho de 2024, às 02h37, no valor de R$ 9.800,00. A operação foi originada no canal internet_banking, a partir de Miami, EUA, utilizando um dispositivo classificado como desconhecido. O destinatário da transferência é o identificador CLI-RECV.\n\nA avaliação inicial detectou anomalias significativas baseadas no valor superior ao limiar de R$ 5.000,00, no horário atípico da madrugada e na utilização de um equipamento não catalogado. A investigação secundária identificou um desvio comportamental pontuado em 0.5, embora o destinatário não possua registros prévios em listas de transações suspeitas. O nível de risco resultante foi classificado como médio (score 42/100), com urgência média e grau de confiança de 50%.\n\nComo limitações centrais, destaca-se a ausência de dados históricos do remetente (CLI-PIPE), incluindo faixa de valores típicos, horários habituais, localizações usuais e dispositivos conhecidos. Diante desse cenário, recomenda-se cautela operacional e a adoção de medidas consultivas para validação do contexto da sessão pelo cliente."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita com Dispositivo Desconhecido e Horário Atípico (TEST-PIPE-01)",
+    "alert_message": "Foi identificada a transação TEST-PIPE-01 no valor de R$ 9.800,00, realizada via internet_banking a partir de Miami, EUA, utilizando um dispositivo desconhecido às 02h37. O evento apresenta desvio comportamental e score de risco médio (42/100), condicionado por lacunas no histórico do remetente.\n\nRecomenda-se o encaminhamento imediato para revisão humana e validação da identidade da sessão por meio de canal seguro, mantendo o monitoramento intensivo da conta.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:27:50.054035",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:27:53.593601"
+}

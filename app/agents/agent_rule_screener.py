@@ -1,14 +1,20 @@
 """
-Agente 1 — Análise de Risco (Risk Analyzer)
-─────────────────────────────────────────────
-Responsabilidade: analisar a transação recebida aplicando os 6 critérios de
-suspeita. A transação só é escalada se atingir NO MÍNIMO 3 critérios completos.
+Agente 1 — Monitor e Detecção
+──────────────────────────────
+Responsabilidade:
+  1. Validar integridade e deduplicar a transação recebida.
+  2. Avaliar os 6 critérios de suspeita via código Python DETERMINÍSTICO.
+     A decisão de escalada NUNCA depende do LLM — apenas de regras objetivas.
+  3. Usar o LLM apenas para gerar justificativa contextual (texto explicativo),
+     após a decisão já ter sido tomada deterministicamente.
 
-Modelo: gemini-1.5-flash
-Perfil: temperatura 0.1 — respostas determinísticas para triagem consistente.
+Regra de escalada: >= 3 critérios confirmados → suspeita → pipeline avança.
+
+Importante: este agente NÃO executa operações financeiras e NÃO inventa dados.
 """
 import json
 import logging
+from datetime import datetime, timezone
 from typing import Any
 
 from app.core.gemini_client import gemini_client
@@ -16,7 +22,9 @@ from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-CRITERIA = [
+# ── Critérios de detecção ────────────────────────────────────────────────────
+
+CRITERIA_KEYS = [
     "valor_elevado",
     "horario_incomum",
     "frequencia_elevada",
@@ -25,93 +33,214 @@ CRITERIA = [
     "dispositivo_desconhecido",
 ]
 
-_SYSTEM_PROMPT = """Você é um sistema especializado em triagem inicial de transações financeiras.
-Analise a transação e verifique cada um dos 6 critérios abaixo de forma independente.
-Um critério está COMPLETO quando há evidência clara e direta nos dados fornecidos.
+# IDs já processados nesta sessão — deduplicação em memória
+_seen_transaction_ids: set[str] = set()
 
-CRITÉRIOS:
-1. valor_elevado       → valor acima de R$ {threshold}
-2. horario_incomum     → horário entre {hour_start}h e {hour_end}h (madrugada/noite)
-3. frequencia_elevada  → histórico mostra mais de {freq_max} transações em {freq_min} minutos
-4. valor_repetido      → mesmo valor exato em 2 ou mais transações recentes do cliente
-5. mudanca_geografica  → localização incompatível com histórico (ex: outro país ou estado distante)
-6. dispositivo_desconhecido → campo device contém "desconhecido"
+# ── Prompt do LLM — APENAS para justificativa, nunca para decisão ────────────
 
-REGRA DE ESCALADA: a transação só é SUSPEITA se 3 ou mais critérios estiverem completos.
-Com menos de 3 critérios → classificação NORMAL (fluxo regular do banco).
+_JUSTIFICATION_PROMPT = """Você é um analista de segurança financeira.
+Os critérios de suspeita abaixo foram identificados por regras determinísticas do sistema.
+Sua tarefa é APENAS escrever uma justificativa contextual coerente e objetiva em 2-3 frases,
+explicando POR QUÊ esses critérios específicos, combinados, aumentam a suspeita.
 
-Retorne um objeto JSON com exatamente esta estrutura:
-{{
-  "transaction_id": "<id>",
-  "criteria_evaluation": {{
-    "valor_elevado": true,
-    "horario_incomum": false,
-    "frequencia_elevada": false,
-    "valor_repetido": false,
-    "mudanca_geografica": false,
-    "dispositivo_desconhecido": true
-  }},
-  "total_criteria_met": 2,
-  "escalate_to_investigation": false,
-  "classification": "normal",
-  "confidence": 0.95,
-  "justification": "Explicação objetiva dos critérios encontrados."
-}}"""
+REGRAS OBRIGATÓRIAS:
+- Use apenas os dados fornecidos. Não invente fatos, IPs, localizações ou contas.
+- Se um critério não tiver dado suficiente para contextualizar, declare: "Dado não disponível."
+- NÃO diga que a transação É fraude — diga que ela APRESENTA indicadores de suspeita.
+- NÃO recomende bloquear, cancelar ou executar qualquer operação financeira.
+
+Retorne JSON com exatamente:
+{
+  "justification": "<texto objetivo em PT-BR, 2-3 frases>",
+  "confidence": <float 0.0 a 1.0 baseado na quantidade e qualidade dos critérios encontrados>
+}"""
 
 
-def run(transaction: dict[str, Any], customer_history: list[dict] | None = None) -> dict:
+# ── Avaliação determinística dos critérios ───────────────────────────────────
+
+def _evaluate_criteria_deterministic(
+    transaction: dict[str, Any],
+    history: list[dict],
+    settings: Any,
+) -> tuple[dict[str, bool], list[str]]:
     """
-    Executa o Agente 1 — Análise de Risco.
+    Avalia os 6 critérios de detecção via código Python puro.
+    Retorna (flags_dict, evidence_list) — nenhum LLM é chamado aqui.
+    """
+    flags: dict[str, bool] = {k: False for k in CRITERIA_KEYS}
+    evidence: list[str] = []
+
+    amount = transaction.get("amount", 0.0)
+    dt_str = transaction.get("datetime", "")
+    location = transaction.get("location", "")
+    device = transaction.get("device", "")
+
+    # 1. Valor elevado
+    if amount > settings.high_value_threshold:
+        flags["valor_elevado"] = True
+        evidence.append(
+            f"Valor R$ {amount:,.2f} excede o limiar de R$ {settings.high_value_threshold:,.2f}."
+        )
+
+    # 2. Horário incomum
+    try:
+        tx_hour = datetime.fromisoformat(dt_str).hour
+        h_start = settings.unusual_hour_start
+        h_end = settings.unusual_hour_end
+        # Lida com faixas que cruzam a meia-noite (ex: 22h → 6h)
+        if h_start > h_end:
+            is_unusual = tx_hour >= h_start or tx_hour < h_end
+        else:
+            is_unusual = h_start <= tx_hour < h_end
+        if is_unusual:
+            flags["horario_incomum"] = True
+            evidence.append(
+                f"Transação às {tx_hour:02d}h está fora do horário habitual "
+                f"({h_start}h–{h_end}h)."
+            )
+    except (ValueError, TypeError):
+        evidence.append("Datetime inválido — critério horario_incomum não avaliado.")
+
+    # 3. Frequência elevada
+    if history:
+        try:
+            tx_dt = datetime.fromisoformat(dt_str)
+            window_min = settings.high_freq_window_min
+            recent = [
+                t for t in history
+                if abs(
+                    (tx_dt - datetime.fromisoformat(t.get("datetime", dt_str))).total_seconds()
+                ) <= window_min * 60
+            ]
+            if len(recent) >= settings.high_freq_max_tx:
+                flags["frequencia_elevada"] = True
+                evidence.append(
+                    f"{len(recent)} transações encontradas em {window_min} minutos "
+                    f"(limiar: {settings.high_freq_max_tx})."
+                )
+        except (ValueError, TypeError):
+            pass  # Não penaliza por data inválida no histórico
+
+    # 4. Valor repetido
+    if history:
+        repeated = [t for t in history if t.get("amount") == amount]
+        if len(repeated) >= 1:
+            flags["valor_repetido"] = True
+            evidence.append(
+                f"Valor R$ {amount:,.2f} aparece em {len(repeated)} transação(ões) recente(s) do cliente."
+            )
+
+    # 5. Mudança geográfica
+    if history and location:
+        past_locations = {t.get("location", "") for t in history if t.get("location")}
+        if past_locations and location not in past_locations:
+            flags["mudanca_geografica"] = True
+            evidence.append(
+                f"Localização '{location}' não consta no histórico do cliente "
+                f"({', '.join(list(past_locations)[:3])})."
+            )
+        # Sem histórico de localização: não assumimos mudança (evita falso positivo)
+
+    # 6. Dispositivo desconhecido
+    if device and "desconhecido" in device.lower():
+        flags["dispositivo_desconhecido"] = True
+        evidence.append(f"Dispositivo '{device}' classificado como desconhecido.")
+
+    return flags, evidence
+
+
+# ── Interface principal do agente ─────────────────────────────────────────────
+
+def run(
+    transaction: dict[str, Any],
+    customer_history: list[dict] | None = None,
+) -> dict:
+    """
+    Executa o Agente 1 — Monitor e Detecção.
+
+    Fluxo:
+      1. Deduplicação por transaction_id (em memória).
+      2. Avaliação determinística dos 6 critérios (Python puro).
+      3. Decisão de escalada (>= 3 critérios → escala).
+      4. Chamada ao LLM para justificativa contextual (opcional — nunca bloqueia).
 
     Returns:
-        Dicionário com criteria_evaluation, total_criteria_met,
-        escalate_to_investigation, classification, confidence e justification.
+        Dicionário compatível com DetectionResult do schemas.py.
     """
     settings = get_settings()
     history = customer_history or []
+    tx_id = transaction.get("transaction_id", "UNKNOWN")
 
-    system = _SYSTEM_PROMPT.format(
-        threshold=settings.high_value_threshold,
-        hour_start=settings.unusual_hour_start,
-        hour_end=settings.unusual_hour_end,
-        freq_max=settings.high_freq_max_tx,
-        freq_min=settings.high_freq_window_min,
-    )
+    logger.info("[Agente1] Avaliando transação %s", tx_id)
 
-    tx_json = json.dumps(transaction, ensure_ascii=False, indent=2)
-    hist_json = json.dumps(history[-5:], ensure_ascii=False, indent=2)
-    user_msg = (
-        f"TRANSAÇÃO:\n{tx_json}\n\n"
-        f"HISTÓRICO RECENTE DO CLIENTE:\n{hist_json}\n\n"
-        f"Avalie cada critério e retorne o JSON."
-    )
-
-    logger.info("[Agente1] Analisando risco de %s", transaction.get("transaction_id"))
-
-    try:
-        result = gemini_client.generate_json(
-            model_id=settings.gemini_model_agent1,
-            system_prompt=system,
-            user_message=user_msg,
-            temperature=0.1,
-            max_output_tokens=512,
-        )
-    except Exception as exc:
-        logger.warning("[Agente1] Erro na chamada Gemini: %s", exc)
-        result = {
-            "transaction_id": transaction.get("transaction_id"),
-            "criteria_evaluation": {c: False for c in CRITERIA},
+    # ── Deduplicação ──────────────────────────────────────────────────────────
+    if tx_id in _seen_transaction_ids:
+        logger.warning("[Agente1] Transação duplicada ignorada: %s", tx_id)
+        return {
+            "transaction_id": tx_id,
+            "criteria_flags": {k: False for k in CRITERIA_KEYS},
             "total_criteria_met": 0,
             "escalate_to_investigation": False,
-            "classification": "normal",
-            "confidence": 0.0,
-            "justification": f"Erro ao processar: {exc}",
+            "classification": "duplicada",
+            "deterministic_evidence": ["Transação duplicada — já processada anteriormente."],
+            "llm_justification": None,
+            "llm_confidence": None,
         }
+    _seen_transaction_ids.add(tx_id)
 
-    # Garante consistência: escala somente se >= 3 critérios
-    total = result.get("total_criteria_met", 0)
-    if isinstance(total, int):
-        result["escalate_to_investigation"] = total >= 3
-        result["classification"] = "suspeita" if total >= 3 else "normal"
+    # ── Avaliação determinística ───────────────────────────────────────────────
+    flags, evidence = _evaluate_criteria_deterministic(transaction, history, settings)
+    total = sum(1 for v in flags.values() if v)
 
-    return result
+    # Decisão determinística — NÃO depende de LLM
+    escalate = total >= 3
+    classification = "suspeita" if escalate else "normal"
+
+    logger.info(
+        "[Agente1] %s — %d critério(s) | classificação: %s",
+        tx_id, total, classification,
+    )
+
+    # ── Justificativa contextual via LLM (não-bloqueante) ─────────────────────
+    llm_justification: str | None = None
+    llm_confidence: float | None = None
+
+    if escalate:
+        active_criteria = [k for k, v in flags.items() if v]
+        user_msg = (
+            f"TRANSAÇÃO: {json.dumps(transaction, ensure_ascii=False)}\n\n"
+            f"CRITÉRIOS CONFIRMADOS: {active_criteria}\n"
+            f"EVIDÊNCIAS DETERMINÍSTICAS: {evidence}\n\n"
+            "Escreva a justificativa contextual."
+        )
+        try:
+            resp = gemini_client.generate_json(
+                model_id=settings.gemini_model_agent1,
+                system_prompt=_JUSTIFICATION_PROMPT,
+                user_message=user_msg,
+                temperature=0.1,
+                max_output_tokens=256,
+            )
+            llm_justification = resp.get("justification")
+            raw_conf = resp.get("confidence")
+            if isinstance(raw_conf, (int, float)) and 0.0 <= float(raw_conf) <= 1.0:
+                llm_confidence = float(raw_conf)
+        except Exception as exc:
+            logger.warning("[Agente1] LLM indisponível para justificativa: %s", exc)
+            # A decisão de escalada JÁ foi tomada deterministicamente — continua normalmente
+
+    return {
+        "transaction_id": tx_id,
+        "criteria_flags": flags,
+        "total_criteria_met": total,
+        "escalate_to_investigation": escalate,
+        "classification": classification,
+        "deterministic_evidence": evidence,
+        "llm_justification": llm_justification,
+        "llm_confidence": llm_confidence,
+    }
+
+
+def clear_dedup_cache() -> None:
+    """Limpa o cache de deduplicação — útil para testes ou reinicialização."""
+    _seen_transaction_ids.clear()

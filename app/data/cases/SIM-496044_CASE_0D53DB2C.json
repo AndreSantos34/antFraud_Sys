@@ -1,0 +1,182 @@
+{
+  "case_id": "SIM-496044_CASE_0D53DB2C",
+  "trace_id": "0d53db2c-d28e-4035-ace8-961032863b1a",
+  "transaction_id": "SIM-496044",
+  "transaction": {
+    "transaction_id": "SIM-496044",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1003",
+    "amount": 17595.4,
+    "datetime": "2026-10-23T03:58:34.968656",
+    "location": "Miami, EUA",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-496044",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 17,595.40 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-496044",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 17,595.40 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 17.595,40 combina-se com o horário incomum às 03:58h e com o uso de um dispositivo desconhecido para elevar o risco da operação.",
+      "A anomalia de valor acima do limiar e o horário fora do padrão reforçam mutuamente o desvio comportamental detectado (score de 0.5)."
+    ],
+    "correlated_events": [
+      "A transação SIM-496044 ocorreu em Miami, EUA, via caixa eletrônico, utilizando o dispositivo desconhecido_A às 03:58h, coincidindo com o alerta de horário atípico."
+    ],
+    "investigation_summary": "A transação SIM-496044 apresenta indicadores de risco devido ao montante de R$ 17.595,40, que excede o limiar de R$ 5.000,00, associado a um horário incomum (03:58h) e ao uso de um dispositivo desconhecido. O perfil do remetente CLI-2004 registra um desvio comportamental com score de 0.5, confirmando anomalias nesses três critérios. O destinatário CLI-1003 não consta em outras transações suspeitas e o histórico de transações anteriores está vazio.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível",
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-496044",
+    "case_id": "SIM-496044_CASE_0D53DB2C",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é classificado como moderado (score 42/100) devido ao montante elevado de R$ 17.595,40 que excede o limiar de R$ 5.000,00, combinado com o uso de um canal de caixa eletrônico em localidade internacional (Miami, EUA) e dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada pela ocorrência da transação em horário incomum (03:58h) fora do padrão habitual e pelo desvio comportamental de 0.5 do remetente CLI-2004.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à ausência de dados históricos estruturados do remetente, embora três critérios específicos de risco tenham sido confirmados deterministicamente."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 17.595,40 excede o limiar de R$ 5.000,00.",
+      "Transação realizada no horário incomum de 03:58h.",
+      "Uso de dispositivo não catalogado (dispositivo_desconhecido_A)."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental do remetente CLI-2004 com score de 0.5.",
+      "Canal utilizado foi caixa eletrônico na localização de Miami, EUA."
+    ],
+    "weak_evidence": [
+      "Destinatário CLI-1003 não consta em outras transações suspeitas com base nos dados atuais."
+    ],
+    "refutation_points": [
+      "O destinatário CLI-1003 não possui histórico prévio em outras ocorrências suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do remetente devido ao uso de dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta do remetente CLI-2004 em monitoramento intensivo para futuras operações no canal de caixa eletrônico.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-496044",
+    "case_id": "SIM-496044_CASE_0D53DB2C",
+    "trace_id": "0d53db2c-d28e-4035-ace8-961032863b1a",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-496044 no valor de R$ 17.595,40 foi realizada em 2026-10-23T03:58:34.968656.",
+        "O canal utilizado foi caixa eletrônico na localização Miami, EUA, com o dispositivo dispositivo_desconhecido_A.",
+        "O remetente é CLI-2004 e o destinatário é CLI-1003.",
+        "O valor excede o limiar de R$ 5.000,00 e o horário das 03h está fora do intervalo habitual entre 22h e 6h.",
+        "O perfil do remetente CLI-2004 registra um desvio comportamental com score de 0.5.",
+        "O destinatário CLI-1003 não consta em outras transações suspeitas e o histórico de transações anteriores está vazio."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário atípico e dispositivo desconhecido eleva o risco de comprometimento da conta.",
+        "É possível que o uso do caixa eletrônico em Miami, EUA, reforce o desvio comportamental detectado no perfil do remetente.",
+        "Os dados sugerem que a ausência de histórico estruturado do remetente limita a precisão total da análise, mantendo a confiança em 50%."
+      ],
+      "limitations": [
+        "Dado não disponível",
+        "typical_amount_range",
+        "typical_hours",
+        "typical_locations",
+        "known_devices",
+        "histórico do remetente"
+      ],
+      "risk_justification": "O risco foi pontuado em 42/100 (médio) devido à transação de R$ 17.595,40 acima do limiar, realizada em horário incomum (03:58h) e via dispositivo desconhecido em Miami, EUA. A ausência de histórico estruturado do remetente limita a confiança da análise a 50%, exigindo cautela na interpretação.",
+      "full_narrative": "O presente relatório analisa a transação SIM-496044 associada ao remetente CLI-2004 e ao destinatário CLI-1003, no valor de R$ 17.595,40, realizada em 2026-10-23 às 03:58h. A operação ocorreu em Miami, EUA, através do canal de caixa eletrônico e utilizando o dispositivo_desconhecido_A. Foram identificados três critérios de risco principais: valor superior ao limiar de R$ 5.000,00, horário fora do padrão habitual e utilização de um dispositivo não catalogado.\n\nA investigação secundária apontou um desvio comportamental com score de 0.5 para o remetente CLI-2004, corroborando as anomalias observadas. Por outro lado, o destinatário CLI-1003 não possui registros em outras ocorrências suspeitas e o histórico de transações anteriores encontra-se vazio. A ausência de dados como faixa de valores típicos, horários habituais, localizações frequentes e dispositivos conhecidos gerou lacunas informacionais, resultando em um nível de confiança de 50% para a avaliação de risco.\n\nCom base na pontuação de 42/100, o risco é classificado como médio com urgência operacional moderada. As evidências críticas concentram-se na simultaneidade de fatores atípicos (valor, horário e dispositivo), enquanto a refutação parcial reside na ausência de histórico negativo para o destinatário. Recomenda-se o encaminhamento para verificação adicional e monitoramento intensivo do canal."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica em Caixa Eletrônico (SIM-496044)",
+    "alert_message": "Foi identificada a transação SIM-496044 no valor de R$ 17.595,40 realizada por CLI-2004 às 03:58h em Miami, EUA, utilizando um dispositivo desconhecido. A operação apresenta múltiplos indicadores de anomalia comportamental e desvio de padrões habituais.\n\nRecomenda-se o acionamento dos protocolos de monitoramento intensivo e verificação de segurança para mitigar exposições potenciais decorrentes do uso de dispositivos não catalogados em horários atípicos.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:37:54.340651",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:37:57.974146"
+}

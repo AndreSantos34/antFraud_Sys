@@ -1,16 +1,18 @@
 """
-Núclea / IBM — Backend de Prevenção de Fraudes Financeiras
+AntFraud_Sys — Backend de Detecção de Fraudes Financeiras
 ──────────────────────────────────────────────────────────
 Ponto de entrada da aplicação FastAPI.
 
-Pipeline de 4 agentes WatsonX (hierárquicos):
-  Agente 1 (granite-13b)  → Análise de Risco          (temp 0.1)
-  Agente 2 (granite-20b)  → Investigação de Ameaças    (temp 0.4)
-  Agente 3 (granite-34b)  → Base de Dados e Evidências (temp 0.35)
-  Agente 4 (granite-34b)  → IA Mestre — Score + Alerta (temp 0.55)
+Pipeline de 4 agentes (Google Gemini):
+  Agente 1 — Detecção: triagem 100% determinística + justificativa LLM (temp 0.1)
+  Agente 2 — Investigação: perfil histórico + correlação cruzada          (temp 0.3)
+  Agente 3 — Risco: Gravidade/Prioridade/Confiança + recomendações         (temp 0.2)
+  Agente 4 — Mestre: relatório executivo PT-BR + orquestração final        (temp 0.3)
 
-Monitor background: consome transações simuladas em tempo real e
-aciona o pipeline automaticamente ao detectar >= 3 critérios.
+Monitor background: consome transações simuladas continuamente — independente
+de WebSocket. Emite estados ANALYZING/COMPLETED/REQUIRES_HUMAN_REVIEW/FAILED.
+
+Novo endpoint de ingestão: POST /api/v1/transactions/ingest (fire-and-forget, HTTP 202)
 
 Uso:
   uvicorn main:app --reload
@@ -65,13 +67,17 @@ async def lifespan(app: FastAPI):
 
 # ── Aplicação ─────────────────────────────────────────────────────────────────
 app = FastAPI(
-    title="Núclea/IBM — Prevenção de Fraudes Financeiras",
+    title="AntFraud_Sys — Detecção de Fraudes Financeiras",
     description=(
-        "Protótipo de detecção de fraudes financeiras com 4 agentes de IA "
-        "hierárquicos baseados na API IBM WatsonX. Monitor background em tempo real. "
-        "Autenticação via header **X-API-Key**."
+        "Protótipo acadêmico de IA agêntica para prevenção de fraudes. "
+        "Pipeline de 4 agentes Google Gemini com arquitetura híbrida "
+        "(regras determinísticas + LLM). "
+        "Ingestão assíncrona (POST /api/v1/transactions/ingest), "
+        "WebSocket de alertas em tempo real (/ws/alerts). "
+        "Autenticação via header **X-API-Key**. "
+        "Sistema consultivo — NÃO executa operações financeiras."
     ),
-    version="2.0.0",
+    version="3.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -94,12 +100,15 @@ app.include_router(ws_router)
 @app.get("/", tags=["root"])
 def root():
     return {
-        "projeto": "Núclea/IBM — Prevenção de Fraudes Financeiras",
-        "versao": "2.0.0",
+        "projeto": "AntFraud_Sys — Detecção de Fraudes Financeiras",
+        "versao": "3.0.0",
         "docs": "/docs",
         "health": "/api/v1/health",
+        "ingest": "POST /api/v1/transactions/ingest (fire-and-forget, HTTP 202)",
+        "analyze": "POST /api/v1/analyze (síncrono)",
         "websocket_alerts": "ws://<host>:8000/ws/alerts?api_key=<API_SECRET_KEY>",
         "autenticacao": "Header X-API-Key obrigatório em todos os endpoints /api/v1/",
+        "aviso": "Sistema consultivo — NÃO executa operações financeiras.",
     }
 
 

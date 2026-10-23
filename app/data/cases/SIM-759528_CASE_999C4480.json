@@ -1,0 +1,185 @@
+{
+  "case_id": "SIM-759528_CASE_999C4480",
+  "trace_id": "999c4480-69e5-4643-bd2f-26f69f8f649f",
+  "transaction_id": "SIM-759528",
+  "transaction": {
+    "transaction_id": "SIM-759528",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1003",
+    "amount": 16259.47,
+    "datetime": "2026-10-23T02:47:03.321981",
+    "location": "Amsterdã, Holanda",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-759528",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 16,259.47 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 16.259,47, que excede o limiar estabelecido, realizada em horário incomum às 02h47. Além disso, a operação foi efetuada através de um dispositivo desconhecido.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-759528",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 16,259.47 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada em horário incomum (02h) utilizando um dispositivo desconhecido (dispositivo_desconhecido_A)",
+      "Valor elevado (R$ 16.259,47) associado a um canal automatizado (pix_automatico) em horário de baixo monitoramento humano"
+    ],
+    "correlated_events": [
+      "A transação SIM-759528 apresenta desvio comportamental com score de 0.5, coincidindo com a ativação de um dispositivo não reconhecido previamente pelo sistema",
+      "O montante de R$ 16.259,47 excede o limiar configurado de R$ 5.000,00 no exato momento em que ocorre o acesso via canal pix_automatico de madrugada"
+    ],
+    "investigation_summary": "A transação SIM-759528 no valor de R$ 16.259,47 apresenta múltiplos indicadores de risco, incluindo operação em horário incomum (02h47), uso de dispositivo desconhecido e canal automatizado. O perfil do remetente CLI-2003 registra desvio comportamental com score de 0.5 e anomalias confirmadas em relação ao valor e horário. Destaca-se que o histórico do remetente não possui transações anteriores registradas para comparação adicional.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Faixa de valor típica do remetente (typical_amount_range)",
+      "Horários típicos do remetente (typical_hours)",
+      "Localizações típicas do remetente (typical_locations)",
+      "Dispositivos conhecidos do remetente (known_devices)",
+      "Notas do destinatário (receiver_notes)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-759528",
+    "case_id": "SIM-759528_CASE_999C4480",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado devido ao valor elevado da transação (R$ 16.259,47), que supera o limiar padrão de R$ 5.000,00, além de envolver um canal automatizado (pix_automatico) e um dispositivo não reconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletida pelo score de risco de 42/100, exigindo atenção devido à combinação de horário incomum (madrugada) e desvio comportamental detectado no perfil do remetente.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, pois embora existam três critérios confirmados de anomalia (valor, horário e dispositivo), há lacunas significativas no histórico do cliente, como faixa de valor típica e dispositivos conhecidos."
+    },
+    "critical_evidence": [
+      "Valor R$ 16.259,47 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 02h47, fora do horário habitual.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_A)."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com score de 0.5 registrado para o remetente CLI-2003.",
+      "Transação executada via canal automatizado (pix_automatico)."
+    ],
+    "weak_evidence": [
+      "Localização informada como Amsterdã, Holanda, sem comparativo histórico para validação."
+    ],
+    "refutation_points": [
+      "O destinatário (CLI-1003) não aparece em outras transações suspeitas registradas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "ENC_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para revisão detalhada do desvio comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a autorização da transação via canal automatizado.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter o cliente em monitoramento intensivo devido à ausência de histórico comportamental prévio.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Faixa de valor típica do remetente (typical_amount_range)",
+      "Horários típicos do remetente (typical_hours)",
+      "Localizações típicas do remetente (typical_locations)",
+      "Dispositivos conhecidos do remetente (known_devices)",
+      "Notas do destinatário (receiver_notes)"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-759528",
+    "case_id": "SIM-759528_CASE_999C4480",
+    "trace_id": "999c4480-69e5-4643-bd2f-26f69f8f649f",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "ENC_NIVEL_2",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-759528 foi realizada em 2026-10-23T02:47:03.321981 no valor de R$ 16.259,47.",
+        "O remetente é o cliente CLI-2003 e o destinatário é CLI-1003, com localização em Amsterdã, Holanda.",
+        "O canal utilizado foi pix_automatico através do dispositivo desconhecido_A.",
+        "O valor de R$ 16.259,47 excede o limiar configurado de R$ 5.000,00.",
+        "A transação ocorreu às 02h47, fora do horário habitual (22h–6h), com score de desvio comportamental de 0.5."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de horário incomum e dispositivo não reconhecido sugere uma possível tentativa de acesso não autorizado.",
+        "É possível que o uso do canal pix_automatico em conjunto com um valor elevado indique um risco moderado de comprometimento da conta.",
+        "Os dados sugerem que a ausência de transações anteriores registradas no histórico dificulta a linha de base comportamental definitiva do cliente."
+      ],
+      "limitations": [
+        "Ausência da faixa de valor típica do remetente (typical_amount_range).",
+        "Ausência dos horários típicos do remetente (typical_hours).",
+        "Ausência de localizações típicas do remetente (typical_locations).",
+        "Ausência de dispositivos conhecidos do remetente (known_devices).",
+        "Ausência de notas do destinatário (receiver_notes)."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido ao valor elevado de R$ 16.259,47 que supera o limiar de R$ 5.000,00, associado a um canal automatizado, horário de madrugada e utilização de dispositivo desconhecido, embora atenuado pela falta de histórico prévio de fraudes do destinatário CLI-1003.",
+      "full_narrative": "A transação SIM-759528, efetuada pelo cliente CLI-2003 no valor de R$ 16.259,47, foi identificada com múltiplos indicadores de alerta pelo sistema de prevenção de fraudes. A operação ocorreu em Amsterdã, Holanda, por meio do canal pix_automatico e utilizando o dispositivo desconhecido_A, em um horário sensível às 02h47. O perfil do remetente apresentou um score de desvio comportamental de 0.5, acionando critérios de anomalia relacionados ao valor elevado e ao horário atípico de execução.\n\nEmbora o destinatário CLI-1003 não possua registros anteriores em listas de suspeitas, a ausência de um histórico comportamental consolidado para o remetente CLI-2003 gera lacunas analíticas importantes, tais como a falta de dados sobre faixas de valores típicos, horários habituais e dispositivos previamente homologados. Essa combinação de fatores eleva a incerteza operacional, exigindo cautela na interpretação dos eventos observados.\n\nDiante do escore de risco moderado (42/100), recomenda-se o encaminhamento do caso para etapas adicionais de verificação, garantindo que o canal automatizado e o dispositivo desconhecido sejam submetidos a protocolos de checagem mais rigorosos, sem que haja intervenções operacionais definitivas neste momento."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita em Canal Automatizado com Dispositivo Desconhecido",
+    "alert_message": "Foi detectada a transação SIM-759528 no valor de R$ 16.259,47, realizada às 02h47 através de pix_automatico e dispositivo desconhecido_A pelo cliente CLI-2003. O evento apresenta score de risco médio (42/100) com anomalias de horário e valor.\n\nRecomenda-se o acionamento dos protocolos de monitoramento intensivo e encaminhamento para revisão de nível 2, visando mitigar possíveis exposições associadas ao desvio comportamental identificado.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:39:08.919641",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:39:12.491208"
+}

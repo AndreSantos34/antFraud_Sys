@@ -1,12 +1,16 @@
 """
-Monitor Background — Núclea Fraud Detection
-─────────────────────────────────────────────
-Processo que roda em segundo plano junto com a API.
-Consome transações do simulador em tempo real, envia cada uma pelo pipeline
-de 4 agentes e publica os alertas críticos via WebSocket para o dashboard.
+Monitor Background — AntFraud_Sys
+───────────────────────────────────
+Loop assíncrono que processa transações simuladas continuamente em segundo plano.
+Independente de WebSocket — fechar conexões não interrompe o processamento.
 
-Em produção real (Núclea), o método _fetch_next_transaction() seria
-substituído por um consumidor Kafka/RabbitMQ ou listener de webhook.
+Emite eventos WebSocket em cada estado do pipeline:
+  ANALYZING            → transação aceita, pipeline iniciado
+  COMPLETED            → pipeline concluído (transação normal ou suspeita processada)
+  REQUIRES_HUMAN_REVIEW → risco alto/crítico ou falhas no pipeline
+  FAILED               → exceção não tratada (não deve ocorrer com fallbacks ativos)
+
+Em produção: substituir _fetch_next_transaction() por consumidor Kafka/RabbitMQ.
 """
 import asyncio
 import logging
@@ -22,12 +26,10 @@ logger = logging.getLogger(__name__)
 
 class FraudMonitor:
     """
-    Monitor de fraudes em background.
+    Monitor de fraudes em background — independente de WebSocket.
 
-    Atributos controlados externamente:
-        running:      True enquanto o loop está ativo.
-        alert_callbacks: funções registradas para receber alertas críticos
-                         (usadas pelo WebSocket para push ao frontend).
+    A ingestão e o processamento continuam mesmo sem clientes conectados.
+    Os callbacks WebSocket são notificados apenas quando disponíveis.
     """
 
     def __init__(self) -> None:
@@ -36,107 +38,138 @@ class FraudMonitor:
         self._alert_callbacks: list[Callable] = []
         self._processed: int = 0
         self._escalated: int = 0
+        self._requires_review: int = 0
+        self._failed: int = 0
         self._started_at: datetime | None = None
 
-    # ── Registro de callbacks ─────────────────────────────────────────────────
+    # ── Callbacks WebSocket ────────────────────────────────────────────────────
 
     def register_alert_callback(self, callback: Callable) -> None:
-        """Registra uma função que será chamada quando um alerta crítico for gerado."""
-        self._alert_callbacks.append(callback)
+        """Registra callback para push de eventos ao frontend via WebSocket."""
+        if callback not in self._alert_callbacks:
+            self._alert_callbacks.append(callback)
 
     def unregister_alert_callback(self, callback: Callable) -> None:
         self._alert_callbacks = [cb for cb in self._alert_callbacks if cb != callback]
 
-    # ── Fonte de transações ───────────────────────────────────────────────────
+    async def _emit(self, event: dict) -> None:
+        """Envia evento para todos os callbacks registrados (sem bloquear o loop)."""
+        for callback in list(self._alert_callbacks):
+            try:
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(event)
+                else:
+                    callback(event)
+            except Exception as exc:
+                logger.error("[Monitor] Erro em callback: %s", exc)
+
+    # ── Fonte de transações ────────────────────────────────────────────────────
 
     async def _fetch_next_transaction(self) -> dict:
         """
-        Obtém a próxima transação a processar.
-
-        PROTÓTIPO: retorna uma transação gerada pelo simulador.
+        PROTÓTIPO: gera transação via simulador.
         PRODUÇÃO:  substituir por await kafka_consumer.get() ou similar.
         """
-        # Simula latência variável de chegada de transações (0.5s a 3s)
-        interval = self._settings.monitor_interval_seconds
-        await asyncio.sleep(interval)
+        await asyncio.sleep(self._settings.monitor_interval_seconds)
         return generate_single()
 
-    # ── Processamento ─────────────────────────────────────────────────────────
+    # ── Processamento ──────────────────────────────────────────────────────────
 
     async def _process(self, transaction: dict) -> None:
-        """Envia a transação pelo pipeline e notifica callbacks se for crítico."""
+        """
+        Processa uma transação pelo pipeline de 4 agentes.
+        Emite eventos WebSocket em cada transição de estado.
+        """
         tx_id = transaction.get("transaction_id", "?")
-        logger.info("[Monitor] Processando transação %s", tx_id)
+        trace_id = "pending"
+
+        # ── Estado: ANALYZING ─────────────────────────────────────────────────
+        await self._emit({
+            "type": "status_update",
+            "status": "ANALYZING",
+            "transaction_id": tx_id,
+            "timestamp": datetime.now().isoformat(),
+            "message": f"Pipeline iniciado para {tx_id}.",
+        })
 
         try:
-            # Executa em thread separada para não bloquear o event loop
             result = await asyncio.get_event_loop().run_in_executor(
                 None,
                 lambda: orchestrator.analyze_transaction(transaction),
             )
         except Exception as exc:
-            logger.error("[Monitor] Erro ao processar %s: %s", tx_id, exc)
+            logger.error("[Monitor] Erro fatal ao processar %s: %s", tx_id, exc)
+            self._failed += 1
+            await self._emit({
+                "type": "status_update",
+                "status": "FAILED",
+                "transaction_id": tx_id,
+                "timestamp": datetime.now().isoformat(),
+                "message": f"Falha no pipeline: {exc}",
+            })
             return
 
         self._processed += 1
-        escalated = result.get("escalated", False)
+        escalated      = result.get("escalated", False)
+        status         = result.get("processing_status", "COMPLETED")
+        trace_id       = result.get("trace_id", "")
+        final_score    = result.get("final_risk_score", 0)
+        final_level    = result.get("final_risk_level", "minimo")
+        master         = result.get("agent_4_master") or {}
+        pipeline_errors = result.get("agent_4_master", {}).get("pipeline_errors", []) if master else []
 
         if escalated:
             self._escalated += 1
-            master = result.get("agent_4_master") or {}
-            score = master.get("risk_score", 0)
-            urgency = master.get("urgency", "desconhecida")
-            alert = master.get("cybersecurity_alert", {})
+            if status == "REQUIRES_HUMAN_REVIEW":
+                self._requires_review += 1
 
-            logger.warning(
-                "[Monitor] ⚠️  ALERTA — %s | Score: %d | Urgência: %s",
-                tx_id, score, urgency,
-            )
+        # ── Estado final: COMPLETED / REQUIRES_HUMAN_REVIEW ──────────────────
+        log_level = logging.WARNING if escalated else logging.DEBUG
+        logger.log(
+            log_level,
+            "[Monitor] %s — status=%s | score=%d | nível=%s",
+            tx_id, status, final_score, final_level,
+        )
 
-            # Notifica todos os listeners WebSocket registrados
-            event = {
-                "type": "fraud_alert",
-                "timestamp": datetime.now().isoformat(),
-                "transaction_id": tx_id,
-                "risk_score": score,
-                "risk_level": master.get("risk_level"),
-                "urgency": urgency,
-                "recommended_action": master.get("recommended_action"),
-                "alert_subject": alert.get("subject"),
-                "alert_priority": alert.get("priority"),
-                "case_summary": alert.get("case_summary"),
-                "immediate_actions": alert.get("immediate_actions", []),
-                "total_criteria_met": result.get("total_criteria_met", 0),
-                "simulation_profile": transaction.get("simulation_profile"),
-            }
+        event: dict = {
+            "type": "fraud_alert" if escalated else "status_update",
+            "status": status,
+            "transaction_id": tx_id,
+            "trace_id": trace_id,
+            "case_id": result.get("case_id", ""),
+            "timestamp": datetime.now().isoformat(),
+            "escalated": escalated,
+            "final_risk_score": final_score,
+            "final_risk_level": final_level,
+            "urgency": master.get("urgency", "baixa"),
+            "recommended_action": master.get("recommended_action", ""),
+            "alert_subject": master.get("alert_subject", ""),
+            "alert_message": master.get("alert_message", ""),
+            "immediate_actions": master.get("immediate_actions", []),
+            "total_criteria_met": result.get("total_criteria_met", 0),
+            "simulation_profile": transaction.get("simulation_profile"),
+            "pipeline_errors": pipeline_errors,
+        }
 
-            for callback in list(self._alert_callbacks):
-                try:
-                    if asyncio.iscoroutinefunction(callback):
-                        await callback(event)
-                    else:
-                        callback(event)
-                except Exception as exc:
-                    logger.error("[Monitor] Erro em callback: %s", exc)
-        else:
-            logger.debug("[Monitor] ✅  Normal — %s", tx_id)
+        await self._emit(event)
 
-    # ── Loop principal ────────────────────────────────────────────────────────
+    # ── Loop principal ─────────────────────────────────────────────────────────
 
     async def start(self) -> None:
-        """Inicia o loop de monitoramento em background."""
+        """Inicia o loop de monitoramento. Independente de WebSocket."""
         self.running = True
         self._started_at = datetime.now()
-        logger.info("[Monitor] 🚀 Monitor Núclea iniciado — aguardando transações...")
+        logger.info("[Monitor] 🚀 Monitor iniciado — processamento contínuo em background.")
 
         while self.running:
             try:
                 transaction = await self._fetch_next_transaction()
+                # create_task garante que o processamento é não-bloqueante
                 asyncio.create_task(self._process(transaction))
             except asyncio.CancelledError:
                 break
             except Exception as exc:
-                logger.error("[Monitor] Erro no loop principal: %s", exc)
+                logger.error("[Monitor] Erro no loop: %s", exc)
                 await asyncio.sleep(2)
 
         logger.info("[Monitor] 🛑 Monitor encerrado.")
@@ -146,7 +179,7 @@ class FraudMonitor:
         self.running = False
 
     def stats(self) -> dict:
-        """Retorna estatísticas do monitor para o health check."""
+        """Estatísticas do monitor para health check e WebSocket."""
         uptime = None
         if self._started_at:
             uptime = str(datetime.now() - self._started_at).split(".")[0]
@@ -155,14 +188,16 @@ class FraudMonitor:
             if self._processed > 0 else 0.0
         )
         return {
-            "running": self.running,
-            "started_at": self._started_at.isoformat() if self._started_at else None,
-            "uptime": uptime,
-            "transactions_processed": self._processed,
+            "running":                    self.running,
+            "started_at":                 self._started_at.isoformat() if self._started_at else None,
+            "uptime":                     uptime,
+            "transactions_processed":     self._processed,
             "escalated_to_investigation": self._escalated,
-            "escalation_rate_pct": escalation_rate,
+            "requires_human_review":      self._requires_review,
+            "failed":                     self._failed,
+            "escalation_rate_pct":        escalation_rate,
         }
 
 
-# Instância singleton compartilhada com a API
+# Instância singleton compartilhada com a API e o WebSocket
 fraud_monitor = FraudMonitor()

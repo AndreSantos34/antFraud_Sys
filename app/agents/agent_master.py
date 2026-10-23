@@ -1,13 +1,18 @@
 """
-Agente 4 — IA Mestre (Master Intelligence)
-────────────────────────────────────────────
-Responsabilidade: posição hierárquica superior aos Agentes 1, 2 e 3.
-Calcula o Score de Risco final (0-100), determina a urgência e gera
-o alerta formatado para o profissional de Cybersecurity.
+Agente 4 — Explicabilidade, Relatório e Orquestração (Master)
+───────────────────────────────────────────────────────────────
+Responsabilidade:
+  1. Receber os resultados dos Agentes 1, 2 e 3 já processados.
+  2. Gerar o relatório executivo final para o analista SOC em PT-BR, com:
+       - Fatos Observados (dados reais do payload e histórico)
+       - Hipóteses da IA (inferências do LLM, marcadas como tal)
+       - Limitações / Gaps (dados ausentes que afetam a análise)
+       - Justificativa do Risco (raciocínio de síntese final)
+  3. Produzir o alerta de cibersegurança com ações imediatas consultivas.
+  4. Determinar o ProcessingStatus final do caso.
 
-Modelo: gemini-1.5-pro
-Perfil: temperatura 0.4 — modelo mais capaz para síntese final e
-        geração de relatório claro e acionável em PT-BR.
+O Agente 4 NÃO recalcula scores — usa os dados dos agentes anteriores.
+NÃO executa operações financeiras. Recomendações são estritamente consultivas.
 """
 import json
 import logging
@@ -19,133 +24,198 @@ from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-_SYSTEM_PROMPT = """Você é a IA Mestre de um sistema de prevenção de fraudes financeiras da Núclea.
-Você está no topo da hierarquia e recebe os relatórios dos 3 agentes subordinados.
+# ── Prompt do LLM ─────────────────────────────────────────────────────────────
 
-Sua tarefa é FINAL e CRÍTICA:
-1. Calcular o SCORE DE RISCO (0 a 100) baseado em todos os dados consolidados
-2. Definir o NÍVEL DE URGÊNCIA da resposta necessária
-3. Gerar o ALERTA DE SEGURANÇA que será enviado IMEDIATAMENTE ao profissional de Cybersecurity
+_SYSTEM_PROMPT = """Você é o analista-chefe de um sistema de prevenção de fraudes financeiras.
+Todos os dados já foram processados pelos agentes anteriores. Sua missão é:
 
-ESCALA DE SCORE:
-  0-20:  Risco mínimo
-  21-40: Risco baixo — monitorar
-  41-60: Risco médio — investigação adicional recomendada
-  61-80: Risco alto — ação preventiva imediata
-  81-100: Risco crítico — bloqueio imediato + alerta máximo
+1. Escrever o RELATÓRIO EXECUTIVO completo para o analista SOC, separando:
+   a) FATOS OBSERVADOS: apenas dados reais do payload e histórico
+   b) HIPÓTESES DA IA: inferências e interpretações do modelo, sempre marcadas como hipóteses
+   c) LIMITAÇÕES: dados ausentes, lacunas que afetam a análise
+   d) JUSTIFICATIVA DO RISCO: raciocínio integrado de todos os agentes
 
-FATORES QUE AUMENTAM O SCORE:
-- Número de critérios confirmados (cada um soma pontos)
-- Confirmação da suspeita pelo Agente 3
-- Indicadores cruzados (combinação de sinais)
-- Desvio comportamental elevado do remetente
-- Destinatário envolvido em outros casos suspeitos
-- Baixa qualidade de dados (incerteza = risco maior)
+2. Escrever a NARRATIVA COMPLETA (3-5 parágrafos em PT-BR) para o analista SOC.
 
-O ALERTA deve ser objetivo, urgente e em português do Brasil.
-Deve conter: quem, o quê, quando, onde, valor, por quê é suspeito e ação recomendada.
+3. Definir as AÇÕES IMEDIATAS consultivas — NUNCA operacionais.
 
-Retorne um objeto JSON com exatamente esta estrutura:
+REGRAS CRÍTICAS:
+- Use APENAS dados já existentes nos resultados fornecidos.
+- NUNCA invente transações, IPs, localizações, contas ou históricos.
+- NUNCA recomende bloquear, cancelar, aprovar ou executar operações financeiras.
+- Ações válidas: "Encaminhar para revisão humana de Nível 2",
+  "Solicitar confirmação do cliente via canal seguro",
+  "Acionar protocolo SOC de monitoramento intensivo", etc.
+- Hipóteses devem ser identificadas com frases como "A IA infere que...",
+  "É possível que...", "Os dados sugerem que..." — nunca como fatos.
+
+Retorne JSON com exatamente:
 {
-  "transaction_id": "<id>",
-  "case_id": "<case_id>",
-  "risk_score": 87,
-  "risk_level": "critico",
-  "urgency": "maxima",
-  "score_breakdown": {
-    "base_criteria_score": 30,
-    "behavioral_deviation_score": 20,
-    "evidence_quality_score": 15,
-    "crossed_indicators_score": 12,
-    "confirmation_score": 10
-  },
-  "recommended_action": "bloquear_imediato",
-  "cybersecurity_alert": {
-    "subject": "⚠️ ALERTA DE FRAUDE — CRÍTICO — TXN-013",
-    "priority": "CRÍTICA",
-    "timestamp": "2024-06-10T02:37:00",
-    "message": "<mensagem completa e urgente para o profissional de Cybersecurity, 3-5 parágrafos em PT-BR>",
-    "immediate_actions": ["Bloquear transação imediatamente", "Contatar cliente via canal seguro"],
-    "case_summary": "<resumo do caso em 2-3 frases>"
-  },
-  "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana."
+  "observed_facts": ["<fato real extraído dos dados>"],
+  "ai_hypotheses": ["<hipótese do modelo, identificada como tal>"],
+  "limitations": ["<limitação ou dado ausente>"],
+  "risk_justification": "<raciocínio integrado em 2-3 frases>",
+  "full_narrative": "<relatório completo em PT-BR, 3-5 parágrafos>",
+  "alert_subject": "<assunto do alerta para cibersegurança>",
+  "alert_message": "<mensagem urgente em 1-2 parágrafos>",
+  "immediate_actions": ["<ação consultiva proporcional>"]
 }"""
 
 
+# ── Determinação do ProcessingStatus ─────────────────────────────────────────
+
+def _determine_status(risk_level: str, score_is_fallback: bool, pipeline_errors: list[str]) -> str:
+    """Determina o status final do processamento do caso."""
+    if pipeline_errors and len(pipeline_errors) >= 2:
+        return "REQUIRES_HUMAN_REVIEW"
+    if score_is_fallback or pipeline_errors:
+        return "REQUIRES_HUMAN_REVIEW"
+    if risk_level in ("alto", "critico"):
+        return "REQUIRES_HUMAN_REVIEW"
+    return "COMPLETED"
+
+
+# ── Interface principal do agente ─────────────────────────────────────────────
+
 def run(
     transaction: dict[str, Any],
-    risk_result: dict[str, Any],
+    detection_result: dict[str, Any],
     investigation_result: dict[str, Any],
-    evidence_result: dict[str, Any],
+    risk_result: dict[str, Any],
+    case_id: str,
+    trace_id: str,
+    pipeline_errors: list[str] | None = None,
 ) -> dict:
     """
-    Executa o Agente 4 — IA Mestre.
+    Executa o Agente 4 — Explicabilidade, Relatório e Orquestração.
 
     Returns:
-        Dicionário com risk_score, risk_level, urgency, recommended_action
-        e cybersecurity_alert pronto para envio.
+        Dicionário compatível com MasterResult do schemas.py.
     """
     settings = get_settings()
-
-    tx_json = json.dumps(transaction, ensure_ascii=False, indent=2)
-    risk_json = json.dumps(risk_result, ensure_ascii=False, indent=2)
-    inv_json = json.dumps(investigation_result, ensure_ascii=False, indent=2)
-    ev_json = json.dumps(evidence_result, ensure_ascii=False, indent=2)
+    tx_id = transaction.get("transaction_id", "UNKNOWN")
+    errors = pipeline_errors or []
     now = datetime.now().isoformat()
 
+    # Dados do Agente 3
+    risk_score      = risk_result.get("risk_score", 0)
+    risk_dims       = risk_result.get("risk_dimensions", {})
+    risk_level      = risk_dims.get("severity_level", "baixo")
+    urgency         = risk_dims.get("priority_level", "baixa")
+    score_is_fallback = bool(risk_result.get("score_is_fallback", False))
+    recommendations = risk_result.get("recommendations", [])
+    primary_action  = recommendations[0]["action_code"] if recommendations else "revisao_humana"
+
+    logger.info("[Agente4] Sintetizando caso %s | score=%d | nível=%s", tx_id, risk_score, risk_level)
+
+    # ── LLM para relatório executivo ──────────────────────────────────────────
+    observed_facts:    list[str] = []
+    ai_hypotheses:     list[str] = []
+    limitations:       list[str] = []
+    risk_justification = f"Transação {tx_id} apresenta score {risk_score}/100 nível {risk_level}."
+    full_narrative     = risk_justification
+    alert_subject      = f"⚠️ ALERTA DE SUSPEITA — {risk_level.upper()} — {tx_id}"
+    alert_message      = f"Transação {tx_id} apresenta indicadores de suspeita. Score: {risk_score}/100."
+    immediate_actions: list[str] = [r["description"] for r in recommendations]
+    llm_report_ok = True
+
     user_msg = (
-        f"TIMESTAMP ATUAL: {now}\n\n"
-        f"TRANSAÇÃO:\n{tx_json}\n\n"
-        f"AGENTE 1 — ANÁLISE DE RISCO:\n{risk_json}\n\n"
-        f"AGENTE 2 — INVESTIGAÇÃO DE AMEAÇAS:\n{inv_json}\n\n"
-        f"AGENTE 3 — EVIDÊNCIAS CONSOLIDADAS:\n{ev_json}\n\n"
-        f"Calcule o score final e gere o alerta de Cybersecurity."
+        f"TIMESTAMP: {now}\n\n"
+        f"TRANSAÇÃO:\n{json.dumps(transaction, ensure_ascii=False)}\n\n"
+        f"DETECÇÃO (Agente 1):\n"
+        f"  Critérios: {detection_result.get('total_criteria_met', 0)}/6 | "
+        f"  Classificação: {detection_result.get('classification', '?')}\n"
+        f"  Evidências: {detection_result.get('deterministic_evidence', [])}\n"
+        f"  Justificativa LLM: {detection_result.get('llm_justification', 'Não disponível')}\n\n"
+        f"INVESTIGAÇÃO (Agente 2):\n"
+        f"  Resumo: {investigation_result.get('investigation_summary', '')}\n"
+        f"  Indicadores cruzados: {investigation_result.get('crossed_indicators', [])}\n"
+        f"  Correlações: {investigation_result.get('correlated_events', [])}\n"
+        f"  Status coleta: {investigation_result.get('data_collection_status', '')}\n"
+        f"  Dados ausentes: {investigation_result.get('missing_data', [])}\n\n"
+        f"RISCO (Agente 3):\n"
+        f"  Score: {risk_score}/100 | Nível: {risk_level} | Urgência: {urgency}\n"
+        f"  Gravidade: {risk_dims.get('severity_justification', '')}\n"
+        f"  Prioridade: {risk_dims.get('priority_justification', '')}\n"
+        f"  Confiança: {risk_dims.get('confidence_score', 0):.0%} — {risk_dims.get('confidence_justification', '')}\n"
+        f"  Evidências críticas: {risk_result.get('critical_evidence', [])}\n"
+        f"  Refutações: {risk_result.get('refutation_points', [])}\n"
+        f"  Recomendações: {[r['description'] for r in recommendations]}\n"
+        f"  Gaps: {risk_result.get('information_gaps', [])}\n\n"
+        f"ERROS NO PIPELINE: {errors}\n\n"
+        "Gere o relatório executivo final."
     )
 
-    logger.info("[Agente4-Mestre] Calculando score para %s", transaction.get("transaction_id"))
-
     try:
-        result = gemini_client.generate_json(
+        resp = gemini_client.generate_json(
             model_id=settings.gemini_model_agent4,
             system_prompt=_SYSTEM_PROMPT,
             user_message=user_msg,
-            temperature=0.4,
+            temperature=0.3,
             max_output_tokens=1500,
         )
+        observed_facts     = resp.get("observed_facts", [])
+        ai_hypotheses      = resp.get("ai_hypotheses", [])
+        limitations        = resp.get("limitations", [])
+        risk_justification = resp.get("risk_justification", risk_justification)
+        full_narrative     = resp.get("full_narrative", full_narrative)
+        alert_subject      = resp.get("alert_subject", alert_subject)
+        alert_message      = resp.get("alert_message", alert_message)
+        llm_actions        = resp.get("immediate_actions", [])
+        if llm_actions:
+            immediate_actions = llm_actions
     except Exception as exc:
-        logger.warning("[Agente4-Mestre] Erro na chamada Gemini: %s", exc)
-        tx_id = transaction.get("transaction_id", "UNKNOWN")
-        result = {
-            "transaction_id": tx_id,
-            "case_id": evidence_result.get("case_id", f"{tx_id}_CASE"),
-            "risk_score": 80,
-            "risk_level": "alto",
-            "urgency": "alta",
-            "score_breakdown": {
-                "base_criteria_score": 0,
-                "behavioral_deviation_score": 0,
-                "evidence_quality_score": 0,
-                "crossed_indicators_score": 0,
-                "confirmation_score": 0,
-            },
-            "recommended_action": "bloquear_preventivo",
-            "cybersecurity_alert": {
-                "subject": f"⚠️ ALERTA DE FRAUDE — ALTO — {tx_id}",
-                "priority": "ALTA",
-                "timestamp": datetime.now().isoformat(),
-                "message": (
-                    f"ATENÇÃO: Transação {tx_id} sinalizada com alto risco. "
-                    f"Erro no processamento do relatório completo. "
-                    f"Revisão humana imediata necessária."
-                ),
-                "immediate_actions": [
-                    "Revisar manualmente a transação",
-                    "Verificar histórico do cliente",
-                    "Acionar protocolo de segurança padrão",
-                ],
-                "case_summary": f"Erro de processamento para {tx_id}. Revisão manual obrigatória.",
-            },
-            "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana.",
-        }
+        logger.warning("[Agente4] LLM indisponível para relatório: %s", exc)
+        llm_report_ok = False
+        errors.append(f"Agente4-LLM: {exc}")
+        # Fallback determinístico: compila fatos a partir dos dados existentes
+        observed_facts = detection_result.get("deterministic_evidence", [])
+        limitations = risk_result.get("information_gaps", [])
+        if not llm_report_ok:
+            limitations.append("LLM indisponível — relatório executivo gerado automaticamente.")
+        full_narrative = (
+            f"ATENÇÃO: Transação {tx_id} foi escalada com {detection_result.get('total_criteria_met', 0)} "
+            f"critério(s) de suspeita. Score de risco calculado deterministicamente: {risk_score}/100 "
+            f"({risk_level}). Relatório narrativo indisponível — LLM fora de serviço. "
+            f"Revisão humana recomendada."
+        )
 
-    return result
+    status = _determine_status(risk_level, score_is_fallback, errors)
+
+    return {
+        "transaction_id": tx_id,
+        "case_id": case_id,
+        "trace_id": trace_id,
+        "processing_status": status,
+        "final_risk_score": risk_score,
+        "final_risk_level": risk_level,
+        "urgency": urgency,
+        "recommended_action": primary_action,
+        "executive_report": {
+            "observed_facts":    observed_facts,
+            "ai_hypotheses":     ai_hypotheses,
+            "limitations":       limitations,
+            "risk_justification": risk_justification,
+            "full_narrative":    full_narrative,
+        },
+        "alert_subject":    alert_subject,
+        "alert_message":    alert_message,
+        "immediate_actions": immediate_actions,
+        "pipeline_stages_completed": _stages_completed(detection_result, investigation_result, risk_result),
+        "pipeline_errors":  errors,
+        "completed_at":     now,
+        "disclaimer": (
+            "Sistema acadêmico de apoio à triagem. "
+            "Decisão final sob responsabilidade humana. "
+            "Este sistema NÃO executa operações financeiras."
+        ),
+    }
+
+
+def _stages_completed(detection: dict, investigation: dict, risk: dict) -> list[str]:
+    stages = ["agent_1_detection"]
+    if investigation:
+        stages.append("agent_2_investigation")
+    if risk:
+        stages.append("agent_3_risk_assessment")
+    return stages

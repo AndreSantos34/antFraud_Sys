@@ -33,10 +33,11 @@ async def _broadcast(event: dict) -> None:
             await ws.send_text(payload)
         except Exception:
             dead.add(ws)
-    # Remove conexões encerradas
+    # Remove apenas as conexões encerradas do set de conexões ativas.
+    # O callback _broadcast só é desregistrado quando não há mais conexões vivas
+    # (feito no bloco finally do handler websocket_alerts).
     for ws in dead:
         _active_connections.discard(ws)
-        fraud_monitor.unregister_alert_callback(_broadcast)
 
 
 @router.websocket("/ws/alerts")

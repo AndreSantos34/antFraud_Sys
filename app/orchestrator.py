@@ -1,40 +1,30 @@
 """
 Orquestrador do Pipeline de Detecção de Fraudes
 ────────────────────────────────────────────────
-Fluxo hierárquico com 4 agentes:
+Coordena a execução sequencial dos 4 agentes, gerencia case_id/trace_id,
+isola falhas por agente (um agente com erro não aborta os seguintes)
+e persiste o caso completo no case_storage.
 
-  ┌─────────────────────────────────────────────────┐
-  │  Transação recebida                             │
-  └──────────────────┬──────────────────────────────┘
-                     │
-              [Agente 1 — Análise de Risco]
-              Avalia os 6 critérios
-                     │
-           ┌─────────┴──────────┐
-       < 3 critérios        >= 3 critérios
-           │                    │
-       NORMAL              SUSPEITA → escala
-   (fluxo banco)               │
-                         [Agente 2 — Investigação]
-                         Coleta dados remetente + destinatário
-                                │
-                         [Agente 3 — Evidências]
-                         Confirma/refuta + organiza dossiê
-                                │
-                    [Agente 4 — IA Mestre] (hierarquia superior)
-                    Score de risco 0-100 + alerta Cybersecurity
-                                │
-                    Persiste caso + retorna resultado
+Fluxo:
+  Transação
+    └─ Agente 1: Detecção determinística
+        ├─ < 3 critérios → NORMAL (para aqui, retorna status COMPLETED)
+        └─ >= 3 critérios → SUSPEITA → escala:
+              ├─ Agente 2: Investigação + Correlação
+              ├─ Agente 3: Avaliação de Risco + Recomendações
+              └─ Agente 4: Relatório Executivo + Alerta SOC
+                    └─ Persiste caso → retorna MasterResult
 """
 import json
 import logging
+import uuid
 from pathlib import Path
 from typing import Any
 
 from app.agents import (
     agent_rule_screener,
     agent_context_analyst,
-    agent_report_generator,
+    agent_risk_analyzer,
     agent_master,
 )
 from app import case_storage
@@ -44,6 +34,8 @@ logger = logging.getLogger(__name__)
 _DATASET_PATH = Path(__file__).parent / "data" / "transactions.json"
 
 
+# ── Utilitários ───────────────────────────────────────────────────────────────
+
 def _load_dataset() -> list[dict]:
     with open(_DATASET_PATH, encoding="utf-8") as f:
         return json.load(f)
@@ -52,10 +44,19 @@ def _load_dataset() -> list[dict]:
 def _build_customer_index(transactions: list[dict]) -> dict[str, list[dict]]:
     index: dict[str, list[dict]] = {}
     for tx in transactions:
-        cid = tx["customer_id"]
+        cid = tx.get("customer_id", "")
         index.setdefault(cid, []).append(tx)
     return index
 
+
+def _make_ids(transaction_id: str) -> tuple[str, str]:
+    """Gera case_id e trace_id únicos e rastreáveis."""
+    trace_id = str(uuid.uuid4())
+    case_id = f"{transaction_id}_CASE_{trace_id[:8].upper()}"
+    return case_id, trace_id
+
+
+# ── Pipeline principal ────────────────────────────────────────────────────────
 
 def analyze_transaction(
     transaction: dict[str, Any],
@@ -63,76 +64,204 @@ def analyze_transaction(
     all_transactions: list[dict] | None = None,
 ) -> dict[str, Any]:
     """
-    Executa o pipeline completo para uma única transação.
+    Executa o pipeline completo de 4 agentes para uma transação.
 
-    Retorna resultado com campos de todos os agentes que foram executados
-    e indica se o caso foi persistido.
+    Falhas em agentes individuais são capturadas, registradas em pipeline_errors
+    e não interrompem os agentes seguintes (degradação graciosa).
+
+    Returns:
+        Dicionário compatível com AnalysisResponse do schemas.py.
     """
+    tx_id = transaction.get("transaction_id", "UNKNOWN")
+    customer_id = transaction.get("customer_id", "UNKNOWN")
     history = customer_history or []
+    all_txs = all_transactions or []
+    case_id, trace_id = _make_ids(tx_id)
+    pipeline_errors: list[str] = []
 
-    # ── Agente 1: Análise de Risco ────────────────────────────────────────────
-    risk = agent_rule_screener.run(transaction, history)
-    should_escalate = risk.get("escalate_to_investigation", False)
+    logger.info("[Orchestrator] Iniciando pipeline | tx=%s | trace=%s", tx_id, trace_id)
 
-    investigation: dict | None = None
-    evidence: dict | None = None
-    master: dict | None = None
-    case_persisted = False
-
-    if should_escalate:
-        logger.info(
-            "Transação %s escalada (%d critérios). Acionando Agentes 2, 3 e Mestre.",
-            transaction.get("transaction_id"),
-            risk.get("total_criteria_met", 0),
-        )
-
-        # ── Agente 2: Investigação de Ameaças ─────────────────────────────────
-        investigation = agent_context_analyst.run(
-            transaction, risk, history, all_transactions
-        )
-
-        # ── Agente 3: Base de Dados e Evidências ──────────────────────────────
-        evidence = agent_report_generator.run(transaction, risk, investigation)
-
-        # ── Agente 4: IA Mestre ────────────────────────────────────────────────
-        master = agent_master.run(transaction, risk, investigation, evidence)
-
-        # ── Persistência ──────────────────────────────────────────────────────
-        case_id = evidence.get("case_id") or f"{transaction.get('transaction_id')}_CASE"
-        full_case = {
-            "case_id": case_id,
-            "transaction_id": transaction.get("transaction_id"),
-            "transaction": transaction,
-            "agent_1_risk": risk,
-            "agent_2_investigation": investigation,
-            "agent_3_evidence": evidence,
-            "agent_4_master": master,
+    # ── Agente 1: Detecção ────────────────────────────────────────────────────
+    detection: dict = {}
+    try:
+        detection = agent_rule_screener.run(transaction, history)
+    except Exception as exc:
+        logger.error("[Orchestrator] Agente 1 falhou: %s", exc)
+        pipeline_errors.append(f"Agente1: {exc}")
+        detection = {
+            "transaction_id": tx_id,
+            "criteria_flags": {},
+            "total_criteria_met": 0,
+            "escalate_to_investigation": False,
+            "classification": "erro",
+            "deterministic_evidence": [f"Agente 1 falhou: {exc}"],
+            "llm_justification": None,
+            "llm_confidence": None,
         }
-        try:
-            case_storage.save_case(case_id, full_case)
-            case_persisted = True
-        except OSError as exc:
-            logger.error("[Orchestrator] Falha ao persistir caso %s: %s", case_id, exc)
 
-    else:
+    should_escalate = detection.get("escalate_to_investigation", False)
+    total_criteria = detection.get("total_criteria_met", 0)
+
+    # ── Transação NORMAL — encerra aqui ───────────────────────────────────────
+    if not should_escalate:
         logger.info(
-            "Transação %s classificada como NORMAL (%d critérios). Fluxo regular.",
-            transaction.get("transaction_id"),
-            risk.get("total_criteria_met", 0),
+            "[Orchestrator] %s classificada como NORMAL (%d critério(s)).",
+            tx_id, total_criteria,
         )
+        return {
+            "transaction_id": tx_id,
+            "customer_id": customer_id,
+            "case_id": case_id,
+            "trace_id": trace_id,
+            "processing_status": "COMPLETED",
+            "total_criteria_met": total_criteria,
+            "escalated": False,
+            "case_persisted": False,
+            "final_risk_score": 0,
+            "final_risk_level": "minimo",
+            "agent_1_detection": detection,
+            "agent_2_investigation": None,
+            "agent_3_risk": None,
+            "agent_4_master": None,
+        }
+
+    logger.info(
+        "[Orchestrator] %s ESCALADA (%d critério(s)). Acionando Agentes 2→3→4.",
+        tx_id, total_criteria,
+    )
+
+    # ── Agente 2: Investigação e Correlação ───────────────────────────────────
+    investigation: dict = {}
+    try:
+        investigation = agent_context_analyst.run(
+            transaction, detection, history, all_txs
+        )
+    except Exception as exc:
+        logger.error("[Orchestrator] Agente 2 falhou: %s", exc)
+        pipeline_errors.append(f"Agente2: {exc}")
+        investigation = {
+            "transaction_id": tx_id,
+            "sender_profile": {"customer_id": customer_id, "anomalies_found": [f"Agente 2 falhou: {exc}"]},
+            "receiver_profile": {"receiver_id": None, "appears_in_other_suspicious": False},
+            "crossed_indicators": [],
+            "correlated_events": [],
+            "investigation_summary": f"Investigação indisponível: {exc}",
+            "data_collection_status": "insuficiente",
+            "missing_data": ["Agente 2 indisponível"],
+            "llm_generated": False,
+        }
+
+    # ── Agente 3: Avaliação de Risco ──────────────────────────────────────────
+    risk: dict = {}
+    try:
+        risk = agent_risk_analyzer.run(
+            transaction, detection, investigation, case_id
+        )
+    except Exception as exc:
+        logger.error("[Orchestrator] Agente 3 falhou: %s", exc)
+        pipeline_errors.append(f"Agente3: {exc}")
+        # Fallback determinístico para score
+        fallback_score = min(total_criteria * 13, 78)
+        fallback_score = max(fallback_score, 40)
+        risk = {
+            "transaction_id": tx_id,
+            "case_id": case_id,
+            "risk_score": fallback_score,
+            "risk_dimensions": {
+                "severity_level": "alto" if fallback_score >= 61 else "medio",
+                "severity_justification": f"Score estimado: {fallback_score}/100 (Agente 3 indisponível).",
+                "priority_level": "alta" if fallback_score >= 61 else "media",
+                "priority_justification": "Urgência definida pelo score de fallback.",
+                "confidence_score": 0.4,
+                "confidence_justification": "Agente 3 indisponível — confiança reduzida.",
+            },
+            "critical_evidence": detection.get("deterministic_evidence", []),
+            "supporting_evidence": [],
+            "weak_evidence": [],
+            "refutation_points": [],
+            "recommendations": [{"action_code": "revisao_humana", "description": "Revisão humana imediata necessária.", "proportional": True}],
+            "information_gaps": [f"Agente 3 indisponível: {exc}"],
+            "score_is_fallback": True,
+        }
+
+    # ── Agente 4: Relatório e Orquestração ────────────────────────────────────
+    master: dict = {}
+    try:
+        master = agent_master.run(
+            transaction, detection, investigation, risk,
+            case_id, trace_id, pipeline_errors,
+        )
+    except Exception as exc:
+        logger.error("[Orchestrator] Agente 4 falhou: %s", exc)
+        pipeline_errors.append(f"Agente4: {exc}")
+        risk_score = risk.get("risk_score", 0)
+        risk_level = risk.get("risk_dimensions", {}).get("severity_level", "alto")
+        master = {
+            "transaction_id": tx_id,
+            "case_id": case_id,
+            "trace_id": trace_id,
+            "processing_status": "REQUIRES_HUMAN_REVIEW",
+            "final_risk_score": risk_score,
+            "final_risk_level": risk_level,
+            "urgency": "alta",
+            "recommended_action": "revisao_humana",
+            "executive_report": {
+                "observed_facts": detection.get("deterministic_evidence", []),
+                "ai_hypotheses": [],
+                "limitations": [f"Agente 4 indisponível: {exc}"],
+                "risk_justification": f"Score: {risk_score}/100. Revisão humana obrigatória.",
+                "full_narrative": f"Agente 4 indisponível. Transação {tx_id} requer revisão humana imediata.",
+            },
+            "alert_subject": f"⚠️ ALERTA — REQUER REVISÃO HUMANA — {tx_id}",
+            "alert_message": f"Transação {tx_id} escalada. Score: {risk_score}/100. Relatório indisponível.",
+            "immediate_actions": ["Encaminhar imediatamente para revisão humana de Nível 2."],
+            "pipeline_stages_completed": ["agent_1_detection"],
+            "pipeline_errors": pipeline_errors,
+            "completed_at": __import__("datetime").datetime.now().isoformat(),
+            "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras.",
+        }
+
+    # ── Persistência ──────────────────────────────────────────────────────────
+    case_persisted = False
+    full_case = {
+        "case_id": case_id,
+        "trace_id": trace_id,
+        "transaction_id": tx_id,
+        "transaction": transaction,
+        "agent_1_detection": detection,
+        "agent_2_investigation": investigation,
+        "agent_3_risk": risk,
+        "agent_4_master": master,
+        "pipeline_errors": pipeline_errors,
+    }
+    try:
+        case_storage.save_case(case_id, full_case)
+        case_persisted = True
+    except OSError as exc:
+        logger.error("[Orchestrator] Falha ao persistir caso %s: %s", case_id, exc)
+
+    final_risk = master.get("final_risk_score", risk.get("risk_score", 0))
+    final_level = master.get("final_risk_level", "desconhecido")
 
     return {
-        "transaction_id": transaction.get("transaction_id"),
-        "customer_id": transaction.get("customer_id"),
-        "total_criteria_met": risk.get("total_criteria_met", 0),
-        "escalated": should_escalate,
+        "transaction_id": tx_id,
+        "customer_id": customer_id,
+        "case_id": case_id,
+        "trace_id": trace_id,
+        "processing_status": master.get("processing_status", "COMPLETED"),
+        "total_criteria_met": total_criteria,
+        "escalated": True,
         "case_persisted": case_persisted,
-        "agent_1_risk": risk,
+        "final_risk_score": final_risk,
+        "final_risk_level": final_level,
+        "agent_1_detection": detection,
         "agent_2_investigation": investigation,
-        "agent_3_evidence": evidence,
+        "agent_3_risk": risk,
         "agent_4_master": master,
     }
 
+
+# ── Análise em lote ────────────────────────────────────────────────────────────
 
 def analyze_all_transactions() -> list[dict[str, Any]]:
     """Executa o pipeline em todas as transações do dataset."""
@@ -141,8 +270,8 @@ def analyze_all_transactions() -> list[dict[str, Any]]:
     results = []
 
     for tx in transactions:
-        all_client_tx = customer_index.get(tx["customer_id"], [])
-        history = [t for t in all_client_tx if t["transaction_id"] != tx["transaction_id"]]
+        all_client_tx = customer_index.get(tx.get("customer_id", ""), [])
+        history = [t for t in all_client_tx if t.get("transaction_id") != tx.get("transaction_id")]
         result = analyze_transaction(tx, history, transactions)
         results.append(result)
 
@@ -154,13 +283,13 @@ def analyze_single_by_id(transaction_id: str) -> dict[str, Any] | None:
     transactions = _load_dataset()
     customer_index = _build_customer_index(transactions)
 
-    target = next((t for t in transactions if t["transaction_id"] == transaction_id), None)
+    target = next((t for t in transactions if t.get("transaction_id") == transaction_id), None)
     if target is None:
         return None
 
     history = [
-        t for t in customer_index.get(target["customer_id"], [])
-        if t["transaction_id"] != transaction_id
+        t for t in customer_index.get(target.get("customer_id", ""), [])
+        if t.get("transaction_id") != transaction_id
     ]
     return analyze_transaction(target, history, transactions)
 

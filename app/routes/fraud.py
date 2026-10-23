@@ -1,10 +1,21 @@
 """
-Rotas da API — Detecção de Fraudes Financeiras
+Rotas da API — AntFraud_Sys Backend
+─────────────────────────────────────
+Endpoints REST para ingestão, análise, consulta de casos e controle do monitor.
+Todos os endpoints /api/v1/ requerem autenticação via header X-API-Key.
 """
+import asyncio
 import logging
-from fastapi import APIRouter, HTTPException, Depends
+import uuid
 
-from app.models.schemas import TransactionIn, AnalysisResponse, CaseSummary
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Depends, Query
+
+from app.models.schemas import (
+    AnalysisResponse,
+    CaseSummary,
+    IngestResponse,
+    TransactionIn,
+)
 from app import orchestrator, case_storage
 from app.core.security import require_api_key
 from app.monitor import fraud_monitor
@@ -13,32 +24,65 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["fraud-detection"])
 
 
-# ── Transações ────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# Ingestão — fire-and-forget assíncrona
+# ══════════════════════════════════════════════════════════════════════════════
 
-@router.get(
-    "/transactions",
-    summary="Lista todas as transações do dataset",
+def _run_pipeline_background(transaction: dict) -> None:
+    """Executa o pipeline em thread separada (BackgroundTasks é síncrono)."""
+    try:
+        orchestrator.analyze_transaction(transaction)
+    except Exception as exc:
+        logger.error("[Ingest] Erro no pipeline background para %s: %s",
+                     transaction.get("transaction_id"), exc)
+
+
+@router.post(
+    "/transactions/ingest",
+    response_model=IngestResponse,
+    summary="Ingestão assíncrona de transação (fire-and-forget)",
+    status_code=202,
     dependencies=[Depends(require_api_key)],
 )
-def list_transactions():
-    """Retorna o dataset completo sem processar pelos agentes."""
-    return orchestrator.get_all_transactions()
+def ingest_transaction(payload: TransactionIn, background_tasks: BackgroundTasks):
+    """
+    Aceita a transação imediatamente (HTTP 202) e processa em background.
+
+    O pipeline completo de 4 agentes executa de forma assíncrona.
+    Use o WebSocket /ws/alerts ou GET /api/v1/cases para acompanhar o resultado.
+    """
+    trace_id = str(uuid.uuid4())
+    tx_dict = payload.model_dump()
+    background_tasks.add_task(_run_pipeline_background, tx_dict)
+
+    logger.info("[Ingest] Transação %s aceita para processamento | trace=%s",
+                payload.transaction_id, trace_id)
+
+    return IngestResponse(
+        accepted=True,
+        transaction_id=payload.transaction_id,
+        trace_id=trace_id,
+        message=(
+            f"Transação {payload.transaction_id} aceita para análise. "
+            "Use o WebSocket /ws/alerts ou GET /api/v1/cases para acompanhar o resultado."
+        ),
+    )
 
 
-# ── Análise ───────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# Análise síncrona (aguarda pipeline completo)
+# ══════════════════════════════════════════════════════════════════════════════
 
 @router.post(
     "/analyze",
     response_model=AnalysisResponse,
-    summary="Analisa uma transação ad-hoc pelos 4 agentes",
+    summary="Analisa uma transação ad-hoc (síncrono — aguarda resultado)",
     dependencies=[Depends(require_api_key)],
 )
 def analyze_transaction(payload: TransactionIn):
     """
-    Recebe uma transação em JSON e executa o pipeline:
-    - Agente 1 sempre executa (triagem dos 6 critérios)
-    - Se >= 3 critérios → Agentes 2, 3 e 4 (IA Mestre) são acionados
-    - Caso suspeito é persistido automaticamente
+    Executa o pipeline de 4 agentes e retorna o resultado completo.
+    Use /transactions/ingest para processamento assíncrono (fire-and-forget).
     """
     try:
         result = orchestrator.analyze_transaction(payload.model_dump())
@@ -51,14 +95,11 @@ def analyze_transaction(payload: TransactionIn):
 @router.get(
     "/analyze/{transaction_id}",
     response_model=AnalysisResponse,
-    summary="Analisa uma transação do dataset pelo ID",
+    summary="Analisa uma transação do dataset pelo ID (síncrono)",
     dependencies=[Depends(require_api_key)],
 )
 def analyze_by_id(transaction_id: str):
-    """
-    Localiza a transação no dataset e executa o pipeline completo,
-    passando o histórico do cliente como contexto para os agentes.
-    """
+    """Localiza a transação no dataset e executa o pipeline completo."""
     result = orchestrator.analyze_single_by_id(transaction_id)
     if result is None:
         raise HTTPException(
@@ -70,30 +111,43 @@ def analyze_by_id(transaction_id: str):
 
 @router.post(
     "/analyze/batch",
-    summary="Analisa todas as transações do dataset",
+    summary="Analisa todas as transações do dataset (síncrono — pode demorar)",
     dependencies=[Depends(require_api_key)],
 )
 def analyze_batch():
-    """
-    Executa o pipeline nas 20 transações do dataset.
-    Transações suspeitas (>= 3 critérios) passam por todos os 4 agentes.
-    """
+    """Executa o pipeline nas transações do dataset. Pode levar vários minutos."""
     try:
         results = orchestrator.analyze_all_transactions()
         escalated = [r for r in results if r["escalated"]]
-        normal = [r for r in results if not r["escalated"]]
+        normal    = [r for r in results if not r["escalated"]]
         return {
-            "total": len(results),
+            "total":                      len(results),
             "escalated_to_investigation": len(escalated),
-            "normal_flow": len(normal),
-            "results": results,
+            "normal_flow":                len(normal),
+            "results":                    results,
         }
     except Exception as exc:
         logger.exception("Erro no processamento em lote")
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-# ── Casos persistidos ─────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# Dataset
+# ══════════════════════════════════════════════════════════════════════════════
+
+@router.get(
+    "/transactions",
+    summary="Lista todas as transações do dataset (sem análise)",
+    dependencies=[Depends(require_api_key)],
+)
+def list_transactions():
+    """Retorna o dataset completo sem processar pelos agentes."""
+    return orchestrator.get_all_transactions()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Casos persistidos
+# ══════════════════════════════════════════════════════════════════════════════
 
 @router.get(
     "/cases",
@@ -122,28 +176,44 @@ def get_case(case_id: str):
     return case
 
 
-# ── Health ────────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# Health check
+# ══════════════════════════════════════════════════════════════════════════════
 
 @router.get("/health", summary="Health check da API, Gemini e monitor")
 def health_check():
     from app.core.config import get_settings
     settings = get_settings()
-    gemini_configured = bool(settings.gemini_api_key)
+    gemini_ok = bool(settings.gemini_api_key)
     return {
         "status": "ok",
+        "version": "3.0.0",
         "llm_provider": "Google Gemini",
-        "gemini_configured": gemini_configured,
-        "agents": {
-            "agent_1": f"{settings.gemini_model_agent1} (temp=0.1) — Análise de Risco",
-            "agent_2": f"{settings.gemini_model_agent2} (temp=0.4) — Investigação de Ameaças",
-            "agent_3": f"{settings.gemini_model_agent3} (temp=0.2) — Base de Dados e Evidências",
-            "agent_4_master": f"{settings.gemini_model_agent4} (temp=0.4) — IA Mestre",
+        "gemini_configured": gemini_ok,
+        "pipeline": {
+            "agent_1_detection":      f"{settings.gemini_model_agent1} (temp=0.1) — Detecção determinística + justificativa LLM",
+            "agent_2_investigation":  f"{settings.gemini_model_agent2} (temp=0.3) — Investigação + correlação cruzada",
+            "agent_3_risk":           f"{settings.gemini_model_agent3} (temp=0.2) — Avaliação de risco + recomendações",
+            "agent_4_master":         f"{settings.gemini_model_agent4} (temp=0.3) — Relatório executivo + orquestração",
         },
-        "escalation_rule": "minimo_3_criterios",
-        "dataset_loaded": True,
+        "escalation_rule":  "minimo_3_criterios_deterministicos",
+        "retry_config": {
+            "attempts": settings.gemini_retry_attempts,
+            "delay_s":  settings.gemini_retry_delay_s,
+        },
         "monitor": fraud_monitor.stats(),
+        "endpoints": {
+            "ingest":   "POST /api/v1/transactions/ingest (fire-and-forget, HTTP 202)",
+            "analyze":  "POST /api/v1/analyze (síncrono)",
+            "cases":    "GET  /api/v1/cases",
+            "websocket":"ws://<host>/ws/alerts?api_key=<key>",
+        },
     }
 
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Controle do monitor
+# ══════════════════════════════════════════════════════════════════════════════
 
 @router.post(
     "/monitor/start",
@@ -154,7 +224,6 @@ async def start_monitor():
     """Inicia o monitor se estiver parado."""
     if fraud_monitor.running:
         return {"status": "já em execução", **fraud_monitor.stats()}
-    import asyncio
     asyncio.create_task(fraud_monitor.start())
     return {"status": "iniciado"}
 
@@ -180,15 +249,19 @@ def monitor_stats():
     return fraud_monitor.stats()
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# Simulação
+# ══════════════════════════════════════════════════════════════════════════════
+
 @router.post(
     "/simulate/transaction",
     summary="Gera e analisa uma transação simulada imediatamente",
     dependencies=[Depends(require_api_key)],
 )
-def simulate_one(force_suspicious: bool = False):
+def simulate_one(force_suspicious: bool = Query(False, description="true = garante transação com >= 3 critérios")):
     """
-    Gera uma transação fictícia e executa o pipeline completo.
-    Use force_suspicious=true para garantir uma transação suspeita.
+    Gera uma transação fictícia e executa o pipeline completo de forma síncrona.
+    Útil para demonstração e testes sem precisar de dados reais.
     """
     from app.simulator import generate_single
     tx = generate_single(force_suspicious=force_suspicious)
