@@ -9,6 +9,8 @@ Interface pública preservada para compatibilidade com o banco de dados futuro:
   save_case(case_id, payload) → Path
   load_case(case_id) → dict | None
   list_cases() → list[dict]
+  save_action_result(case_id, result) → None
+  list_action_results(case_id) → list[dict]
 """
 import json
 import logging
@@ -59,6 +61,9 @@ def list_cases() -> list[dict]:
     _ensure_dir()
     cases = []
     for file_path in sorted(_CASES_DIR.glob("*.json"), reverse=True):
+        # Ignora arquivos de ações (sufixo _actions)
+        if file_path.stem.endswith("_actions"):
+            continue
         try:
             with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
@@ -78,3 +83,57 @@ def list_cases() -> list[dict]:
         except (json.JSONDecodeError, OSError) as exc:
             logger.warning("[Storage] Erro ao ler caso %s: %s", file_path.name, exc)
     return cases
+
+
+def save_action_result(case_id: str, result: dict[str, Any]) -> None:
+    """
+    Persiste o resultado de uma decisão (aprovação/rejeição) sobre uma ação.
+
+    As decisões são armazenadas em arquivo separado do dossiê principal
+    para não sobrescrever os dados do pipeline.
+
+    Args:
+        case_id: ID do caso ao qual a ação pertence.
+        result:  Dicionário com os dados da decisão (ActionResult).
+    """
+    _ensure_dir()
+    actions_file = _CASES_DIR / f"{case_id}_actions.json"
+
+    # Carrega lista existente ou cria nova
+    actions: list[dict] = []
+    if actions_file.exists():
+        try:
+            with open(actions_file, encoding="utf-8") as f:
+                actions = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            actions = []
+
+    result["_recorded_at"] = datetime.now().isoformat()
+    actions.append(result)
+
+    with open(actions_file, "w", encoding="utf-8") as f:
+        json.dump(actions, f, ensure_ascii=False, indent=2)
+
+    logger.info(
+        "[Storage] Decisão registrada | case=%s | action=%s | status=%s",
+        case_id, result.get("action_id"), result.get("status"),
+    )
+
+
+def list_action_results(case_id: str) -> list[dict]:
+    """
+    Retorna todas as decisões registradas para um caso.
+
+    Returns:
+        Lista de ActionResult em ordem cronológica (mais recente por último).
+        Lista vazia se nenhuma decisão foi registrada ainda.
+    """
+    actions_file = _CASES_DIR / f"{case_id}_actions.json"
+    if not actions_file.exists():
+        return []
+    try:
+        with open(actions_file, encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.warning("[Storage] Erro ao ler ações do caso %s: %s", case_id, exc)
+        return []

@@ -1,0 +1,174 @@
+{
+  "case_id": "SIM-532656_CASE_22C173A6",
+  "trace_id": "22c173a6-cffc-4469-a673-bb427cba26e6",
+  "transaction_id": "SIM-532656",
+  "transaction": {
+    "transaction_id": "SIM-532656",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1005",
+    "amount": 19246.37,
+    "datetime": "2026-10-23T03:39:12.207163",
+    "location": "Tóquio, Japão",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-532656",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 19,246.37 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-532656",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 19,246.37 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1005",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-532656",
+    "case_id": "SIM-532656_CASE_22C173A6",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é médio, pois envolve um montante elevado de R$ 19.246,37 associado a múltiplos indicadores de risco comportamental e de contexto, como horário incomum e dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média devido à combinação de três critérios confirmados (valor elevado, horário atípico às 03:39 e dispositivo não reconhecido), exigindo checagem preventiva em tempo hábil.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é moderada, pois há dados claros sobre a transação atual, mas o histórico detalhado do cliente está indisponível, limitando uma linha de base comportamental completa."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 19.246,37 excede o limiar de R$ 5.000,00.",
+      "Transação realizada em horário incomum às 03:39 da manhã.",
+      "Uso de dispositivo desconhecido (smartphone_desconhecido)."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental calculado em 0.50.",
+      "Três critérios de risco confirmados deterministicamente pelo sistema."
+    ],
+    "weak_evidence": [
+      "Localização informada como Tóquio, Japão, sem dados históricos para comparação."
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1005) não consta em outras listas de transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "ENCAMINHAR_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do dispositivo e do padrão de acesso.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o fluxo.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível.",
+      "Typical amount range, typical hours, typical locations e known devices com Dado não disponível."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-532656",
+    "case_id": "SIM-532656_CASE_22C173A6",
+    "trace_id": "22c173a6-cffc-4469-a673-bb427cba26e6",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-532656 foi realizada em 2026-10-23T03:39:12.207163 no valor de R$ 19.246,37.",
+        "A localização registrada da transação é Tóquio, Japão, via canal app_mobile utilizando o dispositivo 'smartphone_desconhecido'.",
+        "O cliente remetente é CLI-2003 e o recebedor é CLI-1005.",
+        "Três critérios de risco foram confirmados deterministicamente: valor elevado (acima do limiar de R$ 5.000,00), horário incomum (03:39) e dispositivo desconhecido.",
+        "O recebedor (CLI-1005) não consta em outras listas de transações suspeitas."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que o risco é médio devido à combinação simultânea de alto valor, horário atípico e uso de um dispositivo não reconhecido.",
+        "É possível que o acesso realizado em horário de madrugada e a partir de um dispositivo desconhecido indique uma tentativa de acesso não autorizado por terceiros.",
+        "Os dados sugerem que a ausência de histórico detalhado limita a capacidade de confirmar se o padrão de Tóquio, Japão, diverge da rotina habitual do cliente CLI-2003."
+      ],
+      "limitations": [
+        "Histórico do cliente indisponível.",
+        "Faixa de valor típica, horários típicos, localizações típicas e dispositivos conhecidos com dados não disponíveis.",
+        "Síntese narrativa por LLM indisponível no agente de investigação devido a limitações técnicas temporárias."
+      ],
+      "risk_justification": "O risco foi pontuado em 42/100 (médio) devido à presença concomitante de um montante financeiro expressivo (R$ 19.246,37), horário de madrugada e dispositivo desconhecido. Embora o recebedor não possua histórico suspeito, a falta de dados históricos do cliente limita a validação comportamental completa.",
+      "full_narrative": "O presente relatório analisa a transação SIM-532656, efetuada em 23 de outubro de 2026 às 03:39:12, no valor de R$ 19.246,37, originada em Tóquio, Japão, através do aplicativo móvel em um 'smartphone_desconhecido'. A operação disparou alertas automáticos por exceder o limiar financeiro estabelecido, ocorrer durante a madrugada (horário de menor atividade habitual) e utilizar um terminal de acesso não catalogado anteriormente.\n\nDurante o processo de investigação, foram confirmados três indicadores determinísticos de desvio, resultando em um score de risco de 42 em 100 (classificação média). A análise apontou que o recebedor (CLI-1005) não possui registros prévios em listas de infrações, o que atenua parcialmente a gravidade do destino dos fundos. No entanto, a ausência de um histórico comportamental completo do cliente CLI-2003 restringe a assertividade da linha de base, gerando incertezas quanto à legitimidade do contexto geográfico e do dispositivo.\n\nDiante do exposto, o cenário requer cautela e monitoramento direcionado para mitigar potenciais perdas financeiras. As recomendações centram-se na validação adicional da identidade do usuário e na checagem detalhada do dispositivo e da sessão ativa, assegurando que o canal de comunicação permaneça estritamente dentro dos parâmetros de segurança recomendados para o SOC."
+    },
+    "alert_subject": "Alerta SOC: Transação de Médio Risco Detectada (SIM-532656)",
+    "alert_message": "Foi identificada a transação SIM-532656 no valor de R$ 19.246,37 associada ao cliente CLI-2003, realizada em horário atípico (03:39) a partir de um dispositivo desconhecido em Tóquio, Japão. Solicita-se atenção imediata da equipe de monitoramento para verificação complementar.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:43:39.958849",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:43:53.758344"
+}

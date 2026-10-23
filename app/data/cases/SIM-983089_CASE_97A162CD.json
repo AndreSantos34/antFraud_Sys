@@ -1,0 +1,185 @@
+{
+  "case_id": "SIM-983089_CASE_97A162CD",
+  "trace_id": "97a162cd-d16e-4b97-b6a4-f41b800b42f7",
+  "transaction_id": "SIM-983089",
+  "transaction": {
+    "transaction_id": "SIM-983089",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1002",
+    "amount": 7937.02,
+    "datetime": "2026-10-23T03:33:23.989867",
+    "location": "Salvador, BA",
+    "channel": "pix_automatico",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-983089",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,937.02 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 7.937,02, que excede o limiar de R$ 5.000,00, realizada durante o horário incomum da madrugada às 03h. Além disso, a operação foi efetuada por meio de um dispositivo classificado como desconhecido.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-983089",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,937.02 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada em horário incomum (03h) combinada com o uso de um dispositivo desconhecido e valor elevado (R$ 7.937,02)."
+    ],
+    "correlated_events": [
+      "A transação SIM-983089 apresenta desvio comportamental com pontuação de 0.5, excedendo o limiar de valor de R$ 5.000,00 e ocorrendo no canal pix_automatico a partir de um smartphone desconhecido em Salvador, BA."
+    ],
+    "investigation_summary": "A transação SIM-983089, no valor de R$ 7.937,02, apresenta indicadores de risco como horário incomum às 03h, uso de um dispositivo desconhecido e valor elevado que excede o limiar de R$ 5.000,00. O perfil do remetente (CLI-2004) registra um desvio comportamental de 0.5 e anomalias correspondentes a esses critérios. A análise é limitada pela ausência de histórico prévio de transações do remetente e de dados comportamentais típicos.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes",
+      "histórico do remetente (0 transações disponíveis)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-983089",
+    "case_id": "SIM-983089_CASE_97A162CD",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é classificada como média devido ao valor elevado da transação (R$ 7.937,02) que excede o limiar de R$ 5.000,00, além de ocorrer em horário incomum (madrugada, às 03h) por meio de um canal automatizado (pix_automatico).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo um score de risco de 42/100 com três critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção moderada sem caracterizar risco crítico imediato.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à ausência de dados históricos do remetente (como faixa de valores típicos, horários habituais, locais usuais e dispositivos conhecidos), limitando a profundidade da análise comportamental."
+    },
+    "critical_evidence": [
+      "Transação no valor de R$ 7.937,02 excede o limiar de R$ 5.000,00.",
+      "Realização da transação às 03h (horário incomum/madrugada).",
+      "Uso de 'smartphone_desconhecido' não associado previamente ao cliente."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com pontuação de 0.5 registrado para o remetente CLI-2004.",
+      "Transação realizada no canal pix_automatico a partir de Salvador, BA."
+    ],
+    "weak_evidence": [
+      "Indicadores cruzados apontam combinação de horário, dispositivo e valor, mas sem validação cruzada com o comportamento histórico completo."
+    ],
+    "refutation_points": [
+      "O receptor CLI-1002 não aparece em outras transações suspeitas.",
+      "A coleta de dados está incompleta, indicando 0 transações disponíveis no histórico do remetente, o que pode gerar falsos positivos devidos à falta de linha de base."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a autorização da transação via pix_automatico.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente devido ao uso de dispositivo desconhecido em horário de madrugada.",
+        "proportional": true
+      },
+      {
+        "action_code": " ENCAMINHAR_ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para reavaliar o perfil assim que mais dados históricos do remetente forem disponibilizados.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes",
+      "histórico do remetente (0 transações disponíveis)"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-983089",
+    "case_id": "SIM-983089_CASE_97A162CD",
+    "trace_id": "97a162cd-d16e-4b97-b6a4-f41b800b42f7",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-983089 foi realizada em 2026-10-23T03:33:23.989867 no valor de R$ 7.937,02.",
+        "O canal utilizado foi pix_automatico, com origem em Salvador, BA, através de um smartphone_desconhecido.",
+        "O cliente remetente é CLI-2004 e o recebedor é CLI-1002.",
+        "O histórico do remetente possui 0 transações disponíveis, resultando em dados ausentes de linha de base comportamental.",
+        "O score de risco atribuído foi de 42/100, classificado como nível médio com urgência média."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de horário de madrugada (03h), valor superior ao limiar de R$ 5.000,00 e o uso de um dispositivo desconhecido indica um desvio comportamental potencial.",
+        "É possível que a ausência de histórico do remetente (0 transações anteriores) gere um falso positivo devido à falta de linha de base para comparação.",
+        "Os dados sugerem que o perfil de risco moderado (42/100) reflete incerteza analítica decorrente da coleta de dados parcial."
+      ],
+      "limitations": [
+        "Ausência completa de histórico prévio de transações do remetente (0 transações disponíveis).",
+        "Falta de dados sobre a faixa de valores típicos (typical_amount_range) do cliente.",
+        "Ausência de horários habituais (typical_hours), locais usuais (typical_locations) e dispositivos conhecidos (known_devices).",
+        "Falta de notas ou informações adicionais sobre o recebedor (receiver_notes)."
+      ],
+      "risk_justification": "O risco médio (42/100) é justificado pela presença simultânea de valor elevado, horário de madrugada e dispositivo desconhecido, mitigado parcialmente pela falta de histórico do remetente que limita a confiança analítica a 50%.",
+      "full_narrative": "A operação SIM-983089, efetuada no valor de R$ 7.937,02 através do canal pix_automatico em Salvador, BA, foi classificada como suspeita pelo sistema de monitoramento. A análise inicial identificou três critérios de alerta: montante acima do limiar estabelecido de R$ 5.000,00, execução em horário atípico de madrugada (03h) e o emprego de um smartphone desconhecido pelo cliente CLI-2004 em direção ao recebedor CLI-1002. \n\nO cruzamento de dados apontou um desvio comportamental com pontuação de 0.5, embora a investigação tenha operado com coleta parcial e nível de confiança de 50%. A principal restrição analítica reside na ausência absoluta de histórico prévio de transações para o remetente, o que impede a validação de padrões habituais de consumo, horários e localizações, abrindo espaço para a possibilidade de falsos positivos decorrentes da falta de linha de base.\n\nDiante do score de 42/100 e urgência média, conclui-se que a operação requer cautela moderada sem caracterizar uma ameaça crítica imediata. Recomenda-se o encaminhamento para verificação humana adicional e o acionamento de canais seguros para validação junto ao cliente, garantindo a integridade da operação sem intervenções operacionais diretas por parte deste sistema."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Pix Automático - CLI-2004 (R$ 7.937,02)",
+    "alert_message": "Uma transação de R$ 7.937.02 via pix_automatico foi registrada às 03h a partir de um dispositivo desconhecido em Salvador, BA, pelo cliente CLI-2004. O evento apresenta score de risco médio (42/100) devido a desvios comportamentais e ausência de histórico prévio, exigindo checagem suplementar.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:51:54.982293",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:51:58.579761"
+}

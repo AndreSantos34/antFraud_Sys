@@ -1,0 +1,175 @@
+{
+  "case_id": "SIM-303400_CASE_93D9A9CF",
+  "trace_id": "93d9a9cf-918a-4a0d-8246-163913d8b6b4",
+  "transaction_id": "SIM-303400",
+  "transaction": {
+    "transaction_id": "SIM-303400",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1005",
+    "amount": 7830.31,
+    "datetime": "2026-10-23T02:07:49.620739",
+    "location": "Porto Alegre, RS",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-303400",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,830.31 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 7.830,31, que supera o limiar estabelecido, e a ocorrência em horário incomum às 02h07. Além disso, a operação foi realizada a partir de um dispositivo desconhecido, o que reforça o perfil de risco da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-303400",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,830.31 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1005",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 7.830,31 cruza com o horário incomum da madrugada (02:07) e o uso de dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-303400 ocorreu em um horário atípico (02:07), utilizando o canal pix_automatico a partir de um dispositivo desconhecido e com valor excedendo o limiar de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-303400 apresenta indicadores de risco associados a valor elevado, horário incomum e utilização de dispositivo desconhecido. O perfil do remetente CLI-2001 registra desvio comportamental com anomalias confirmadas para estes critérios. Não há histórico de transações anteriores disponíveis para o remetente para comparação de baseline.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-303400",
+    "case_id": "SIM-303400_CASE_93D9A9CF",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é médio, pois a transação de R$ 7.830,31 excede o limiar de R$ 5.000,00 e ocorre em horário de madrugada (02:07), combinando múltiplos fatores de desvio comportamental.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média devido à presença de três critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido) que elevam o score para 42/100, exigindo atenção moderada.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, pois há dados não disponíveis sobre o histórico do remetente (typical_amount_range, typical_hours, typical_locations, known_devices) e notas sobre o recebedor."
+    },
+    "critical_evidence": [
+      "Valor de R$ 7.830,31 excede o limiar de R$ 5.000,00.",
+      "Transação realizada em horário incomum às 02h07.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental do remetente CLI-2001 pontuado em 0.5.",
+      "Canal utilizado é pix_automatico."
+    ],
+    "weak_evidence": [
+      "O perfil do recebedor CLI-1005 não aparece em outras listas de transações suspeitas, porém possui notas não disponíveis."
+    ],
+    "refutation_points": [
+      "Não há histórico de transações anteriores disponíveis para estabelecer um baseline completo de comportamento do remetente."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação realizada em dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta do remetente em monitoramento intensivo para novas atividades fora do padrão.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-303400",
+    "case_id": "SIM-303400_CASE_93D9A9CF",
+    "trace_id": "93d9a9cf-918a-4a0d-8246-163913d8b6b4",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-303400 no valor de R$ 7.830,31 foi realizada em 2026-10-23T02:07:49.620739.",
+        "O cliente remetente é CLI-2001 e o recebedor é CLI-1005.",
+        "A localização da transação é Porto Alegre, RS, utilizando o canal pix_automatico.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar de R$ 5.000,00 e o horário (02h07) está fora do horário habitual (22h-6h)."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e dispositivo desconhecido aponta para um perfil de risco moderado.",
+        "É possível que a ausência de histórico de transações anteriores para o remetente indique uma conta nova ou com escassez de dados comportamentais prévios.",
+        "Os dados sugerem que a operação pode representar um desvio comportamental em relação aos padrões usuais de transações."
+      ],
+      "limitations": [
+        "Ausência de histórico de transações anteriores para o remetente CLI-2001.",
+        "Falta de dados sobre typical_amount_range, typical_hours, typical_locations, known_devices e receiver_notes."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela confluência de um valor expressivo de R$ 7.830,31, horário de madrugada e o uso de um dispositivo desconhecido, mitigado parcialmente pela falta de um baseline histórico completo do cliente.",
+      "full_narrative": "O presente relatório analisa a transação SIM-303400, executada pelo cliente CLI-2001 em favor do recebedor CLI-1005, no valor de R$ 7.830,31. A operação ocorreu às 02h07 do dia 23 de outubro de 2026, na localidade de Porto Alegre, RS, utilizando o canal pix_automatico por meio de um dispositivo desconhecido_B. A detecção inicial identificou três critérios de suspeita: o montante supera o limiar de R$ 5.000,00, o horário coincide com o período da madrugada e o acesso foi originado de um equipamento não catalogado previamente.\n\nA investigação subsequente revelou um desvio comportamental nas dimensões avaliadas, embora o status de coleta tenha sido parcial devido à total ausência de dados históricos de transações para o remetente. Essa lacuna impede o estabelecimento de um baseline comportamental definitivo, gerando um nível de confiança de 50% na análise de risco. Apesar disso, os fatores extrínsecos observados foram suficientes para classificar o risco como médio, resultando em um score de 42/100.\n\nDiante do cenário exposto, recomenda-se cautela na condução da análise pelo analista SOC. Como a operação apresenta marcadores claros de anomalia temporal e tecnológica, a adoção de medidas consultivas de verificação e o acompanhamento de novas atividades na conta do remetente mostram-se essenciais para mitigar potenciais perdas e garantir a segurança do ecossistema financeiro."
+    },
+    "alert_subject": "Alerta de Monitoramento: Transação Suspeita via Pix Automático em Horário Incomum",
+    "alert_message": "Foi detectada a transação SIM-303400 no valor de R$ 7.830,31 realizada por CLI-2001 às 02h07 utilizando um dispositivo desconhecido_B em Porto Alegre, RS. Recomenda-se acionar o protocolo de monitoramento e realizar a verificação do evento.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:58:54.709807",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:58:58.344537"
+}

@@ -1,0 +1,20 @@
+{
+  "case_id": "CASE-DBG2",
+  "trace_id": "trace-dbg2",
+  "transaction_id": "TX-DBG2",
+  "transaction": {
+    "customer_id": "CLI-DBG2"
+  },
+  "agent_4_master": {
+    "suggested_actions": [
+      {
+        "action_id": "ACT-DBG-02",
+        "action_code": "monitorar",
+        "description": "Monitorar.",
+        "status": "PENDING",
+        "risk_level": "medio"
+      }
+    ]
+  },
+  "_saved_at": "2026-10-23T18:00:10.301831"
+}

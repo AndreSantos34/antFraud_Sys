@@ -1,0 +1,176 @@
+{
+  "case_id": "SIM-461800_CASE_2D3F9F89",
+  "trace_id": "2d3f9f89-6b12-4926-9410-881256ea3fce",
+  "transaction_id": "SIM-461800",
+  "transaction": {
+    "transaction_id": "SIM-461800",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1003",
+    "amount": 8168.77,
+    "datetime": "2026-10-23T04:45:36.697733",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-461800",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 8,168.77 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-461800",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 8,168.77 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 8.168,77 cruza com o horário incomum da madrugada (04h45) e o uso de um dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-461800 ocorreu em horário de madrugada, utilizando um dispositivo desconhecido e um valor acima do limiar de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-461800 apresenta indicadores de alerta devido ao valor elevado de R$ 8.168,77, execução em horário incomum às 04h45 e utilização do canal app_mobile com um dispositivo desconhecido. O perfil do remetente CLI-2004 registra um desvio comportamental de 0,5 e anomalias confirmadas para estes mesmos critérios. Não há histórico de transações anteriores disponíveis para o remetente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-461800",
+    "case_id": "SIM-461800_CASE_2D3F9F89",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada devido ao valor elevado de R$ 8.168,77, que excede o limiar de R$ 5.000,00, associado ao uso de um dispositivo desconhecido e ocorrência em horário de madrugada (04h45).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada pela combinação de três critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido) e um desvio comportamental de 0,5, exigindo atenção para mitigar riscos potenciais.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada por contar com evidências claras de anomalias dimensionadas pelo sistema, embora haja limitações devido à ausência de histórico consolidado de transações anteriores do remetente (typical_amount_range, typical_hours, typical_locations, known_devices)."
+    },
+    "critical_evidence": [
+      "Valor de R$ 8.168,77 excede o limiar de R$ 5.000,00.",
+      "Transação realizada em horário incomum às 04h45.",
+      "Uso do dispositivo desconhecido 'dispositivo_desconhecido_B'."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental do remetente CLI-2004 pontuado em 0,5.",
+      "Cruzamento de indicadores envolvendo valor, horário e dispositivo."
+    ],
+    "weak_evidence": [
+      "Canal app_mobile utilizado, que isoladamente é um canal padrão para transações."
+    ],
+    "refutation_points": [
+      "Receiver_id CLI-1003 não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do usuário no dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas atividades associadas ao cliente CLI-2004.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-461800",
+    "case_id": "SIM-461800_CASE_2D3F9F89",
+    "trace_id": "2d3f9f89-6b12-4926-9410-881256ea3fce",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Transação SIM-461800 realizada em 2026-10-23T04:45:36.697733 no valor de R$ 8.168,77.",
+        "Remetente: CLI-2004, Destinatário: CLI-1003, Localização: Rio de Janeiro, RJ, Canal: app_mobile, Dispositivo: dispositivo_desconhecido_B.",
+        "Perfil de simulação: alto_valor_madrugada_dispositivo.",
+        "Critérios atendidos: 3/6, com classificação de suspeita.",
+        "Evidências confirmadas: valor excede R$ 5.000,00, horário às 04h45 fora do habitual, dispositivo desconhecido.",
+        "Desvio comportamental registrado de 0,5 para o remetente CLI-2004, sem histórico de transações anteriores disponíveis."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e uso de dispositivo desconhecido aponta para um potencial risco de acesso não autorizado ou fraude.",
+        "É possível que o desvio comportamental de 0,5 reflita uma mudança abrupta no padrão de uso do cliente.",
+        "Os dados sugerem que a ausência de histórico consolidado dificulta a validação definitiva do perfil transacional do remetente."
+      ],
+      "limitations": [
+        "Ausência de histórico de transações anteriores para o remetente CLI-2004.",
+        "Lacunas de dados específicos: typical_amount_range, typical_hours, typical_locations, known_devices e receiver_notes."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela confluência de valor elevado, horário de madrugada e dispositivo desconhecido, atenuado pela ausência de alertas prévios associados ao recebedor e mitigado por um nível de confiança moderado devido às limitações de histórico.",
+      "full_narrative": "A transação SIM-461800, realizada pelo cliente CLI-2004 no valor de R$ 8.168,77, foi classificada como suspeita após atender a três critérios críticos de monitoramento. A operação ocorreu às 04h45, utilizando o canal app_mobile em um equipamento identificado como 'dispositivo_desconhecido_B', a partir da localidade de Rio de Janeiro, RJ. O sistema de detecção apontou que o montante supera o limiar estipulado de R$ 5.000,00 e o horário coincide com um período de baixa atividade habitual.\n\nA investigação secundária identificou um desvio comportamental de 0,5 associado ao remetente, embora não haja registro prévio de transações anteriores na base para estabelecer uma linha de base consolidada de comportamento. O cruzamento dos indicadores evidenciou a simultaneidade de fatores de risco, enquanto a análise de correlação aponta que o recebedor CLI-1003 não possui histórico de envolvimento em outras ocorrências suspeitas.\n\nCom base na avaliação integrada, o nível de risco foi dimensionado como médio (score 42/100), com urgência moderada e confiança de 50%. As principais limitações recaem sobre a escassez de dados históricos, como faixas típicas de valores e horários conhecidos do cliente. A situação requer acompanhamento analítico para mitigar potenciais vulnerabilidades operacionais e assegurar a conformidade com os protocolos de segurança."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada (SIM-461800) - CLI-2004",
+    "alert_message": "Foi identificada a transação SIM-461800 no valor de R$ 8.168,77 realizada pelo cliente CLI-2004 às 04h45, utilizando um dispositivo desconhecido e fora do horário habitual. A operação apresenta escore de risco médio (42/100) e desvio comportamental de 0,5, exigindo atenção da equipe de segurança.\n\nRecomenda-se a análise detalhada do contexto e o acompanhamento das diretrizes de monitoramento intensivo para mitigar eventuais exposições ao risco.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:45:51.210552",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:45:54.964247"
+}

@@ -1,0 +1,183 @@
+{
+  "case_id": "SIM-632431_CASE_2DE090DC",
+  "trace_id": "2de090dc-43d5-4365-9584-a8b868eb96d5",
+  "transaction_id": "SIM-632431",
+  "transaction": {
+    "transaction_id": "SIM-632431",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1002",
+    "amount": 13949.38,
+    "datetime": "2026-10-23T02:43:59.837687",
+    "location": "Salvador, BA",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-632431",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,949.38 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 13.949,38 com o horário incomum às 02h43 da madrugada. Adicionalmente, a operação foi realizada a partir do dispositivo desconhecido_B, acendendo alertas operacionais.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-632431",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,949.38 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 13.949,38 cruza com o horário incomum da madrugada (02h43) e o uso de um dispositivo desconhecido.",
+      "O perfil de comportamento aponta desvio com score de 0.5, corroborando os critérios confirmados de valor elevado, horário incomum e dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-632431 realizada pelo cliente CLI-2003 ocorreu em Salvador, BA, às 02h43 via caixa eletrônico utilizando um dispositivo desconhecido (dispositivo_desconhecido_B), superando o limiar de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-632431 apresenta indicadores de risco devido ao valor elevado de R$ 13.949,38, ao horário atípico da madrugada (02h43) e à utilização de um dispositivo desconhecido pelo remetente CLI-2003. O perfil do remetente confirma anomalias relacionadas a esses três fatores e registra um desvio comportamental de 0.5. A análise é limitada pela ausência de histórico de transações e dados típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-632431",
+    "case_id": "SIM-632431_CASE_2DE090DC",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado, pois a transação envolve um valor elevado de R$ 13.949,38, superando o limiar de R$ 5.000,00, associado a um desvio comportamental com score de 0.5.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média devido à combinação de múltiplos critérios confirmados (valor elevado, horário incomum às 02h43 e uso de dispositivo desconhecido), exigindo checagem proporcional.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de histórico completo do cliente, embora haja forte correlação entre os indicadores comportamentais e o contexto da transação."
+    },
+    "critical_evidence": [
+      "Valor de R$ 13.949,38 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 02h43, fora do horário habitual.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental de 0.5 registrado para o cliente CLI-2003.",
+      "Canal de transação via caixa eletrônico em Salvador, BA."
+    ],
+    "weak_evidence": [
+      "Dado não disponível — receiver_id ausente nas notas do recebedor."
+    ],
+    "refutation_points": [
+      "O recebedor CLI-1002 não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente antes de prosseguir com o fluxo.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-632431",
+    "case_id": "SIM-632431_CASE_2DE090DC",
+    "trace_id": "2de090dc-43d5-4365-9584-a8b868eb96d5",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-632431 no valor de R$ 13.949,38 foi realizada em 2026-10-23T02:43:59.837687 pelo cliente CLI-2003 para o recebedor CLI-1002.",
+        "A operação ocorreu no canal caixa_eletronico em Salvador, BA, utilizando o dispositivo desconhecido_B.",
+        "O valor da transação excede o limiar de R$ 5.000,00 e o horário de execução (02h43) está fora do horário habitual.",
+        "O perfil comportamental do remetente registra um desvio com score de 0.5 e o recebedor CLI-1002 não possui histórico em transações suspeitas.",
+        "A coleta de dados apresenta status parcial, com ausência de histórico completo e dados típicos do cliente."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e uso de dispositivo desconhecido aponta para um potencial risco de comprometimento da conta.",
+        "É possível que o desvio comportamental de 0.5 reflita uma mudança abrupta nos hábitos financeiros ou uma operação realizada por terceiros não autorizados.",
+        "Os dados sugerem que o recebedor CLI-1002 não está diretamente associado a fraudes anteriores conhecidas, mas o contexto geral exige cautela."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típico (typical_amount_range) do cliente.",
+        "Ausência de horários típicos (typical_hours) de transação.",
+        "Ausência de localizações típicas (typical_locations) e dispositivos conhecidos (known_devices).",
+        "Ausência de notas sobre o recebedor (receiver_notes)."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à presença simultânea de valor elevado, horário atípico e dispositivo desconhecido, corroborado por um desvio comportamental de 0.5. No entanto, a ausência de histórico completo limita a confiança da análise a 50%.",
+      "full_narrative": "A transação SIM-632431, executada pelo cliente CLI-2003 no valor de R$ 13.949,38, foi sinalizada pelo sistema devido à ocorrência concomitante de fatores anômalos. A operação ocorreu às 02h43 da madrugada em Salvador, BA, através de um caixa eletrônico e utilizando o 'dispositivo_desconhecido_B'. Esses elementos superam os limiares de controle estabelecidos, acionando alertas operacionais automáticos para verificação de segurança.\n\nA investigação secundária identificou que o perfil do remetente apresenta um desvio comportamental com score de 0.5, reforçando a anomalia em relação ao valor, ao horário e ao canal de acesso. Contudo, a análise encontra-se parcialmente limitada pela ausência de dados históricos abrangentes, como faixas de valores usuais, horários habituais e lista de dispositivos conhecidos do cliente CLI-2003. O recebedor CLI-1002, por sua vez, não possui registros prévios em redes de transações suspeitas.\n\nCom base na integração dos indicadores, o nível de risco foi determinado como médio, com urgência operacional proporcional. Recomenda-se a adoção de medidas cautelares para mitigar eventuais riscos de fraude, priorizando a checagem com o titular da conta e a revisão analítica aprofundada por parte da equipe de segurança, sem prejuízo da experiência do usuário legítimo."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Incomum em Horário de Madrugada (SIM-632431)",
+    "alert_message": "Foi detectada a transação SIM-632431 no valor de R$ 13.949,38, realizada às 02h43 a partir de um dispositivo desconhecido em Salvador, BA. A operação apresenta desvio comportamental de 0.5 e requer verificação proporcional de segurança.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T18:00:05.148692",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T18:00:08.888498"
+}

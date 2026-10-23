@@ -656,3 +656,208 @@ class TestDatasetAndSimulator:
         from app.simulator import generate_stream
         txs = list(generate_stream(total=10))
         assert len(txs) == 10
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 11. Executor de Ações e Fluxo de Aprovação Humana
+# ══════════════════════════════════════════════════════════════════════════════
+
+class TestActionExecutor:
+    def test_execute_action_returns_executed_or_failed(self):
+        from app.action_executor import execute_action
+        result = execute_action(
+            action_id="ACT-TEST01",
+            action_code="bloquear_conta_temporariamente",
+            case_id="CASE-001",
+            customer_id="CLI-001",
+            decided_by="analista_teste",
+        )
+        assert result["status"] in ("EXECUTED", "FAILED")
+        assert result["simulated"] is True
+        assert result["action_id"] == "ACT-TEST01"
+        assert result["decided_by"] == "analista_teste"
+        assert result["execution_note"] is not None
+
+    def test_reject_action_returns_rejected(self):
+        from app.action_executor import reject_action
+        result = reject_action(
+            action_id="ACT-TEST02",
+            action_code="monitorar",
+            case_id="CASE-001",
+            decided_by="analista_teste",
+            justification="Risco considerado aceitável.",
+        )
+        assert result["status"] == "REJECTED"
+        assert result["executed_at"] is None
+        assert "Risco considerado aceitável." in result["execution_note"]
+
+    def test_reject_without_justification(self):
+        from app.action_executor import reject_action
+        result = reject_action(
+            action_id="ACT-TEST03",
+            action_code="monitorar",
+            case_id="CASE-001",
+            decided_by="analista_teste",
+            justification=None,
+        )
+        assert result["status"] == "REJECTED"
+
+    def test_unknown_action_code_uses_default_response(self):
+        from app.action_executor import execute_action
+        result = execute_action(
+            action_id="ACT-TEST04",
+            action_code="acao_inexistente_xyz",
+            case_id="CASE-001",
+            customer_id="CLI-001",
+            decided_by="analista_teste",
+        )
+        assert result["status"] in ("EXECUTED", "FAILED")
+        assert result["execution_note"] is not None
+
+
+class TestActionStorage:
+    def test_save_and_list_action_results(self, tmp_path):
+        from app import case_storage
+        original = case_storage._CASES_DIR
+        case_storage._CASES_DIR = tmp_path
+        try:
+            result = {
+                "action_id": "ACT-001",
+                "case_id": "CASE-001",
+                "action_code": "bloquear_conta_temporariamente",
+                "status": "EXECUTED",
+                "decided_by": "analista_teste",
+                "decided_at": "2024-01-01T10:00:00",
+                "executed_at": "2024-01-01T10:00:01",
+                "execution_note": "Conta bloqueada. Ref: BLQ-001.",
+                "simulated": True,
+            }
+            case_storage.save_action_result("CASE-001", result)
+            actions = case_storage.list_action_results("CASE-001")
+            assert len(actions) == 1
+            assert actions[0]["action_id"] == "ACT-001"
+            assert actions[0]["status"] == "EXECUTED"
+            assert "_recorded_at" in actions[0]
+        finally:
+            case_storage._CASES_DIR = original
+
+    def test_list_actions_empty_when_none(self, tmp_path):
+        from app import case_storage
+        original = case_storage._CASES_DIR
+        case_storage._CASES_DIR = tmp_path
+        try:
+            actions = case_storage.list_action_results("CASE-NAO-EXISTE")
+            assert actions == []
+        finally:
+            case_storage._CASES_DIR = original
+
+    def test_multiple_actions_appended(self, tmp_path):
+        from app import case_storage
+        original = case_storage._CASES_DIR
+        case_storage._CASES_DIR = tmp_path
+        try:
+            for i in range(3):
+                case_storage.save_action_result("CASE-MULTI", {
+                    "action_id": f"ACT-{i:03d}",
+                    "case_id": "CASE-MULTI",
+                    "action_code": "monitorar",
+                    "status": "EXECUTED",
+                    "decided_by": "analista",
+                    "decided_at": "2024-01-01T10:00:00",
+                })
+            actions = case_storage.list_action_results("CASE-MULTI")
+            assert len(actions) == 3
+        finally:
+            case_storage._CASES_DIR = original
+
+    def test_list_cases_ignores_action_files(self, tmp_path):
+        from app import case_storage
+        original = case_storage._CASES_DIR
+        case_storage._CASES_DIR = tmp_path
+        try:
+            # Salva um caso e uma ação
+            case_storage.save_case("CASE-X", {
+                "case_id": "CASE-X",
+                "trace_id": "trace-x",
+                "transaction_id": "TX-X",
+                "agent_4_master": {"processing_status": "COMPLETED", "final_risk_score": 30},
+            })
+            case_storage.save_action_result("CASE-X", {
+                "action_id": "ACT-X",
+                "case_id": "CASE-X",
+                "action_code": "monitorar",
+                "status": "EXECUTED",
+                "decided_by": "analista",
+                "decided_at": "2024-01-01T10:00:00",
+            })
+            cases = case_storage.list_cases()
+            # Arquivo _actions.json não deve aparecer como caso
+            assert all(c["case_id"] != "CASE-X_actions" for c in cases)
+            assert len(cases) == 1
+        finally:
+            case_storage._CASES_DIR = original
+
+
+class TestAgent4SuggestedActions:
+    """Verifica que o Agente 4 gera suggested_actions estruturadas."""
+
+    def _risk_result_with_recs(self):
+        return {
+            "transaction_id": "TEST-S01",
+            "case_id": "CASE-001",
+            "risk_score": 72,
+            "risk_dimensions": {
+                "severity_level": "alto",
+                "severity_justification": "Múltiplos critérios.",
+                "priority_level": "alta",
+                "priority_justification": "Urgência alta.",
+                "confidence_score": 0.78,
+                "confidence_justification": "Dados suficientes.",
+            },
+            "recommendations": [
+                {"action_code": "solicitar_2fa_e_revisar", "description": "Solicitar 2FA.", "proportional": True},
+                {"action_code": "encaminhar_nivel2", "description": "Encaminhar Nível 2.", "proportional": True},
+            ],
+            "information_gaps": [],
+            "score_is_fallback": False,
+            "critical_evidence": [],
+            "refutation_points": [],
+        }
+
+    def test_suggested_actions_present(self):
+        from app.agents import agent_master
+        with patch("app.agents.agent_master.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result = agent_master.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, self._risk_result_with_recs(),
+                "CASE-001", "TRACE-001"
+            )
+        assert "suggested_actions" in result
+        assert len(result["suggested_actions"]) >= 1
+
+    def test_each_action_has_action_id(self):
+        from app.agents import agent_master
+        with patch("app.agents.agent_master.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result = agent_master.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, self._risk_result_with_recs(),
+                "CASE-001", "TRACE-001"
+            )
+        for action in result["suggested_actions"]:
+            assert "action_id" in action
+            assert action["action_id"].startswith("ACT-")
+            assert action["status"] == "PENDING"
+
+    def test_fallback_generates_at_least_one_action(self):
+        from app.agents import agent_master
+        risk_no_recs = {**self._risk_result_with_recs(), "recommendations": []}
+        with patch("app.agents.agent_master.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result = agent_master.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, risk_no_recs,
+                "CASE-001", "TRACE-001"
+            )
+        assert len(result["suggested_actions"]) >= 1

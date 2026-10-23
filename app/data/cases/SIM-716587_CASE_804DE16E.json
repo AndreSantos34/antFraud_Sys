@@ -1,0 +1,176 @@
+{
+  "case_id": "SIM-716587_CASE_804DE16E",
+  "trace_id": "804de16e-8cf6-49f3-8873-a6407cafd806",
+  "transaction_id": "SIM-716587",
+  "transaction": {
+    "transaction_id": "SIM-716587",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1002",
+    "amount": 19198.52,
+    "datetime": "2026-10-23T01:21:22.118463",
+    "location": "Tóquio, Japão",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-716587",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 19,198.52 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 19.198,52, que excede o limiar estabelecido, realizada em um horário incomum às 01h21. Além disso, a operação foi efetuada utilizando um smartphone desconhecido, o que reforça o perfil de risco da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-716587",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 19,198.52 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-716587",
+    "case_id": "SIM-716587_CASE_804DE16E",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado da transação (R$ 19.198.52) que excede o limiar padrão de R$ 5.000.00, combinando-se com múltiplos indicadores de anomalia comportamental.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada por um score de risco de 42/100 e pela confirmação de 3 critérios críticos (valor elevado, horário incomum e dispositivo desconhecido), exigindo checagem preventiva.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, visto que o histórico comportamental do cliente está ausente e há lacunas de dados cadastrais, embora os indicadores técnicos da transação atual estejam confirmados."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 19.198.52 excede o limiar de R$ 5.000.00.",
+      "Transação realizada às 01h21, fora do horário habitual.",
+      "Utilização de 'smartphone_desconhecido'."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental calculado em 0.50.",
+      "Canal de transação via app_mobile em localização internacional (Tóquio, Japão)."
+    ],
+    "weak_evidence": [
+      "O receptor (CLI-1002) não aparece em outras transações suspeitas conhecidas."
+    ],
+    "refutation_points": [
+      "Histórico típico de valores e horários do cliente está indisponível para comparação aprofundada.",
+      "Receiver_id ausente nas notas do receptor ('Dado não disponível')."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação realizada em dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente através de canal seguro antes de prosseguir com o monitoramento.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO",
+        "description": "Manter a transação em monitoramento intensivo devido aos indicadores de desvio comportamental.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível.",
+      "Faixa de valor típica do remetente não informada.",
+      "Horários e locais típicos do remetente não informados.",
+      "Dispositivos conhecidos do cliente não cadastrados.",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-716587",
+    "case_id": "SIM-716587_CASE_804DE16E",
+    "trace_id": "804de16e-8cf6-49f3-8873-a6407cafd806",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 19,198.52 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "Histórico do cliente indisponível.",
+        "Faixa de valor típica do remetente não informada.",
+        "Horários e locais típicos do remetente não informados.",
+        "Dispositivos conhecidos do cliente não cadastrados.",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-716587 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-716587 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-716587",
+    "alert_message": "Transação SIM-716587 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação realizada em dispositivo desconhecido.",
+      "Aguardar confirmação do cliente através de canal seguro antes de prosseguir com o monitoramento.",
+      "Manter a transação em monitoramento intensivo devido aos indicadores de desvio comportamental."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 500, model: gemini-3.5-flash-lite, description: Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 9h59m24.470974246s."
+    ],
+    "completed_at": "2026-10-23T18:01:46.609113",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T18:01:57.319946"
+}

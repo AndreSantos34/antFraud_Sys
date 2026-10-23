@@ -1,0 +1,186 @@
+{
+  "case_id": "SIM-852329_CASE_2769FEB2",
+  "trace_id": "2769feb2-b581-489c-80f0-b6be34e303f8",
+  "transaction_id": "SIM-852329",
+  "transaction": {
+    "transaction_id": "SIM-852329",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1002",
+    "amount": 9616.32,
+    "datetime": "2026-10-23T04:43:21.601302",
+    "location": "Porto Alegre, RS",
+    "channel": "internet_banking",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-852329",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 9,616.32 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 9.616,32 que excede o limiar estabelecido, somado à realização durante o horário incomum da madrugada às 04h. Além disso, a operação foi efetuada por meio de um dispositivo desconhecido, o que aumenta o risco analítico da operação.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-852329",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 9,616.32 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada no horário incomum das 04h combinada com o uso de um smartphone desconhecido",
+      "Valor elevado de R$ 9.616,32 associado a um dispositivo desconhecido e horário de madrugada"
+    ],
+    "correlated_events": [
+      "A transação de valor elevado (R$ 9.616,32) coincide com o horário incomum (04h43) e o uso de um dispositivo não reconhecido (smartphone_desconhecido)",
+      "O perfil de anomalias encontrou desvios relacionados ao valor acima do limiar de R$ 5.000,00, horário fora do habitual e dispositivo desconhecido"
+    ],
+    "investigation_summary": "A transação SIM-852329 do cliente CLI-2005 apresenta indicadores de risco devido ao valor elevado de R$ 9.616,32, ocorrência durante a madrugada (04:43) e utilização de um smartphone desconhecido. O desvio comportamental do remetente foi pontuado em 0.5, com anomalias confirmadas para valor, horário e dispositivo. A operação foi realizada via internet_banking a partir de Porto Alegre, RS.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Typical_amount_range do remetente",
+      "Typical_hours do remetente",
+      "Typical_locations do remetente",
+      "Known_devices do remetente",
+      "Histórico de transações do remetente",
+      "Receiver_notes do destinatário"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-852329",
+    "case_id": "SIM-852329_CASE_2769FEB2",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada devido ao valor elevado de R$ 9.616,32, que excede o limiar interno de R$ 5.000,00, associado a um dispositivo desconhecido e horário de madrugada.",
+      "priority_level": "media",
+      "priority_justification": "A prioridade é média pois a transação ocorreu em horário incomum (04:43) combinada com o uso de um smartphone desconhecido, exigindo atenção para mitigar riscos de desvio comportamental (score 0.5).",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada pelo fato de existirem dados parciais, com ausência de histórico consolidado de horários, locais e dispositivos conhecidos do remetente."
+    },
+    "critical_evidence": [
+      "Valor R$ 9.616,32 excede o limiar de R$ 5.000,00",
+      "Transação às 04h43 está fora do horário habitual",
+      "Uso de 'smartphone_desconhecido'"
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental do remetente pontuado em 0.5",
+      "Transação realizada via internet_banking a partir de Porto Alegre, RS"
+    ],
+    "weak_evidence": [
+      "Receiver_notes ausente para o destinatário CLI-1002"
+    ],
+    "refutation_points": [
+      "O recebedor CLI-1002 não aparece em outras transações suspeitas"
+    ],
+    "recommendations": [
+      {
+        "action_code": "REQUEST_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente",
+        "proportional": true
+      },
+      {
+        "action_code": "AWAIT_CLIENT_CONFIRMATION",
+        "description": "Aguardar confirmação do cliente sobre a realização da transação no canal internet_banking",
+        "proportional": true
+      },
+      {
+        "action_code": "INTENSIVE_MONITORING",
+        "description": "Manter em monitoramento intensivo o dispositivo smartphone_desconhecido",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Typical_amount_range do remetente",
+      "Typical_hours do remetente",
+      "Typical_locations do remetente",
+      "Known_devices do remetente",
+      "Histórico de transações do remetente",
+      "Receiver_notes do destinatário",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-852329",
+    "case_id": "SIM-852329_CASE_2769FEB2",
+    "trace_id": "2769feb2-b581-489c-80f0-b6be34e303f8",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "REQUEST_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 9,616.32 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "Typical_amount_range do remetente",
+        "Typical_hours do remetente",
+        "Typical_locations do remetente",
+        "Known_devices do remetente",
+        "Histórico de transações do remetente",
+        "Receiver_notes do destinatário",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-852329 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-852329 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-852329",
+    "alert_message": "Transação SIM-852329 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente",
+      "Aguardar confirmação do cliente sobre a realização da transação no canal internet_banking",
+      "Manter em monitoramento intensivo o dispositivo smartphone_desconhecido"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 41.025250537s."
+    ],
+    "completed_at": "2026-10-23T17:40:30.029253",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:40:40.650946"
+}

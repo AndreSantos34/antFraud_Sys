@@ -11,12 +11,14 @@ import uuid
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Depends, Query
 
 from app.models.schemas import (
+    ActionDecision,
+    ActionResult,
     AnalysisResponse,
     CaseSummary,
     IngestResponse,
     TransactionIn,
 )
-from app import orchestrator, case_storage
+from app import orchestrator, case_storage, action_executor
 from app.core.security import require_api_key
 from app.monitor import fraud_monitor
 
@@ -247,6 +249,146 @@ def stop_monitor():
 def monitor_stats():
     """Retorna contadores do monitor: transações processadas, escaladas e taxa."""
     return fraud_monitor.stats()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Fluxo de Aprovação Humana
+# ══════════════════════════════════════════════════════════════════════════════
+
+@router.post(
+    "/cases/{case_id}/actions/{action_id}/approve",
+    response_model=ActionResult,
+    summary="Aprova uma ação sugerida — executa via executor simulado",
+    dependencies=[Depends(require_api_key)],
+)
+def approve_action(case_id: str, action_id: str, body: ActionDecision):
+    """
+    O analista de cibersegurança aprova uma ação sugerida pelo Agente 4.
+
+    O backend:
+    1. Carrega o caso e localiza a ação pelo action_id.
+    2. Marca a ação como APPROVED.
+    3. Chama o executor (simulado no protótipo) para executar a ação.
+    4. Persiste o resultado da execução no histórico do caso.
+    5. Retorna o resultado completo para o frontend.
+    """
+    case = case_storage.load_case(case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Caso '{case_id}' não encontrado.")
+
+    # Localiza a ação nas sugestões do Agente 4
+    master = case.get("agent_4_master") or {}
+    suggested = master.get("suggested_actions", [])
+    action = next((a for a in suggested if a.get("action_id") == action_id), None)
+
+    if action is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Ação '{action_id}' não encontrada no caso '{case_id}'.",
+        )
+
+    if action.get("status") != "PENDING":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Ação '{action_id}' já foi processada (status: {action['status']}).",
+        )
+
+    customer_id = case.get("transaction", {}).get("customer_id", "desconhecido")
+
+    # Executa via executor simulado
+    result = action_executor.execute_action(
+        action_id=action_id,
+        action_code=action.get("action_code", "revisao_humana"),
+        case_id=case_id,
+        customer_id=customer_id,
+        decided_by=body.decided_by,
+    )
+
+    # Persiste o resultado
+    case_storage.save_action_result(case_id, result)
+
+    logger.info(
+        "[Actions] Ação %s aprovada por %s | case=%s | resultado=%s",
+        action_id, body.decided_by, case_id, result["status"],
+    )
+
+    return result
+
+
+@router.post(
+    "/cases/{case_id}/actions/{action_id}/reject",
+    response_model=ActionResult,
+    summary="Rejeita uma ação sugerida — registra decisão sem executar",
+    dependencies=[Depends(require_api_key)],
+)
+def reject_action(case_id: str, action_id: str, body: ActionDecision):
+    """
+    O analista de cibersegurança rejeita uma ação sugerida pelo Agente 4.
+
+    Nenhuma chamada ao banco é feita — apenas registra a decisão de rejeição
+    com o identificador do analista e justificativa opcional.
+    """
+    case = case_storage.load_case(case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Caso '{case_id}' não encontrado.")
+
+    master = case.get("agent_4_master") or {}
+    suggested = master.get("suggested_actions", [])
+    action = next((a for a in suggested if a.get("action_id") == action_id), None)
+
+    if action is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Ação '{action_id}' não encontrada no caso '{case_id}'.",
+        )
+
+    if action.get("status") != "PENDING":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Ação '{action_id}' já foi processada (status: {action['status']}).",
+        )
+
+    result = action_executor.reject_action(
+        action_id=action_id,
+        action_code=action.get("action_code", "revisao_humana"),
+        case_id=case_id,
+        decided_by=body.decided_by,
+        justification=body.justification,
+    )
+
+    case_storage.save_action_result(case_id, result)
+
+    logger.info(
+        "[Actions] Ação %s rejeitada por %s | case=%s",
+        action_id, body.decided_by, case_id,
+    )
+
+    return result
+
+
+@router.get(
+    "/cases/{case_id}/actions",
+    summary="Lista todas as decisões registradas para um caso",
+    dependencies=[Depends(require_api_key)],
+)
+def list_case_actions(case_id: str):
+    """Retorna o histórico completo de decisões (aprovações e rejeições) de um caso."""
+    case = case_storage.load_case(case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Caso '{case_id}' não encontrado.")
+
+    actions_history = case_storage.list_action_results(case_id)
+    master = (case.get("agent_4_master") or {})
+    suggested = master.get("suggested_actions", [])
+
+    return {
+        "case_id":          case_id,
+        "suggested_actions": suggested,
+        "decisions_history": actions_history,
+        "total_suggested":  len(suggested),
+        "total_decided":    len(actions_history),
+        "pending":          sum(1 for a in suggested if a.get("status") == "PENDING"),
+    }
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,186 @@
+{
+  "case_id": "SIM-854374_CASE_337DEF0C",
+  "trace_id": "337def0c-7c4a-4699-bd56-11bbf71e6244",
+  "transaction_id": "SIM-854374",
+  "transaction": {
+    "transaction_id": "SIM-854374",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1002",
+    "amount": 10691.25,
+    "datetime": "2026-10-23T04:26:47.611245",
+    "location": "Miami, EUA",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-854374",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 10,691.25 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 10.691.25 que excede o limiar estabelecido, somado à ocorrência em horário incomum às 04h26. Além disso, a operação foi realizada a partir de um dispositivo não reconhecido, aumentando o risco contextual.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-854374",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 10,691.25 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 10.691,25 cruza com o horário incomum (04h) e o uso de um dispositivo desconhecido.",
+      "O horário da transação (04h26) coincide com o alerta de que o horário está fora do padrão habitual (22h–6h)."
+    ],
+    "correlated_events": [
+      "A transação SIM-854374 foi realizada via internet_banking a partir de Miami, EUA, utilizando o 'dispositivo_desconhecido_B' em um horário atípico (04h26), excedendo o limiar de valor de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-854374, no valor de R$ 10.691,25, apresenta indicadores de risco como horário incomum (04h), localização em Miami, EUA, e utilização de um dispositivo desconhecido pelo cliente CLI-2004. O desvio comportamental foi pontuado em 0,5 e anomalias foram confirmadas para valor, horário e dispositivo. A análise é limitada pela ausência de histórico de transações anteriores e perfis típicos do remetente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Faixa de valor típica do remetente",
+      "Horários típicos do remetente",
+      "Localizações típicas do remetente",
+      "Dispositivos conhecidos do remetente",
+      "Histórico de transações do remetente",
+      "Notas do destinatário (receiver_notes)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-854374",
+    "case_id": "SIM-854374_CASE_337DEF0C",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado da transação (R$ 10.691,25), que supera o limiar de R$ 5.000,00, combinado com o uso de um canal digital (internet_banking) a partir de uma localização internacional (Miami, EUA).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada por um score de risco de 42/100, com confirmação de três critérios críticos: valor elevado, horário incomum (04h26) e utilização de um dispositivo desconhecido.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial (status de coleta de dados: parcial), limitada pela ausência de histórico comportamental prévio do cliente CLI-2004, como faixa de valor típica, horários, localizações e dispositivos conhecidos."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 10.691,25 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 04h26, fora do horário habitual.",
+      "Utilização do 'dispositivo_desconhecido_B', classificado como desconhecido para o cliente."
+    ],
+    "supporting_evidence": [
+      "Realização da transação via internet_banking a partir de Miami, EUA.",
+      "Desvio comportamental pontuado em 0,5 pelo sistema."
+    ],
+    "weak_evidence": [
+      "O receptor CLI-1002 não aparece em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "Dado não disponível — receiver_id ausente nas notas do destinatário.",
+      "Ausência de histórico de transações anteriores para confirmar o padrão de desvio do cliente."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente CLI-2004.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas atividades vinculadas ao dispositivo_desconhecido_B.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente através de canal seguro antes de prosseguir com validações adicionais.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Faixa de valor típica do remetente",
+      "Horários típicos do remetente",
+      "Localizações típicas do remetente",
+      "Dispositivos conhecidos do remetente",
+      "Histórico de transações do remetente",
+      "Notas do destinatário (receiver_notes)",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-854374",
+    "case_id": "SIM-854374_CASE_337DEF0C",
+    "trace_id": "337def0c-7c4a-4699-bd56-11bbf71e6244",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 10,691.25 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "Faixa de valor típica do remetente",
+        "Horários típicos do remetente",
+        "Localizações típicas do remetente",
+        "Dispositivos conhecidos do remetente",
+        "Histórico de transações do remetente",
+        "Notas do destinatário (receiver_notes)",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-854374 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-854374 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-854374",
+    "alert_message": "Transação SIM-854374 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente CLI-2004.",
+      "Manter em monitoramento intensivo as próximas atividades vinculadas ao dispositivo_desconhecido_B.",
+      "Aguardar confirmação do cliente através de canal seguro antes de prosseguir com validações adicionais."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 4.385329696s."
+    ],
+    "completed_at": "2026-10-23T17:50:06.766659",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:50:17.341798"
+}

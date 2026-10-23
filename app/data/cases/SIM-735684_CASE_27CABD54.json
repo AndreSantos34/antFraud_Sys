@@ -1,0 +1,183 @@
+{
+  "case_id": "SIM-735684_CASE_27CABD54",
+  "trace_id": "27cabd54-0236-4926-8bca-d880018af31d",
+  "transaction_id": "SIM-735684",
+  "transaction": {
+    "transaction_id": "SIM-735684",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1002",
+    "amount": 7050.31,
+    "datetime": "2026-10-23T02:55:19.593688",
+    "location": "Moscou, Rússia",
+    "channel": "caixa_eletronico",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-735684",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,050.31 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 7.050,31 e a realização em horário incomum às 02h da madrugada. Adicionalmente, a operação foi efetuada por meio de um dispositivo desconhecido, o que reforça o perfil de risco do evento.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-735684",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,050.31 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada de madrugada (02:55) combinada com o uso de um smartphone desconhecido e localização em Moscou, Rússia.",
+      "Valor elevado (R$ 7.050,31, excedendo o limiar de R$ 5.000,00) associado a um desvio comportamental e horário atípico."
+    ],
+    "correlated_events": [
+      "A transação SIM-735684 ocorreu em horário incomum (02h) a partir de um dispositivo desconhecido em Moscou, Rússia, coincidindo com as anomalias detectadas no perfil do remetente."
+    ],
+    "investigation_summary": "A transação SIM-735684 apresenta indicadores de risco relacionados ao valor elevado de R$ 7.050,31, ao horário incomum às 02h55 e ao uso de um smartphone desconhecido em Moscou, Rússia. O perfil do remetente CLI-2002 registra um desvio comportamental com score de 0.5 e anomalias confirmadas para estes mesmos critérios. A análise é limitada pela ausência de histórico de transações e dados típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-735684",
+    "case_id": "SIM-735684_CASE_27CABD54",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é classificado como médio devido ao valor elevado da transação (R$ 7.050,31), que supera o limiar de R$ 5.000,00, associado a um desvio comportamental moderado (score 0.5) do remetente e à realização em jurisdição internacional (Moscou, Rússia).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média baseada no score de risco de 42/100 e na confirmação de três critérios críticos (valor elevado, horário incomum às 02h55 e dispositivo desconhecido), exigindo atenção moderada da equipe de monitoramento.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, sustentada por anomalias claras no dispositivo, horário e valor, mas limitada pela ausência de dados históricos do cliente (faixa de valor típica, horários habituais, locais e dispositivos conhecidos)."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 7.050,31, excedendo o limiar de R$ 5.000,00.",
+      "Horário incomum às 02:55, fora do período habitual de transações.",
+      "Uso de um smartphone desconhecido a partir de Moscou, Rússia."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental do remetente CLI-2002 pontuado em 0.5.",
+      "Cruzamento de indicadores apontando combinação de madrugada, dispositivo desconhecido e localização internacional."
+    ],
+    "weak_evidence": [
+      "O receiver_id CLI-1002 não aparece em outras transações suspeitas, porém há ausência de notas detalhadas sobre o recebedor."
+    ],
+    "refutation_points": [
+      "O receiver_id não possui histórico de envolvimento em fraudes ou eventos suspeitos anteriores."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação devido ao uso de dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "ENCAMINHAR_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para reavaliar o contexto internacional e o desvio comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o acompanhamento.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-735684",
+    "case_id": "SIM-735684_CASE_27CABD54",
+    "trace_id": "27cabd54-0236-4926-8bca-d880018af31d",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-735684 possui o valor de R$ 7.050,31, superando o limiar de R$ 5.000,00.",
+        "A operação ocorreu no dia 2026-10-23 às 02:55:19 a partir de Moscou, Rússia.",
+        "O canal utilizado foi caixa_eletronico com o dispositivo 'smartphone_desconhecido'.",
+        "O remetente é o cliente CLI-2002 e o destinatário é o receptor CLI-1002.",
+        "O perfil do remetente registra um desvio comportamental com score de 0.5.",
+        "O receiver_id não possui histórico de envolvimento em fraudes."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de horário de madrugada, valor elevado e dispositivo desconhecido em jurisdição internacional indica um perfil de risco moderado.",
+        "É possível que a transação reflita uma tentativa de acesso não autorizado devido ao uso de um dispositivo não reconhecido.",
+        "Os dados sugerem que a ausência de histórico comportamental prévio limita a certeza sobre os hábitos normais de transação do cliente CLI-2002."
+      ],
+      "limitations": [
+        "Ausência de dados históricos do cliente, incluindo typical_amount_range, typical_hours, typical_locations e known_devices.",
+        "Falta de notas ou histórico detalhado sobre o receptor (receiver_notes).",
+        "Status de coleta de dados parcial, gerando um nível de confiança de 50% na análise."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido ao valor de R$ 7.050,31 superior ao limiar, ao horário atípico de madrugada em Moscou e ao uso de um dispositivo desconhecido, atenuado pela ausência de alertas prévios no receptor.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-735684, realizada em 23 de outubro de 2026, às 02h55, no valor de R$ 7.050,31. A operação foi originada em Moscou, Rússia, utilizando um caixa eletrônico e um 'smartphone_desconhecido'. A detecção inicial apontou o descumprimento de três critérios de segurança: valor acima do limiar de R$ 5.000,00, horário fora do padrão e uso de dispositivo não catalogado. Adicionalmente, o perfil do cliente CLI-2002 apresenta um desvio comportamental com score de 0.5.\n\nDurante a investigação, cruzou-se a transação de madrugada com a localização internacional e o dispositivo desconhecido. A IA infere que tais elementos aumentam a probabilidade de um evento de fraude ou acesso indevido por terceiros. Contudo, a análise encontra limitações relevantes devido à ausência de dados históricos do cliente, tais como faixa de valores habituais, horários típicos e locais frequentes, o que restringe a confiança da avaliação a 50%.\n\nDiante do score de risco de 42/100, avaliado como nível médio, recomenda-se cautela no monitoramento da conta e verificação por canais alternativos. A ausência de histórico de fraudes associado ao receptor CLI-1002 serve como fator de ponderação, mas não elimina a necessidade de checagem do contexto internacional e do desvio comportamental detectado no remetente."
+    },
+    "alert_subject": "Alerta SOC: Transação Atípica Internacional e Dispositivo Desconhecido (SIM-735684)",
+    "alert_message": "Foi identificada a transação SIM-735684 no valor de R$ 7.050,31 realizada às 02h55 em Moscou, Rússia, utilizando um smartphone desconhecido. O evento apresenta score de risco 42/100 e desvio comportamental no cliente CLI-2002.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:40:25.098477",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:40:28.464884"
+}

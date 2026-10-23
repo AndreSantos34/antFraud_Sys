@@ -1,0 +1,29 @@
+[
+  {
+    "action_id": "ACT-409-AA",
+    "case_id": "CASE-409-TEST",
+    "action_code": "monitorar",
+    "status": "EXECUTED",
+    "decided_by": "analista_teste",
+    "decided_at": "2026-10-23T17:59:23.387970",
+    "executed_at": "2026-10-23T17:59:23.387970",
+    "execution_note": "Conta incluída em fila de monitoramento padrão. Ref: MON-409-AA.",
+    "simulated": true,
+    "customer_id": "CLI-409",
+    "_recorded_at": "2026-10-23T17:59:23.388551"
+  },
+  {
+    "action_id": "ACT-409-AA",
+    "case_id": "CASE-409-TEST",
+    "action_code": "monitorar",
+    "description": "Conta incluída em fila de monitoramento padrão.",
+    "status": "EXECUTED",
+    "decided_by": "analista_teste",
+    "decided_at": "2026-10-23T18:00:31.969290",
+    "executed_at": "2026-10-23T18:00:31.969290",
+    "execution_note": "Conta incluída em fila de monitoramento padrão. Ref: MON-409-AA.",
+    "simulated": true,
+    "customer_id": "CLI-409",
+    "_recorded_at": "2026-10-23T18:00:31.969981"
+  }
+]

@@ -1,0 +1,178 @@
+{
+  "case_id": "SIM-704190_CASE_207C5F9C",
+  "trace_id": "207c5f9c-a9dc-4b85-823d-ce1e2b1acc54",
+  "transaction_id": "SIM-704190",
+  "transaction": {
+    "transaction_id": "SIM-704190",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1004",
+    "amount": 13167.75,
+    "datetime": "2026-10-23T01:33:35.889743",
+    "location": "São Paulo, SP",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-704190",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,167.75 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-704190",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,167.75 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1004",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Valor elevado de R$ 13.167,75 combinado com horário incomum às 01:33",
+      "Uso de dispositivo desconhecido durante horário considerado fora do habitual"
+    ],
+    "correlated_events": [
+      "Transação realizada no canal caixa_eletronico através do dispositivo_desconhecido_A fora do horário comercial às 01:33:35",
+      "Anomalias registradas simultaneamente para valor acima do limiar, horário noturno e dispositivo desconhecido"
+    ],
+    "investigation_summary": "A transação SIM-704190 apresenta indicadores de risco associados a valor elevado (R$ 13.167,75), execução em horário incomum (01:33) e utilização de um dispositivo desconhecido (dispositivo_desconhecido_A). O perfil comportamental do remetente registra desvio de score de 0.5 e confirma anomalias para estes três critérios. Não há histórico prévio de transações do remetente para estabelecer um padrão baseline de comparação.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "historical_transactions"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-704190",
+    "case_id": "SIM-704190_CASE_207C5F9C",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado da transação (R$ 13.167,75) que excede o limiar padrão de R$ 5.000,00, associado à ausência de dados históricos do cliente para consolidação de baseline.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média pois, embora existam múltiplos critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido), o score de risco geral situa-se em 42/100, exigindo atenção sem caráter de emergência crítica.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à falta de dados históricos sobre o comportamento do cliente (typical_amount_range, typical_hours, typical_locations e known_devices), limitando a precisão da análise de desvio."
+    },
+    "critical_evidence": [
+      "Valor de R$ 13.167,75 excede o limiar de R$ 5.000,00.",
+      "Transação realizada em horário incomum às 01:33.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_A)."
+    ],
+    "supporting_evidence": [
+      "Desvio de comportamento do remetente pontuado em 0.5.",
+      "Correlação temporal entre valor elevado, horário noturno e dispositivo desconhecido."
+    ],
+    "weak_evidence": [
+      "Canal de atendimento via caixa_eletronico sem maiores detalhamentos contextuais."
+    ],
+    "refutation_points": [
+      "Receiver_id CLI-1004 não aparece em outras transações suspeitas.",
+      "Dado não disponível para o histórico de transações passadas que poderiam justificar o perfil."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação realizada em horário incomum.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO",
+        "description": "Manter em monitoramento intensivo para coleta contínua de novos padrões comportamentais do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "historical_transactions"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-704190",
+    "case_id": "SIM-704190_CASE_207C5F9C",
+    "trace_id": "207c5f9c-a9dc-4b85-823d-ce1e2b1acc54",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-704190 no valor de R$ 13.167,75 foi realizada em 2026-10-23T01:33:35.889743.",
+        "O cliente remetente é CLI-2004 e o recebedor é CLI-1004.",
+        "A operação ocorreu no canal caixa_eletronico, a partir de São Paulo, SP, utilizando o dispositivo_desconhecido_A.",
+        "O perfil de simulação indica 'alto_valor_madrugada_dispositivo' e o score de risco calculado foi de 42/100, classificado como nível medio com urgência media.",
+        "Não há histórico prévio de transações, faixa de valores típicos, horários habituais, localizações ou dispositivos conhecidos para o cliente CLI-2004."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado com horário noturno e dispositivo não reconhecido sugere uma possível exposição a acessos não autorizados.",
+        "É possível que a ausência de histórico prévio reflita uma conta recém-criada ou um perfil sem uso anterior registrado na base.",
+        "Os dados sugerem que o desvio de comportamento identificado no canal de caixa eletrônico requer validação para confirmar a legitimidade da intenção do cliente."
+      ],
+      "limitations": [
+        "Ausência de dados históricos de transações passadas do cliente CLI-2004.",
+        "Falta de informações sobre faixa de valores típicos (typical_amount_range), horários habituais (typical_hours), localizações frequentes (typical_locations) e dispositivos conhecidos (known_devices)."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela combinação de valor expressivo (R$ 13.167,75) acima do limiar, execução na madrugada via dispositivo desconhecido e ausência total de histórico comportamental, limitando a precisão da análise de desvio.",
+      "full_narrative": "O presente relatório aborda a transação SIM-704190, realizada em 23 de outubro de 2026 às 01:33:35, no valor de R$ 13.167,75. A operação foi originada pelo cliente CLI-2004 com destino ao recebedor CLI-1004, utilizando o canal de caixa eletrônico na localidade de São Paulo, SP, através do dispositivo_desconhecido_A. A detecção inicial apontou múltiplos gatilhos de alerta, incluindo valor acima do limiar de R$ 5.000,00, horário fora do habitual e utilização de equipamento não catalogado previamente.\n\nA investigação de segundo nível correlacionou estes indicadores e evidenciou um desvio de comportamento com score de 0.5, embora tenha esbarrado em lacunas importantes de dados. O modelo de risco classificou a operação com score 42/100 (nível médio e urgência média), sustentado por uma confiança de 50% decorrente da falta de histórico transacional anterior para o cliente. O recebedor CLI-1004 não possui registros prévios em listas de outras transações suspeitas, o que pondera parcialmente a gravidade do cenário.\n\nDiante do exposto, o panorama analítico aponta para a necessidade de cautela no tratamento do evento. As deficiências de baseline impedem uma conclusão definitiva sobre a legitimidade do ato, tornando imperativa a adoção de medidas consultivas e de verificação adicional de identidade e intenção junto à base de atendimento."
+    },
+    "alert_subject": "Alerta SOC: Transação Atípica em Horário Noturno de Alto Valor - CLI-2004",
+    "alert_message": "Foi identificada a transação SIM-704190 no valor de R$ 13.167,75 realizada pelo cliente CLI-2004 às 01:33, utilizando um dispositivo desconhecido em canal de caixa eletrônico. A análise indica desvio comportamental com score de risco 42/100, agravado pela ausência de histórico prévio para estabelecimento de baseline.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:41:54.487289",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:41:58.009320"
+}

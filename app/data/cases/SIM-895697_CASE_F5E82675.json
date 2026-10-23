@@ -1,0 +1,159 @@
+{
+  "case_id": "SIM-895697_CASE_F5E82675",
+  "trace_id": "f5e82675-80ea-4fcf-8ac0-33c69e5e75ef",
+  "transaction_id": "SIM-895697",
+  "transaction": {
+    "transaction_id": "SIM-895697",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1004",
+    "amount": 11132.94,
+    "datetime": "2026-10-23T03:01:27.932586",
+    "location": "Curitiba, PR",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-895697",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 11,132.94 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 11.132,94, realizado em horário incomum às 03h01, e a utilização de um dispositivo desconhecido. Esses fatores em conjunto desviam-se do comportamento padrão esperado para o cliente.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-895697",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 11,132.94 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1004",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação (R$ 11.132,94) cruza com o horário incomum (03:01 da madrugada) e o uso de dispositivo desconhecido.",
+      "O perfil de simulação 'alto_valor_madrugada_dispositivo' reforça simultaneamente os critérios confirmados de valor elevado, horário incomum e dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-895697 foi realizada no canal 'app_mobile' utilizando o 'dispositivo_desconhecido_A' às 03:01:27, coincidindo com as anomalias detectadas no perfil do remetente."
+    ],
+    "investigation_summary": "A transação SIM-895697, no valor de R$ 11.132,94, apresenta indicadores de risco como horário incomum (03:01) e uso de dispositivo desconhecido para o cliente CLI-2002. O perfil de simulação confirma que a operação ocorreu sob o padrão 'alto_valor_madrugada_dispositivo', com desvio comportamental pontuado em 0.5. A análise aponta que o montante excede o limiar de R$ 5.000,00 estabelecido nas anomalias encontradas.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "Histórico do remetente (0 transações disponíveis)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-895697",
+    "case_id": "SIM-895697_CASE_F5E82675",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-895697",
+    "case_id": "SIM-895697_CASE_F5E82675",
+    "trace_id": "f5e82675-80ea-4fcf-8ac0-33c69e5e75ef",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-895697 no valor de R$ 11.132,94 foi realizada em 2026-10-23T03:01:27.932586 pelo cliente CLI-2002 para o recebedor CLI-1004.",
+        "A operação ocorreu no canal 'app_mobile' a partir da localização Curitiba, PR, utilizando o 'dispositivo_desconhecido_A'.",
+        "O perfil de simulação associado é 'alto_valor_madrugada_dispositivo'.",
+        "O valor excede o limiar de R$ 5.000,00 e o horário das 03h01 está fora do horário habitual (22h-6h).",
+        "O score de risco atribuído foi de 42/100, classificado como médio com urgência média e confiança de 50% devido à coleta parcial de dados."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e uso de dispositivo desconhecido desvia-se do comportamento padrão do cliente CLI-2002.",
+        "É possível que o acesso via 'dispositivo_desconhecido_A' represente uma nova sessão não reconhecida ou uma tentativa de fraude baseada no perfil de simulação.",
+        "Os dados sugerem que a operação possui características de risco moderado que exigem verificação detalhada do contexto da conta."
+      ],
+      "limitations": [
+        "Ausência de faixa de valores típicos (typical_amount_range) para o cliente.",
+        "Ausência de horários típicos (typical_hours) e locais habituais (typical_locations).",
+        "Ausência de lista de dispositivos conhecidos (known_devices) e histórico completo do remetente (0 transações disponíveis no escopo de comparação).",
+        "Indisponibilidade da LLM durante a avaliação de risco, resultando em justificativas geradas automaticamente."
+      ],
+      "risk_justification": "A transação apresenta um score de risco moderado (42/100) decorrente da cumulação de três critérios suspeitos: valor acima de R$ 5.000, horário de madrugada e uso de dispositivo desconhecido. A ausência de histórico comportamental limita a precisão da análise, justificando o monitoramento intensivo.",
+      "full_narrative": "O sistema detectou a transação SIM-895697, originada pelo cliente CLI-2002 no valor de R$ 11.132,94, destinada ao recebedor CLI-1004. A operação foi executada via aplicativo móvel a partir de Curitiba, PR, utilizando um equipamento classificado como 'dispositivo_desconhecido_A' no horário de 03:01 da manhã. Tais fatores ativaram três critérios de anomalia baseados no limiar de valor, horário atípico e na novidade do dispositivo empregado.\n\nA análise de investigação apontou um cenário de coleta parcial de dados, evidenciando a total ausência de histórico transacional anterior para o remetente, além de lacunas quanto às faixas habituais de valores, locais e horários do cliente. O perfil de simulação correspondente foi categorizado como 'alto_valor_madrugada_dispositivo', refletindo diretamente os indicadores observados e elevando o grau de cautela operacional.\n\nDiante desses elementos, o motor de risco consolidou um score de 42/100, classificando o evento como de nível médio e urgência moderada, com um índice de confiança de 50%. A recomendação analítica aponta para a necessidade de acompanhamento de perto da conta, respeitando as limitações de dados informadas e priorizando a validação por meio de canais seguros."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita com Dispositivo Desconhecido e Horário Atípico (SIM-895697)",
+    "alert_message": "Foi identificada a transação SIM-895697 no valor de R$ 11.132,94 em nome de CLI-2002, executada às 03:01 utilizando o 'dispositivo_desconhecido_A'. O evento apresenta score de risco médio (42/100) e requer acompanhamento imediato conforme os protocolos de monitoramento.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T18:00:55.450421",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T18:01:09.105025"
+}

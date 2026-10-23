@@ -1,0 +1,185 @@
+{
+  "case_id": "SIM-190793_CASE_26D303FE",
+  "trace_id": "26d303fe-84ee-4bdd-a46c-e130c5447d76",
+  "transaction_id": "SIM-190793",
+  "transaction": {
+    "transaction_id": "SIM-190793",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1005",
+    "amount": 7641.55,
+    "datetime": "2026-10-23T02:56:22.339990",
+    "location": "Brasília, DF",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-190793",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,641.55 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 7.641,55, que excede o limiar estabelecido, com a ocorrência em horário incomum às 02h da madrugada. Além disso, a operação foi realizada a partir de um dispositivo não reconhecido, elevando o risco contextual da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-190793",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,641.55 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1005",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 7.641,55 reforça o alerta de desvio comportamental, excedendo o limiar de R$ 5.000,00.",
+      "O horário da transação (02h56) coincide com o alerta de horário incomum (fora do intervalo 22h-6h)."
+    ],
+    "correlated_events": [
+      "A transação SIM-190793 ocorreu em Brasília, DF, utilizando um canal de caixa eletrônico com o dispositivo_desconhecido_B durante a madrugada, coincidindo com o perfil de simulação 'alto_valor_madrugada_dispositivo'."
+    ],
+    "investigation_summary": "A transação SIM-190793, no valor de R$ 7.641,55, apresenta indicadores de alto valor, horário incomum (02:56) e uso de dispositivo desconhecido. O perfil do remetente (CLI-2004) registra anomalias para esses três critérios e um desvio comportamental de 0,5. A operação foi realizada via caixa eletrônico em Brasília, DF, direcionada ao destinatário CLI-1005.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-190793",
+    "case_id": "SIM-190793_CASE_26D303FE",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada (score 42/100) devido à combinação de um valor elevado de R$ 7.641,55 (excedendo o limiar de R$ 5.000,00) com fatores contextuais atípicos, como o horário de madrugada (02h56) e a utilização de um dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo a necessidade de atenção devido ao desvio comportamental identificado (score de 0,5) e à ocorrência simultânea de múltiplos critérios de risco (valor, horário e dispositivo).",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada pois, embora existam três critérios confirmados de risco (valor_elevado, horario_incomum, dispositivo_desconhecido), há lacunas significativas de dados no perfil do remetente (como faixa de valor típica e horários habituais) e notas sobre o destinatário."
+    },
+    "critical_evidence": [
+      "O valor da transação de R$ 7.641,55 excede o limiar de R$ 5.000,00.",
+      "A transação foi realizada às 02h56, horário considerado incomum.",
+      "Uso do 'dispositivo_desconhecido_B', classificado como desconhecido para o remetente."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental calculado em 0,5 para o remetente CLI-2004.",
+      "A operação ocorreu via canal de caixa eletrônico em Brasília, DF, alinhada ao perfil de simulação de alto valor, madrugada e dispositivo."
+    ],
+    "weak_evidence": [
+      "O perfil de simulação indica o cenário 'alto_valor_madrugada_dispositivo', mas dados históricos granulares de comportamento do cliente estão ausentes."
+    ],
+    "refutation_points": [
+      "O destinatário CLI-1005 não aparece em outras transações suspeitas registradas.",
+      "O status de coleta de dados parcial indica ausência de histórico consolidado que confirme se o uso de caixa eletrônico em horários alternativos é totalmente atípico para o cliente."
+    ],
+    "recommendations": [
+      {
+        "action_code": "MONITOR_INTENSIVE",
+        "description": "Manter em monitoramento intensivo",
+        "proportional": true
+      },
+      {
+        "action_code": "AWAIT_CONFIRMATION",
+        "description": "Aguardar confirmação do cliente",
+        "proportional": true
+      },
+      {
+        "action_code": "REQ_2FA",
+        "description": "Solicitar autenticação adicional (2FA)",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-190793",
+    "case_id": "SIM-190793_CASE_26D303FE",
+    "trace_id": "26d303fe-84ee-4bdd-a46c-e130c5447d76",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "MONITOR_INTENSIVE",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-190793 possui o valor de R$ 7.641,55, superando o limiar de R$ 5.000,00.",
+        "A operação foi realizada no dia 2026-10-23 às 02:56:22 por meio do canal caixa_eletrônico.",
+        "Ocorre em Brasília, DF, utilizando o 'dispositivo_desconhecido_B'.",
+        "Envolve o remetente CLI-2004 e o destinatário CLI-1005.",
+        "O status de coleta de dados é parcial, com ausência de histórico consolidado como faixa de valor típica, horários habituais, localizações usuais, dispositivos conhecidos e notas sobre o destinatário."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada (02:56) e dispositivo desconhecido indica um perfil comportamental atípico para o cliente CLI-2004.",
+        "É possível que o uso do perfil de simulação 'alto_valor_madrugada_dispositivo' reflita um cenário de risco moderado (score 42/100).",
+        "Os dados sugerem que a ausência de alertas prévios sobre o destinatário CLI-1005 reduz a probabilidade de fraude direta conhecida, mas as lacunas de dados exigem cautela analítica."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range).",
+        "Ausência de horários habituais (typical_hours).",
+        "Ausência de localizações típicas (typical_locations).",
+        "Ausência de dispositivos conhecidos (known_devices).",
+        "Ausência de notas sobre o destinatário (receiver_notes)."
+      ],
+      "risk_justification": "O risco é classificado como médio (score 42/100) devido à sobreposição de três fatores atípicos confirmados: valor acima do limiar, horário de madrugada e dispositivo desconhecido, atenuado por lacunas de dados contextuais e pela ausência de histórico suspeito do destinatário.",
+      "full_narrative": "O presente relatório aborda a transação SIM-190793, realizada em 23 de outubro de 2026, às 02:56:22, no valor de R$ 7.641,55. A operação foi originada pelo cliente CLI-2004 e destinada a CLI-1005, utilizando o canal de caixa eletrônico localizado em Brasília, DF, a partir do 'dispositivo_desconhecido_B'. A detecção inicial identificou três critérios de suspeita, pontuando um desvio comportamental de 0,5 associado ao perfil de simulação de alto valor na madrugada.\n\nA análise investigativa revelou que, embora o valor exceda o limiar de R$ 5.000,00 e o horário escape da faixa habitual, há limitações importantes no pipeline de dados. O status de coleta parcial evidencia a ausência de informações vitais, como a faixa de valores típicos, histórico de horários, localizações usuais, lista de dispositivos conhecidos e notas sobre o destinatário. Tais lacunas reduzem a confiança da avaliação para 50%, impedindo uma conclusão definitiva sobre a ilegitimidade da conduta.\n\nDiante do escore de risco moderado (42/100) e da urgência média, estabelece-se a necessidade de cautela no tratamento analítico. A IA infere que a operação diverge do padrão esperado para o cliente, mas a falta de dados históricos consolidados reforça a recomendação de abordagens consultivas e de monitoramento intensivo, sem adotar medidas operacionais definitivas."
+    },
+    "alert_subject": "Alerta de Monitoramento - Transação Atípica em Horário de Madrugada (SIM-190793)",
+    "alert_message": "Foi detectada a transação SIM-190793 no valor de R$ 7.641,55, realizada às 02:56 em Brasília, DF, via caixa eletrônico e dispositivo desconhecido para o cliente CLI-2004. O score de risco calculado é de 42/100, fundamentado em desvio comportamental e múltiplos gatilhos contextuais.\n\nRecomenda-se o acompanhamento próximo do caso, considerando as lacunas de dados identificadas no histórico do cliente e a necessidade de verificação por canais seguros.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:53:27.891121",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:53:35.789267"
+}

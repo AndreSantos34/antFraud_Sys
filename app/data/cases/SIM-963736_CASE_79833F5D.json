@@ -1,0 +1,185 @@
+{
+  "case_id": "SIM-963736_CASE_79833F5D",
+  "trace_id": "79833f5d-3266-4be9-9bea-163b5b444dac",
+  "transaction_id": "SIM-963736",
+  "transaction": {
+    "transaction_id": "SIM-963736",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1001",
+    "amount": 6986.18,
+    "datetime": "2026-10-23T23:06:41.908000",
+    "location": "Goiânia, GO",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-963736",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 6,986.18 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação de R$ 6.986,18 excede o limiar de valor elevado e foi realizada às 23h, horário considerado incomum. Além disso, a operação ocorreu através de um dispositivo desconhecido, o que aumenta conjuntamente os indicadores de suspeita.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-963736",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 6,986.18 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação (R$ 6.986,18) cruza com o horário incomum (23:06:41) e o uso de dispositivo desconhecido.",
+      "O perfil de simulação 'alto_valor_madrugada_dispositivo' reforça simultaneamente os critérios confirmados de valor_elevado, horario_incomum e dispositivo_desconhecido."
+    ],
+    "correlated_events": [
+      "A transação foi realizada por um canal pix_automatico utilizando um dispositivo classificado como desconhecido_A fora do horário habitual.",
+      "O valor transacionado excede o limiar de R$ 5.000,00 estabelecido nas anomalias encontradas para o cliente CLI-2004."
+    ],
+    "investigation_summary": "A transação SIM-963736 apresenta indicadores de risco como valor elevado, horário noturno e utilização de um dispositivo desconhecido. O perfil de comportamento do remetente exibe um desvio com score de 0.5, com anomalias mapeadas para o valor, horário e dispositivo. Não há histórico prévio de transações e o perfil do destinatário possui notas limitadas. Tais fatores em conjunto apontam para desvios em relação a padrões operacionais típicos, embora nenhuma conclusão definitiva de fraude possa ser emitida.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "Histórico do remetente (0 transações disponíveis)",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-963736",
+    "case_id": "SIM-963736_CASE_79833F5D",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é médio, com score de risco de 42/100, impulsionado por um valor transacionado de R$ 6.986,18 que supera o limiar de R$ 5.000,00, além de ocorrer em horário noturno (23:06) e através de um dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média devido à combinação de múltiplos critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido) em um canal do tipo pix_automático.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de histórico prévio de transações do remetente e dados ausentes sobre o perfil do destinatário e padrões típicos."
+    },
+    "critical_evidence": [
+      "O valor de R$ 6.986,18 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 23:06, fora do horário habitual.",
+      "Utilização do 'dispositivo_desconhecido_A'."
+    ],
+    "supporting_evidence": [
+      "O perfil de comportamento do remetente exibe desvio com score de 0.5.",
+      "O perfil de simulação 'alto_valor_madrugada_dispositivo' reforça os critérios confirmados."
+    ],
+    "weak_evidence": [
+      "Canal pix_automatico utilizado na operação."
+    ],
+    "refutation_points": [
+      "Dado não disponível — receiver_id ausente nas notas do destinatário, sem indicação prévia em outras listas suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do dispositivo e do padrão comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo devido à ausência de histórico prévio de transações.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "Histórico do remetente (0 transações disponíveis)",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-963736",
+    "case_id": "SIM-963736_CASE_79833F5D",
+    "trace_id": "79833f5d-3266-4be9-9bea-163b5b444dac",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-963736 no valor de R$ 6.986,18 foi realizada em 2026-10-23T23:06:41.908000.",
+        "O remetente é o cliente CLI-2004 e o destinatário é CLI-1001.",
+        "A operação ocorreu por meio do canal pix_automatico, a partir de Goiânia, GO, utilizando o 'dispositivo_desconhecido_A'.",
+        "O histórico do remetente possui 0 transações disponíveis e o perfil de simulação aplicado é 'alto_valor_madrugada_dispositivo'."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário noturno e uso de dispositivo desconhecido indica um desvio comportamental potencial do cliente.",
+        "É possível que a ausência de histórico prévio de transações e a utilização de um dispositivo não mapeado reflitem uma nova conta ou o uso de um terminal não reconhecido pelo sistema.",
+        "Os dados sugerem que o perfil de risco moderado (score 42/100) decorre da sobreposição de múltiplos gatilhos de alerta sem confirmação prévia de fraude consumada."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range) para o cliente CLI-2004.",
+        "Falta de dados sobre horários e localizações habituais (typical_hours, typical_locations).",
+        "Ausência de lista de dispositivos conhecidos (known_devices).",
+        "Histórico do remetente zerado (0 transações disponíveis) e ausência de notas sobre o destinatário (receiver_notes)."
+      ],
+      "risk_justification": "A transação apresenta um nível de risco médio (score 42/100) devido à convergência de um valor acima do limiar padrão, horário noturno e o uso de um dispositivo desconhecido. A confiança na análise é restrita pela total ausência de histórico comportamental prévio do remetente e lacunas nos dados cadastrais e de dispositivos.",
+      "full_narrative": "O presente relatório analisa a transação SIM-963736, efetuada em 23 de outubro de 2026 às 23:06:41, no valor de R$ 6.986,18, originada pelo cliente CLI-2004 com destino a CLI-1001 através do canal pix_automatico na localidade de Goiânia, GO. A operação acionou alertas críticos por ultrapassar o limiar de R$ 5.000,00, ocorrer em horário noturno e ser executada a partir do 'dispositivo_desconhecido_A', alinhando-se ao perfil de simulação de alto risco.\n\nA investigação aprofundada identificou um desvio comportamental com score de anomalia de 0.5, embora o pipeline aponte limitações severas na coleta de dados, destacando a ausência completa de histórico transacional anterior para o remetente CLI-2004 e a falta de registros sobre dispositivos conhecidos ou padrões de horário habituais. Essa escassez de dados impede uma validação conclusiva de comportamento legítimo, sustentando um escore de risco moderado de 42/100 com grau de confiança parcial.\n\nDiante do cenário exposto, recomenda-se cautela operacional e o acionamento de protocolos de checagem suplementares para mitigar potenciais exposições financeiras. Nenhuma decisão de bloqueio ou aprovação direta deve ser tomada com base exclusiva nestes indicadores, sendo imperativa a validação humana e o contato seguro com o cliente para ratificar a autenticidade da ordem de pagamento."
+    },
+    "alert_subject": "Alerta de Monitoramento SOC: Transação Suspeita via Pix Automático (SIM-963736)",
+    "alert_message": "Foi identificada a transação SIM-963736 no valor de R$ 6.986,18, realizada por CLI-2004 às 23:06 utilizando o dispositivo_desconhecido_A em Goiânia, GO. A operação apresenta múltiplos indicadores de risco combinados com a ausência de histórico prévio do cliente.\n\nRecomenda-se o encaminhamento imediato para análise de Nível 2 e a adoção de protocolos de monitoramento intensivo para verificação aprofundada do perfil comportamental e autenticação do canal.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:42:05.237254",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:42:12.904912"
+}

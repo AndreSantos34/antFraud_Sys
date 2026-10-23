@@ -16,6 +16,7 @@ NÃO executa operações financeiras. Recomendações são estritamente consulti
 """
 import json
 import logging
+import uuid
 from datetime import datetime
 from typing import Any
 
@@ -119,6 +120,30 @@ def run(
     immediate_actions: list[str] = [r["description"] for r in recommendations]
     llm_report_ok = True
 
+    # Ações estruturadas com action_id — para o fluxo de aprovação humana
+    # Geradas a partir das recomendações do Agente 3 (determinísticas)
+    suggested_actions: list[dict] = [
+        {
+            "action_id":    f"ACT-{str(uuid.uuid4())[:8].upper()}",
+            "action_code":  r.get("action_code", "revisao_humana"),
+            "description":  r.get("description", "Revisão humana necessária."),
+            "risk_level":   risk_level,
+            "proportional": r.get("proportional", True),
+            "status":       "PENDING",
+        }
+        for r in recommendations
+    ]
+    # Garante ao menos uma ação sugerida mesmo sem recomendações do Agente 3
+    if not suggested_actions:
+        suggested_actions = [{
+            "action_id":    f"ACT-{str(uuid.uuid4())[:8].upper()}",
+            "action_code":  primary_action,
+            "description":  "Encaminhar caso para revisão humana de Nível 2.",
+            "risk_level":   risk_level,
+            "proportional": True,
+            "status":       "PENDING",
+        }]
+
     user_msg = (
         f"TIMESTAMP: {now}\n\n"
         f"TRANSAÇÃO:\n{json.dumps(transaction, ensure_ascii=False)}\n\n"
@@ -161,9 +186,13 @@ def run(
         full_narrative     = resp.get("full_narrative", full_narrative)
         alert_subject      = resp.get("alert_subject", alert_subject)
         alert_message      = resp.get("alert_message", alert_message)
-        llm_actions        = resp.get("immediate_actions", [])
+        llm_actions = resp.get("immediate_actions", [])
         if llm_actions:
             immediate_actions = llm_actions
+            # Enriquece as descrições das ações estruturadas com o texto do LLM
+            for i, action in enumerate(suggested_actions):
+                if i < len(llm_actions):
+                    action["description"] = llm_actions[i]
     except Exception as exc:
         logger.warning("[Agente4] LLM indisponível para relatório: %s", exc)
         llm_report_ok = False
@@ -198,9 +227,12 @@ def run(
             "risk_justification": risk_justification,
             "full_narrative":    full_narrative,
         },
-        "alert_subject":    alert_subject,
-        "alert_message":    alert_message,
+        "alert_subject":     alert_subject,
+        "alert_message":     alert_message,
         "immediate_actions": immediate_actions,
+        # Lista estruturada de ações aguardando aprovação humana
+        # Cada item tem action_id único para o frontend usar em approve/reject
+        "suggested_actions": suggested_actions,
         "pipeline_stages_completed": _stages_completed(detection_result, investigation_result, risk_result),
         "pipeline_errors":  errors,
         "completed_at":     now,

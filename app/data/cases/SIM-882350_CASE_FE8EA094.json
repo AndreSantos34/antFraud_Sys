@@ -1,0 +1,154 @@
+{
+  "case_id": "SIM-882350_CASE_FE8EA094",
+  "trace_id": "fe8ea094-dd50-4288-ae71-a874542f8a5d",
+  "transaction_id": "SIM-882350",
+  "transaction": {
+    "transaction_id": "SIM-882350",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1003",
+    "amount": 19103.54,
+    "datetime": "2026-10-23T02:35:04.053907",
+    "location": "Amsterdã, Holanda",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-882350",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 19,103.54 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-882350",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 19,103.54 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 19.103,54 cruza com o horário incomum das 02:35 da manhã.",
+      "O uso de um dispositivo desconhecido reforça a anomalia temporal e o desvio comportamental."
+    ],
+    "correlated_events": [
+      "A transação ocorreu em um local fora do padrão (Amsterdã, Holanda) coincidindo com o uso de um dispositivo desconhecido e fora do horário habitual.",
+      "O desvio comportamental pontuado em 0.5 correlaciona-se diretamente com as anomalias de valor, horário e dispositivo."
+    ],
+    "investigation_summary": "A transação SIM-882350 apresenta indicadores de risco como valor elevado de R$ 19.103,54, execução em horário incomum às 02:35 e utilização de um dispositivo desconhecido. O perfil do remetente CLI-2005 registra desvio comportamental com pontuação de 0.5 e anomalias confirmadas. A operação foi realizada via pix_automatico a partir de Amsterdã, Holanda, sem histórico prévio de transações disponível para o cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-882350",
+    "case_id": "SIM-882350_CASE_FE8EA094",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação.",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-882350",
+    "case_id": "SIM-882350_CASE_FE8EA094",
+    "trace_id": "fe8ea094-dd50-4288-ae71-a874542f8a5d",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 19,103.54 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "LLM indisponível — justificativas geradas automaticamente.",
+        "Histórico do cliente não disponível para comparação.",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-882350 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-882350 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-882350",
+    "alert_message": "Transação SIM-882350 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Manter em monitoramento intensivo e verificar histórico do cliente."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 500, model: gemini-3.5-flash-lite, description: Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 9h59m43.865359988s."
+    ],
+    "completed_at": "2026-10-23T18:01:27.255831",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T18:01:37.920908"
+}

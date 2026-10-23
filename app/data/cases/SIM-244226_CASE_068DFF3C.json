@@ -1,0 +1,187 @@
+{
+  "case_id": "SIM-244226_CASE_068DFF3C",
+  "trace_id": "068dff3c-ed96-465b-86ec-d959212c92a9",
+  "transaction_id": "SIM-244226",
+  "transaction": {
+    "transaction_id": "SIM-244226",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1001",
+    "amount": 12649.16,
+    "datetime": "2026-10-23T04:33:45.366652",
+    "location": "Recife, PE",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-244226",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 12,649.16 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 12.649,16, que excede o limiar estabelecido, somado à ocorrência em horário incomum às 04h33. Além disso, a operação foi realizada a partir de um dispositivo desconhecido, o que reforça o alerta de risco.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-244226",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 12,649.16 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 12.649,16 cruza com o horário incomum da madrugada às 04:33:45 e o uso de um dispositivo desconhecido.",
+      "O perfil de desvio comportamental confirma anomalias simultâneas de valor acima do limiar, horário e dispositivo."
+    ],
+    "correlated_events": [
+      "A transação SIM-244226 ocorreu fora do horário habitual (22h-6h) às 04:33, utilizando o canal de caixa eletrônico com o dispositivo 'dispositivo_desconhecido_B'."
+    ],
+    "investigation_summary": "A transação SIM-244226 no valor de R$ 12.649,16 apresenta indicadores de risco associados a valor elevado, horário incomum às 04:33 e uso de dispositivo desconhecido. O perfil do remetente CLI-2003 registra um desvio comportamental de 0.5 e anomalias confirmadas para o montante e horário. O destinatário CLI-1001 não possui histórico de aparição em outras transações suspeitas.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_notes — receiver_id ausente"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-244226",
+    "case_id": "SIM-244226_CASE_068DFF3C",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada devido ao valor elevado de R$ 12.649,16 que excede o limiar de R$ 5.000,00, embora o score de risco total seja 42/100 e o destinatário não possua histórico de outras transações suspeitas.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo a combinação de múltiplos fatores de risco simultâneos (valor elevado, horário da madrugada às 04:33 e dispositivo desconhecido) que requerem atenção em tempo hábil.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, fundamentada em dados concretos da transação e desvio comportamental de 0.5, mas limitada pela ausência de faixas típicas de valor, horários habituais, locais e histórico de dispositivos do cliente."
+    },
+    "critical_evidence": [
+      "O valor de R$ 12.649,16 excede o limiar de R$ 5.000,00.",
+      "A transação ocorreu às 04:33, horário considerado incomum.",
+      "Utilização do 'dispositivo_desconhecido_B', classificado como desconhecido."
+    ],
+    "supporting_evidence": [
+      "O perfil do remetente CLI-2003 registra um desvio comportamental de 0.5.",
+      "A transação foi realizada no canal de caixa eletrônico em Recife, PE."
+    ],
+    "weak_evidence": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours"
+    ],
+    "refutation_points": [
+      "O destinatário CLI-1001 não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente devido ao uso de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas operações associadas ao cliente CLI-2003.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental e do dispositivo utilizado.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_notes — receiver_id ausente"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-244226",
+    "case_id": "SIM-244226_CASE_068DFF3C",
+    "trace_id": "068dff3c-ed96-465b-86ec-d959212c92a9",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-244226 no valor de R$ 12.649,16 foi realizada em 2026-10-23T04:33:45.366652 pelo cliente CLI-2003 para o destinatário CLI-1001.",
+        "A operação ocorreu no canal caixa_eletronico, na localização Recife, PE, utilizando o dispositivo_desconhecido_B.",
+        "O valor de R$ 12.649,16 excede o limiar de R$ 5.000,00.",
+        "A transação ocorreu às 04h33, fora do horário habitual (22h-6h).",
+        "O perfil do remetente CLI-2003 registra um desvio comportamental de 0.5 e anomalias confirmadas para montante e horário.",
+        "O destinatário CLI-1001 não possui histórico de aparição em outras transações suspeitas.",
+        "O score de risco calculado foi de 42/100, classificado como nível médio com urgência média e confiança de 50%."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação simultânea de valor elevado, horário de madrugada e uso de dispositivo desconhecido indica um perfil de risco comportamental atípico.",
+        "É possível que o uso do dispositivo_desconhecido_B represente o primeiro acesso do cliente por este meio ou uma troca recente de equipamento.",
+        "Os dados sugerem que, apesar da ausência de histórico suspeito do destinatário CLI-1001, a operação requer verificação devido ao desvio comportamental do remetente."
+      ],
+      "limitations": [
+        "Dado não disponível — typical_amount_range",
+        "Dado não disponível — typical_hours",
+        "Dado não disponível — typical_locations",
+        "Dado não disponível — known_devices",
+        "Dado não disponível — receiver_notes — receiver_id ausente"
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela simultaneidade de valor elevado (R$ 12.649,16), horário de madrugada (04:33) e utilização de dispositivo desconhecido pelo cliente CLI-2003, mitigado parcialmente pela ausência de histórico suspeito do destinatário.",
+      "full_narrative": "O presente relatório aborda a transação SIM-244226, realizada pelo cliente CLI-2003 em favor de CLI-1001, no valor de R$ 12.649,16, por meio de um caixa eletrônico em Recife, PE. A operação acionou alertas de segurança devido a três fatores principais: o montante supera o limiar de R$ 5.000,00, a execução ocorreu às 04h33 (fora do horário habitual) e foi utilizado um terminal identificado como 'dispositivo_desconhecido_B'. A investigação constatou um desvio comportamental de 0.5 no perfil do remetente, confirmando anomalias de valor e horário.\n\nAs análises apontam que, embora o destinatário CLI-1001 não possua antecedentes em fraudes ou transações suspeitas, a conjunção de elementos atípicos eleva o nível de atenção para médio, resultando em um score de risco de 42/100 com 50% de confiança. A limitação informacional decorre da ausência de dados históricos detalhados sobre faixas típicas de valores, horários e locais habituais do cliente, o que restringe a precisão do modelo preditivo.\n\nDiante do cenário exposto, recomenda-se o encaminhamento do caso para verificação humana e o acionamento de protocolos de monitoramento, visando assegurar a integridade da operação sem adotar medidas operacionais restritivas automáticas."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica em Caixa Eletrônico (SIM-244226)",
+    "alert_message": "Foi identificada a transação SIM-244226 no valor de R$ 12.649,16, realizada às 04:33 em Recife, PE, utilizando um dispositivo desconhecido e apresentando desvio comportamental de 0.5. Recomenda-se a revisão humana e o acompanhamento intensivo das atividades do cliente CLI-2003.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:57:54.432917",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:57:57.926282"
+}

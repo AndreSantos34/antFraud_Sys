@@ -1,0 +1,188 @@
+{
+  "case_id": "SIM-993631_CASE_CD4DC580",
+  "trace_id": "cd4dc580-277b-423f-b890-192e27131b33",
+  "transaction_id": "SIM-993631",
+  "transaction": {
+    "transaction_id": "SIM-993631",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1002",
+    "amount": 6360.97,
+    "datetime": "2026-10-23T02:13:01.502896",
+    "location": "Miami, EUA",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-993631",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 6,360.97 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 6.360,97, que excede o limiar estabelecido, realizada durante a madrugada às 02h13. Além disso, a operação foi efetuada utilizando o dispositivo_desconhecido_A, reforçando o desvio do padrão habitual de comportamento.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-993631",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 6,360.97 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação ocorre simultaneamente com um horário incomum e o uso de um dispositivo desconhecido.",
+      "A anomalia temporal (02h) coincide com a utilização de um canal de caixa eletrônico e dispositivo não reconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-993631 apresentou desvio comportamental com pontuação de 0.5, acionando alertas para valor elevado (R$ 6.360,97 acima do limiar de R$ 5.000,00), horário fora do habitual e dispositivo desconhecido."
+    ],
+    "investigation_summary": "A transação SIM-993631, realizada no valor de R$ 6.360,97 via caixa eletrônico em Miami, EUA, apresenta indicadores de risco relacionados a valor elevado, horário incomum (02h13) e uso de dispositivo desconhecido. O perfil do remetente exibe um desvio comportamental de 0.5 e anomalias confirmadas para estes mesmos fatores. A análise é restrita pela ausência de dados históricos e padrões típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-993631",
+    "case_id": "SIM-993631_CASE_CD4DC580",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado da transação (R$ 6.360,97, que excede o limiar de R$ 5.000,00) associado a um canal físico (caixa eletrônico) em localidade internacional (Miami, EUA), exigindo cautela proporcional ao montante envolvido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo um score de 42/100 sustentado por múltiplos critérios confirmados (valor elevado, horário incomum às 02h13 e uso de dispositivo desconhecido), os quais exigem averiguação sem paralisar imediatamente o fluxo.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial. Embora existam três critérios comportamentais confirmados e anomalias claras, a análise é limitada pela ausência de dados históricos consolidados do cliente (faixa de valor típica, horários e locais habituais)."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 6.360,97, excedendo o limiar de R$ 5.000,00.",
+      "Horário da transação às 02h13, inserido no intervalo considerado fora do habitual.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_A)."
+    ],
+    "supporting_evidence": [
+      "Ocorrência simultânea de valor elevado, horário incomum e dispositivo desconhecido.",
+      "Desvio comportamental com pontuação de 0.5 registrado para o remetente.",
+      "Realização da transação via canal de caixa eletrônico em Miami, EUA."
+    ],
+    "weak_evidence": [
+      "Ausência de registro de que o recebedor (CLI-1002) aparece em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1002) não possui histórico associado a outras ocorrências suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação realizada em horário e dispositivo atípicos.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para reavaliar o desvio comportamental frente a novas informações do cliente.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente sobre a operação realizada no caixa eletrônico em Miami.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-993631",
+    "case_id": "SIM-993631_CASE_CD4DC580",
+    "trace_id": "cd4dc580-277b-423f-b890-192e27131b33",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-993631 foi realizada em 2026-10-23T02:13:01.502896 no valor de R$ 6.360,97.",
+        "O canal utilizado foi o caixa eletrônico na localização de Miami, EUA.",
+        "O dispositivo utilizado foi classificado como dispositivo_desconhecido_A.",
+        "O cliente remetente é CLI-2004 e o destinatário é CLI-1002.",
+        "O perfil de simulação associado é geo_suspeita_dispositivo_madrugada.",
+        "Foram atendidos 3 de 6 critérios de risco: valor superior a R$ 5.000,00, horário da madrugada (02h) e dispositivo desconhecido.",
+        "O recebedor CLI-1002 não possui histórico associado a outras ocorrências suspeitas."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de um valor elevado com horário incomum e dispositivo desconhecido aponta para um desvio comportamental moderado (score 42/100).",
+        "É possível que a transação tenha sido efetuada por um terceiro não autorizado ou em viagem, refletida pelo uso de caixa eletrônico em Miami e dispositivo desconhecido.",
+        "Os dados sugerem que o risco é de nível médio devido à ausência de dados históricos consolidados do cliente para validação cruzada."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range) do cliente CLI-2004.",
+        "Falta de dados sobre horários habituais (typical_hours) e locais usuais (typical_locations).",
+        "Ausência de lista de dispositivos conhecidos (known_devices).",
+        "Lacuna de notas sobre o recebedor (receiver_notes) e histórico completo do remetente."
+      ],
+      "risk_justification": "O risco foi avaliado como médio (score 42/100) devido ao valor de R$ 6.360,97 superar o limiar estipulado, ocorrendo em horário atípico (02h13) via canal físico internacional (caixa eletrônico em Miami, EUA) com um dispositivo desconhecido, exigindo cautela proporcional apesar da confiança parcial nas evidências.",
+      "full_narrative": "A transação SIM-993631, efetuada em 23 de outubro de 2026 às 02h13 pelo cliente CLI-2004, apresentou um montante de R$ 6.360,97 destinado a CLI-1002. A operação ocorreu em um caixa eletrônico localizado em Miami, EUA, utilizando o 'dispositivo_desconhecido_A'. Estes fatores resultaram no acionamento de três critérios de suspeita, englobando valor elevado, horário fora do habitual e o uso de um terminal não reconhecido.\n\nA análise de risco classificou a ocorrência com nível médio e score de 42/100, sustentada por um desvio comportamental de 0.5. A gravidade reside na combinação de um canal físico internacional com o horário de madrugada e o dispositivo atípico, embora o recebedor não possua histórico de fraudes anteriores. A confiança na análise permanece restrita em 50% devido à ausência de dados históricos consolidados do cliente remetente.\n\nDiante do cenário exposto, a operação requer acompanhamento e averiguação por parte das instâncias de segurança. Recomenda-se a adoção de procedimentos consultivos para confirmar a legitimidade da transação com o titular da conta, assegurando que o perfil de risco seja devidamente monitorado sem impactar indevidamente o fluxo operacional caso validado pelo cliente."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita em Caixa Eletrônico (Miami, EUA) - SIM-993631",
+    "alert_message": "Foi detectada a transação SIM-993631 no valor de R$ 6.360,97, realizada em Miami, EUA, através de um caixa eletrônico e um dispositivo desconhecido às 02h13. A operação apresenta múltiplos indicadores de risco, necessitando de acompanhamento intensivo e verificação de segurança.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:40:07.236829",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:40:10.751922"
+}

@@ -225,6 +225,49 @@ class MasterResult(BaseModel):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# Fluxo de Aprovação Humana
+# ══════════════════════════════════════════════════════════════════════════════
+
+class ActionStatus(str, Enum):
+    PENDING  = "PENDING"   # aguardando decisão do analista
+    APPROVED = "APPROVED"  # aprovada — execução solicitada ao banco
+    REJECTED = "REJECTED"  # rejeitada pelo analista
+    EXECUTED = "EXECUTED"  # confirmada pelo executor (simulado ou real)
+    FAILED   = "FAILED"    # executor retornou erro
+
+
+class SuggestedAction(BaseModel):
+    """Ação sugerida pelo Agente 4, aguardando aprovação humana."""
+    action_id:    str              # ex: "ACT-001"
+    action_code:  str              # ex: "bloquear_conta_temporariamente"
+    description:  str              # texto exibido ao analista no frontend
+    risk_level:   str              # nível de risco que motivou a sugestão
+    proportional: bool = True      # ação proporcional ao risco
+    status:       ActionStatus = ActionStatus.PENDING
+
+
+class ActionDecision(BaseModel):
+    """Decisão do analista sobre uma ação sugerida."""
+    decided_by:   str              # identificador do analista (ex: nome, ID)
+    decision:     str              # "approve" | "reject"
+    justification: str | None = None  # observação opcional do analista
+
+
+class ActionResult(BaseModel):
+    """Resultado do executor após aprovação de uma ação."""
+    action_id:      str
+    case_id:        str
+    action_code:    str
+    description:    str
+    status:         ActionStatus
+    decided_by:     str
+    decided_at:     str
+    executed_at:    str | None = None
+    execution_note: str | None = None   # resposta simulada ou real do banco
+    simulated:      bool = True         # True = executor simulado (protótipo)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # Resposta da API — Pipeline completo
 # ══════════════════════════════════════════════════════════════════════════════
 

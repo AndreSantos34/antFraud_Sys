@@ -1,0 +1,182 @@
+{
+  "case_id": "SIM-216981_CASE_6C8B2515",
+  "trace_id": "6c8b2515-060a-4724-a0e1-86dc0ef16466",
+  "transaction_id": "SIM-216981",
+  "transaction": {
+    "transaction_id": "SIM-216981",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1002",
+    "amount": 13247.29,
+    "datetime": "2026-10-23T01:20:03.774181",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-216981",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,247.29 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 13.247,29, que excede o limiar estabelecido, combinado com o horário incomum às 01:20 da madrugada. Além disso, a operação foi realizada utilizando um dispositivo desconhecido, elevando o risco do perfil comportamental observado.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-216981",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,247.29 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação de valor elevado (R$ 13.247,29) combinada com horário incomum (01h20) e uso de dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-216981 ocorreu na madrugada (01h20) utilizando o 'dispositivo_desconhecido_A' e apresentou desvio comportamental com score de 0.5."
+    ],
+    "investigation_summary": "A transação SIM-216981 no valor de R$ 13.247,29 apresenta indicadores de risco por ocorrer às 01h20, em Rio de Janeiro, RJ, utilizando o 'dispositivo_desconhecido_A'. O perfil do remetente CLI-2002 registra um score de desvio comportamental de 0.5 e anomalias confirmadas para valor, horário e dispositivo. Não há histórico de transações anteriores disponíveis para o remetente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-216981",
+    "case_id": "SIM-216981_CASE_6C8B2515",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada devido ao valor elevado da transação (R$ 13.247,29) que excede o limiar padrão de R$ 5.000,00, além de ocorrer em horário de madrugada (01h20) e com o uso de um dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada pelo score de risco de 42/100 e pela combinação de múltiplos indicadores atípicos simultâneos (valor, horário e dispositivo), embora a ausência de histórico completo limite a criticidade imediata.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada pelo fato de os três critérios de risco principais terem sido confirmados deterministicamente, mas limitada pela ausência de dados históricos de comportamento do cliente (faixa de valor típica, horários habituais e dispositivos conhecidos)."
+    },
+    "critical_evidence": [
+      "Transação de valor elevado (R$ 13.247,29) superior ao limiar de R$ 5.000,00.",
+      "Horário da transação às 01h20, considerado incomum para o perfil.",
+      "Uso de dispositivo não reconhecido ('dispositivo_desconhecido_A')."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental do remetente registrado em 0.5.",
+      "Transação realizada via canal app_mobile a partir de Rio de Janeiro, RJ."
+    ],
+    "weak_evidence": [
+      "O recebedor (CLI-1002) não aparece em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "O receiver_id não possui histórico de envolvimento em atividades suspeitas.",
+      "Não há indícios de fraude confirmados externamente para a conta."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do titular na transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente antes de prosseguir com o fluxo da operação.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-216981",
+    "case_id": "SIM-216981_CASE_6C8B2515",
+    "trace_id": "6c8b2515-060a-4724-a0e1-86dc0ef16466",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 13,247.29 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "typical_amount_range",
+        "typical_hours",
+        "typical_locations",
+        "known_devices",
+        "receiver_notes",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-216981 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-216981 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-216981",
+    "alert_message": "Transação SIM-216981 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a identidade do titular na transação.",
+      "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental.",
+      "Aguardar confirmação do cliente antes de prosseguir com o fluxo da operação."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 58.202563991s."
+    ],
+    "completed_at": "2026-10-23T17:41:12.852265",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:41:23.479894"
+}

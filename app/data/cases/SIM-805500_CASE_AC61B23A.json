@@ -1,0 +1,151 @@
+{
+  "case_id": "SIM-805500_CASE_AC61B23A",
+  "trace_id": "ac61b23a-a4ff-4a7c-a3eb-8fd1388e0cb9",
+  "transaction_id": "SIM-805500",
+  "transaction": {
+    "transaction_id": "SIM-805500",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1002",
+    "amount": 8944.17,
+    "datetime": "2026-10-23T01:23:25.726177",
+    "location": "Miami, EUA",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-805500",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 8,944.17 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 8.944,17, que excede o limite estabelecido, com a ocorrência em horário incomum às 01h23. Adicionalmente, a operação foi realizada a partir de um dispositivo não reconhecido ('dispositivo_desconhecido_A'), elevando o risco contextual da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-805500",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 8,944.17 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-805500",
+    "case_id": "SIM-805500_CASE_AC61B23A",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-805500",
+    "case_id": "SIM-805500_CASE_AC61B23A",
+    "trace_id": "ac61b23a-a4ff-4a7c-a3eb-8fd1388e0cb9",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-805500 no valor de R$ 8.944,17 foi realizada em 2026-10-23T01:23:25.726177.",
+        "A operação ocorreu na localização de Miami, EUA, utilizando o canal internet_banking e o dispositivo desconhecido_A.",
+        "O receptor da transação é o cliente CLI-1002 e o remetente é o cliente CLI-2004.",
+        "Três critérios de risco foram confirmados deterministicamente: valor elevado acima de R$ 5.000,00, horário incomum (01h) e uso de dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário atípico e dispositivo não reconhecido eleva o risco contextual da atividade, resultando em um score de risco de 42/100 classificado como médio.",
+        "É possível que o acesso via dispositivo desconhecido em horário inabitual indique uma tentativa de uso não autorizado da conta, embora o histórico completo não esteja disponível."
+      ],
+      "limitations": [
+        "Histórico do cliente indisponível para comparação de comportamento habitual.",
+        "LLM indisponível na etapa de investigação, resultando em síntese narrativa não gerada e status de coleta parcial.",
+        "Confiança da análise limitada a 50% devido à qualidade parcial dos dados."
+      ],
+      "risk_justification": "O risco médio (42/100) é justificado pela confirmação determinística de três indicadores críticos — valor elevado (R$ 8.944,17), horário incomum e dispositivo desconhecido —, mitigado parcialmente pela ausência do histórico do cliente que impede uma validação comportamental mais profunda.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-805500, no valor de R$ 8.944,17, executada por CLI-1004 com destino a CLI-1002 em 23 de outubro de 2026, às 01h23. A operação foi realizada via internet_banking a partir de Miami, EUA, utilizando um equipamento classificado como 'dispositivo_desconhecido_A'. Os dados coletados confirmam deterministicamente três critérios de alerta: o montante excede o limiar de R$ 5.000,00, o horário situa-se fora da janela habitual de atividade e o dispositivo utilizado não possui registro prévio de confiabilidade.\n\nA investigação automatizada apontou um score de desvio de 0.50 e classificou o risco global como médio (42/100), com um nível de confiança de 50%. A IA infere que a ocorrência simultânea desses fatores atípicos eleva consideravelmente a probabilidade de exposição a fraudes, sugerindo uma possível anomalia no padrão de acesso do cliente. No entanto, é importante ressaltar limitações significativas na análise, destacando-se a indisponibilidade do histórico comportamental do cliente e a indisponibilidade temporária de recursos LLM na etapa de investigação.\n\nDiante do cenário apresentado, recomenda-se a adoção de medidas cautelares e o acompanhamento de perto da conta envolvida. A ausência de dados históricos impede uma conclusão definitiva sobre a legitimidade da operação, tornando imprescindível a validação adicional por meio de canais seguros de verificação antes de qualquer finalização do processo de análise."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada (SIM-805500)",
+    "alert_message": "Foi identificada a transação SIM-805500 no valor de R$ 8.944,17 associada ao cliente CLI-2004, apresentando múltiplos indicadores de risco, incluindo valor elevado, horário atípico (01h) e uso de dispositivo desconhecido. O score de risco calculado foi de 42/100 (médio), com dados parciais e ausência de histórico do cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:59:48.276824",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:59:51.903218"
+}

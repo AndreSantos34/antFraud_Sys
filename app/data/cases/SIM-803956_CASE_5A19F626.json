@@ -1,0 +1,187 @@
+{
+  "case_id": "SIM-803956_CASE_5A19F626",
+  "trace_id": "5a19f626-3ea7-4d7d-bd82-21ddee7382b1",
+  "transaction_id": "SIM-803956",
+  "transaction": {
+    "transaction_id": "SIM-803956",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1001",
+    "amount": 5746.97,
+    "datetime": "2026-10-23T02:39:52.983294",
+    "location": "Amsterdã, Holanda",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-803956",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 5,746.97 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 5.746,97, que excede o limiar estabelecido, combinado com a realização durante a madrugada às 02h. Além disso, o uso do dispositivo_desconhecido_B reforça o alerta contextual sobre a operação. Dado não disponível.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-803956",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 5,746.97 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada em horário incomum (02:39) combinada com o uso de um dispositivo desconhecido",
+      "Valor elevado (R$ 5.746,97) associado a um desvio de comportamento com pontuação de 0.5"
+    ],
+    "correlated_events": [
+      "A transação SIM-803956 ocorreu em Amsterdã, Holanda, utilizando o canal pix_automatico através do dispositivo_desconhecido_B durante a madrugada",
+      "O valor da transação excede o limiar de R$ 5.000,00 e coincide com o horário classificado como fora do habitual"
+    ],
+    "investigation_summary": "A transação SIM-803956 no valor de R$ 5.746,97 apresenta indicadores de risco, incluindo valor elevado, horário incomum às 02h39 e utilização de um dispositivo desconhecido. O perfil do remetente CLI-2002 registra um desvio de comportamento com pontuação de 0.5 e anomalias confirmadas para os critérios mencionados. A operação foi efetuada via pix_automatico a partir de Amsterdã, Holanda.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Faixa de valor típica do remetente",
+      "Horários típicos do remetente",
+      "Localizações típicas do remetente",
+      "Dispositivos conhecidos do remetente",
+      "Histórico de transações do remetente",
+      "Notas do destinatário (receiver_notes)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-803956",
+    "case_id": "SIM-803956_CASE_5A19F626",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado de R$ 5.746,97, que excede o limiar de R$ 5.000,00, além de envolver o canal Pix automático a partir de uma localidade internacional (Amsterdã, Holanda) com um desvio de comportamento pontuado em 0.5.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média (score 42/100) sustentada pela ocorrência simultânea de múltiplos critérios confirmados: valor elevado, horário incomum de madrugada (02:39) e uso de dispositivo desconhecido.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada pois, embora existam anomalias claras confirmadas, há diversas lacunas de dados no perfil do remetente (como faixa de valor típica, horários, localizações e dispositivos conhecidos) e status de coleta parcial."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 5.746,97, excedendo o limiar de R$ 5.000,00",
+      "Operação executada em horário incomum às 02:39",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)"
+    ],
+    "supporting_evidence": [
+      "Desvio de comportamento com pontuação de 0.5 registrado para o cliente CLI-2002",
+      "Localização da transação em Amsterdã, Holanda",
+      "Canal utilizado: pix_automatico"
+    ],
+    "weak_evidence": [
+      "Dado não disponível — receiver_id ausente para notes do destinatário"
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1001) não aparece em outras transações suspeitas"
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação via Pix automático",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas operações do cliente CLI-2002",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental e geolocalização",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Faixa de valor típica do remetente",
+      "Horários típicos do remetente",
+      "Localizações típicas do remetente",
+      "Dispositivos conhecidos do remetente",
+      "Histórico de transações do remetente",
+      "Notas do destinatário (receiver_notes)"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-803956",
+    "case_id": "SIM-803956_CASE_5A19F626",
+    "trace_id": "5a19f626-3ea7-4d7d-bd82-21ddee7382b1",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-803956 no valor de R$ 5.746,97 foi realizada em 2026-10-23T02:39:52.983294 pelo cliente CLI-2002 para o recebedor CLI-1001.",
+        "A operação utilizou o canal pix_automatico, a partir de Amsterdã, Holanda, por meio do 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar de R$ 5.000,00 e o horário (02h39) está fora do habitual (22h–6h).",
+        "O perfil do remetente CLI-2002 registra desvio de comportamento com pontuação de 0.5.",
+        "O status de coleta de dados é parcial, com score de risco médio de 42/100 e confiança de 50%."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de horário de madrugada, valor elevado e dispositivo desconhecido pode indicar uma tentativa de acesso não autorizado ou uso indevido de credenciais.",
+        "É possível que a localização internacional em Amsterdã esteja associada ao uso de VPN ou viagem recente do titular, embora não haja dados históricos para confirmação.",
+        "Os dados sugerem que o desvio de comportamento pontuado em 0.5 reflete uma ruptura com o padrão operacional anterior do cliente."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica do remetente.",
+        "Ausência de horários e localizações típicas do remetente.",
+        "Ausência de dispositivos conhecidos e histórico de transações do remetente.",
+        "Ausência de notas do destinatário (receiver_notes)."
+      ],
+      "risk_justification": "O risco é classificado como médio (score 42/100) devido à convergência de um valor acima do limiar, horário de madrugada e dispositivo desconhecido internacional, mitigado parcialmente pela ausência de histórico suspeito do recebedor CLI-1001.",
+      "full_narrative": "A transação SIM-803956, executada pelo cliente CLI-2002 no valor de R$ 5.746,97, foi identificada com nível de risco médio (score 42/100). A operação ocorreu via pix_automatico a partir de Amsterdã, Holanda, utilizando o dispositivo_desconhecido_B durante a madrugada (02:39). Tais elementos superam limiares de alerta estabelecidos, como o valor superior a R$ 5.000,00 e o horário fora do padrão habitual.\n\nAdicionalmente, o perfil do remetente apresenta um desvio de comportamento pontuado em 0.5. A análise integrada aponta múltiplos critérios confirmados de anomalia, embora a confiança do modelo permaneça em 50% em virtude de lacunas informacionais importantes, como a ausência do histórico de transações, faixa de valores usuais, localizações e dispositivos previamente conhecidos do cliente CLI-2002.\n\nDiante do cenário exposto, recomenda-se cautela operacional e o acionamento de protocolos de checagem adicionais para mitigar possíveis fraudes baseadas em engenharia social ou invasão de conta, preservando a segurança do canal Pix automático sem interromper sumariamente a experiência do usuário."
+    },
+    "alert_subject": "Alerta SOC: Transação Pix Automático com Risco Médio e Anomalia Comportamental (SIM-803956)",
+    "alert_message": "Foi detectada a transação SIM-803956 no valor de R$ 5.746,97 originada em Amsterdã, Holanda, via dispositivo desconhecido e em horário de madrugada. O caso apresenta score de risco 42/100 e desvio de comportamento no perfil do cliente CLI-2002.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:46:58.553483",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:47:02.077145"
+}
