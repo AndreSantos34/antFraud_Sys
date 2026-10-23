@@ -124,20 +124,20 @@ def get_case(case_id: str):
 
 # ── Health ────────────────────────────────────────────────────────────────────
 
-@router.get("/health", summary="Health check da API, WatsonX e monitor")
+@router.get("/health", summary="Health check da API, Gemini e monitor")
 def health_check():
     from app.core.config import get_settings
     settings = get_settings()
-    watsonx_configured = bool(settings.watsonx_api_key and settings.watsonx_project_id)
+    gemini_configured = bool(settings.gemini_api_key)
     return {
         "status": "ok",
-        "watsonx_configured": watsonx_configured,
-        "watsonx_url": settings.watsonx_url,
+        "llm_provider": "Google Gemini",
+        "gemini_configured": gemini_configured,
         "agents": {
-            "agent_1": "ibm/granite-13b-instruct-v2 (temp=0.1)",
-            "agent_2": "ibm/granite-20b-multilingual (temp=0.4)",
-            "agent_3": "ibm/granite-34b-code-instruct (temp=0.35)",
-            "agent_4_master": "ibm/granite-34b-code-instruct (temp=0.55)",
+            "agent_1": f"{settings.gemini_model_agent1} (temp=0.1) — Análise de Risco",
+            "agent_2": f"{settings.gemini_model_agent2} (temp=0.4) — Investigação de Ameaças",
+            "agent_3": f"{settings.gemini_model_agent3} (temp=0.2) — Base de Dados e Evidências",
+            "agent_4_master": f"{settings.gemini_model_agent4} (temp=0.4) — IA Mestre",
         },
         "escalation_rule": "minimo_3_criterios",
         "dataset_loaded": True,

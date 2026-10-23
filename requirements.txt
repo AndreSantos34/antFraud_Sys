@@ -1,6 +1,4 @@
 # ── Framework web ─────────────────────────────────────────────────────────────
-# Nota: requer Python >= 3.8, <= 3.12 recomendado para compatibilidade
-# com pydantic-core (compilação nativa). Em Python 3.13+ use wheel pré-compilado.
 fastapi>=0.111.0
 uvicorn[standard]>=0.29.0
 
@@ -8,7 +6,7 @@ uvicorn[standard]>=0.29.0
 pydantic>=2.7.1
 pydantic-settings>=2.2.1
 
-# ── Requisições HTTP (WatsonX IAM + API) ─────────────────────────────────────
+# ── Requisições HTTP (Gemini API) ─────────────────────────────────────────────
 requests>=2.31.0
 
 # ── Variáveis de ambiente ─────────────────────────────────────────────────────

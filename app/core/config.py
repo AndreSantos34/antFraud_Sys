@@ -6,10 +6,13 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # ── WatsonX ──────────────────────────────────────────────────────────────
-    watsonx_api_key: str = ""
-    watsonx_project_id: str = ""
-    watsonx_url: str = "https://us-south.ml.cloud.ibm.com"
+    # ── Google Gemini ─────────────────────────────────────────────────────────
+    gemini_api_key: str = ""
+    # Modelos por agente — podem ser sobrescritos no .env
+    gemini_model_agent1: str = "gemini-3.8-flash"   # triagem rápida e determinística
+    gemini_model_agent2: str = "gemini-3.8-flash"   # investigação contextual
+    gemini_model_agent3: str = "gemini-3.8-flash"   # consolidação de evidências
+    gemini_model_agent4: str = "gemini-3.5-flash"   # IA Mestre — maior capacidade
 
     # ── API ───────────────────────────────────────────────────────────────────
     app_port: int = 8000
@@ -17,13 +20,10 @@ class Settings(BaseSettings):
     debug: bool = True
 
     # ── Monitor background ────────────────────────────────────────────────────
-    # Intervalo em segundos entre cada transação simulada
     monitor_interval_seconds: float = 2.0
-    # Inicia o monitor automaticamente junto com a API
     monitor_autostart: bool = True
 
     # ── Segurança ─────────────────────────────────────────────────────────────
-    # API Key para autenticar chamadas aos endpoints protegidos
     api_secret_key: str = "nuclea-dev-key-change-in-production"
 
     # ── Thresholds de detecção ────────────────────────────────────────────────

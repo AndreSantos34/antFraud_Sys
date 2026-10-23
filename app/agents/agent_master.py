@@ -2,36 +2,24 @@
 Agente 4 — IA Mestre (Master Intelligence)
 ────────────────────────────────────────────
 Responsabilidade: posição hierárquica superior aos Agentes 1, 2 e 3.
-Recebe os resultados consolidados dos 3 agentes e:
-  1. Calcula o Score de Risco final (0-100)
-  2. Determina o nível de urgência
-  3. Gera a mensagem de alerta formatada para envio imediato ao profissional
-     de Cybersecurity
+Calcula o Score de Risco final (0-100), determina a urgência e gera
+o alerta formatado para o profissional de Cybersecurity.
 
-Modelo: ibm/granite-34b-code-instruct (instância separada, parâmetros diferentes)
-Perfil: temperatura mais alta — linguagem clara, direta e urgente para
-        comunicação com equipe de segurança em tempo real.
+Modelo: gemini-1.5-pro
+Perfil: temperatura 0.4 — modelo mais capaz para síntese final e
+        geração de relatório claro e acionável em PT-BR.
 """
 import json
 import logging
 from datetime import datetime
 from typing import Any
 
-from app.core.watsonx_client import watsonx_client
+from app.core.gemini_client import gemini_client
+from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-MODEL_ID = "ibm/granite-34b-code-instruct"
-PARAMETERS = {
-    "decoding_method": "sample",
-    "max_new_tokens": 800,
-    "temperature": 0.55,         # balanceada: precisão no score + clareza na mensagem
-    "top_p": 0.92,
-    "top_k": 50,
-    "repetition_penalty": 1.08,
-}
-
-_SYSTEM_PROMPT = """Você é a IA Mestre de um sistema de prevenção de fraudes financeiras.
+_SYSTEM_PROMPT = """Você é a IA Mestre de um sistema de prevenção de fraudes financeiras da Núclea.
 Você está no topo da hierarquia e recebe os relatórios dos 3 agentes subordinados.
 
 Sua tarefa é FINAL e CRÍTICA:
@@ -40,7 +28,7 @@ Sua tarefa é FINAL e CRÍTICA:
 3. Gerar o ALERTA DE SEGURANÇA que será enviado IMEDIATAMENTE ao profissional de Cybersecurity
 
 ESCALA DE SCORE:
-  0-20:  Risco mínimo (não deveria chegar até aqui)
+  0-20:  Risco mínimo
   21-40: Risco baixo — monitorar
   41-60: Risco médio — investigação adicional recomendada
   61-80: Risco alto — ação preventiva imediata
@@ -52,58 +40,36 @@ FATORES QUE AUMENTAM O SCORE:
 - Indicadores cruzados (combinação de sinais)
 - Desvio comportamental elevado do remetente
 - Destinatário envolvido em outros casos suspeitos
-- Baixa qualidade/disponibilidade de dados (incerteza = risco maior)
+- Baixa qualidade de dados (incerteza = risco maior)
 
-FORMATO DO ALERTA: objetivo, urgente, sem jargão técnico excessivo.
+O ALERTA deve ser objetivo, urgente e em português do Brasil.
 Deve conter: quem, o quê, quando, onde, valor, por quê é suspeito e ação recomendada.
 
-Retorne APENAS um JSON válido:
-{{
+Retorne um objeto JSON com exatamente esta estrutura:
+{
   "transaction_id": "<id>",
-  "case_id": "<case_id do Agente 3>",
-  "risk_score": <0 a 100>,
-  "risk_level": "minimo" | "baixo" | "medio" | "alto" | "critico",
-  "urgency": "baixa" | "media" | "alta" | "maxima",
-  "score_breakdown": {{
-    "base_criteria_score": <pontos pelos critérios>,
-    "behavioral_deviation_score": <pontos pelo desvio comportamental>,
-    "evidence_quality_score": <pontos pela qualidade das evidências>,
-    "crossed_indicators_score": <pontos pelos indicadores cruzados>,
-    "confirmation_score": <pontos pela confirmação do Agente 3>
-  }},
-  "recommended_action": "monitorar" | "investigar" | "bloquear_preventivo" | "bloquear_imediato",
-  "cybersecurity_alert": {{
-    "subject": "⚠️ ALERTA DE FRAUDE — <nivel> — <transaction_id>",
-    "priority": "BAIXA" | "MÉDIA" | "ALTA" | "CRÍTICA",
-    "timestamp": "<ISO datetime>",
-    "message": "<mensagem completa e urgente para o profissional de Cybersecurity, 3-5 parágrafos>",
-    "immediate_actions": ["<ação imediata 1>", "<ação imediata 2>", ...],
-    "case_summary": "<resumo do caso em 2-3 frases para o cabeçalho do alerta>"
-  }},
+  "case_id": "<case_id>",
+  "risk_score": 87,
+  "risk_level": "critico",
+  "urgency": "maxima",
+  "score_breakdown": {
+    "base_criteria_score": 30,
+    "behavioral_deviation_score": 20,
+    "evidence_quality_score": 15,
+    "crossed_indicators_score": 12,
+    "confirmation_score": 10
+  },
+  "recommended_action": "bloquear_imediato",
+  "cybersecurity_alert": {
+    "subject": "⚠️ ALERTA DE FRAUDE — CRÍTICO — TXN-013",
+    "priority": "CRÍTICA",
+    "timestamp": "2024-06-10T02:37:00",
+    "message": "<mensagem completa e urgente para o profissional de Cybersecurity, 3-5 parágrafos em PT-BR>",
+    "immediate_actions": ["Bloquear transação imediatamente", "Contatar cliente via canal seguro"],
+    "case_summary": "<resumo do caso em 2-3 frases>"
+  },
   "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana."
-}}"""
-
-
-def _build_prompt(
-    transaction: dict[str, Any],
-    risk_result: dict[str, Any],
-    investigation_result: dict[str, Any],
-    evidence_result: dict[str, Any],
-) -> str:
-    tx_json = json.dumps(transaction, ensure_ascii=False, indent=2)
-    risk_json = json.dumps(risk_result, ensure_ascii=False, indent=2)
-    inv_json = json.dumps(investigation_result, ensure_ascii=False, indent=2)
-    ev_json = json.dumps(evidence_result, ensure_ascii=False, indent=2)
-    now = datetime.now().isoformat()
-    return (
-        f"{_SYSTEM_PROMPT}\n\n"
-        f"TIMESTAMP ATUAL: {now}\n\n"
-        f"TRANSAÇÃO:\n{tx_json}\n\n"
-        f"AGENTE 1 — ANÁLISE DE RISCO:\n{risk_json}\n\n"
-        f"AGENTE 2 — INVESTIGAÇÃO DE AMEAÇAS:\n{inv_json}\n\n"
-        f"AGENTE 3 — EVIDÊNCIAS CONSOLIDADAS:\n{ev_json}\n\n"
-        f"Calcule o score final e gere o alerta de Cybersecurity:"
-    )
+}"""
 
 
 def run(
@@ -115,27 +81,39 @@ def run(
     """
     Executa o Agente 4 — IA Mestre.
 
-    Args:
-        transaction:          Dados da transação.
-        risk_result:          Saída do Agente 1.
-        investigation_result: Saída do Agente 2.
-        evidence_result:      Saída do Agente 3.
-
     Returns:
         Dicionário com risk_score, risk_level, urgency, recommended_action
         e cybersecurity_alert pronto para envio.
     """
-    prompt = _build_prompt(transaction, risk_result, investigation_result, evidence_result)
+    settings = get_settings()
 
-    logger.info("[Agente4-Mestre] Calculando score de risco para %s", transaction.get("transaction_id"))
-    raw = watsonx_client.generate(MODEL_ID, prompt, PARAMETERS)
+    tx_json = json.dumps(transaction, ensure_ascii=False, indent=2)
+    risk_json = json.dumps(risk_result, ensure_ascii=False, indent=2)
+    inv_json = json.dumps(investigation_result, ensure_ascii=False, indent=2)
+    ev_json = json.dumps(evidence_result, ensure_ascii=False, indent=2)
+    now = datetime.now().isoformat()
+
+    user_msg = (
+        f"TIMESTAMP ATUAL: {now}\n\n"
+        f"TRANSAÇÃO:\n{tx_json}\n\n"
+        f"AGENTE 1 — ANÁLISE DE RISCO:\n{risk_json}\n\n"
+        f"AGENTE 2 — INVESTIGAÇÃO DE AMEAÇAS:\n{inv_json}\n\n"
+        f"AGENTE 3 — EVIDÊNCIAS CONSOLIDADAS:\n{ev_json}\n\n"
+        f"Calcule o score final e gere o alerta de Cybersecurity."
+    )
+
+    logger.info("[Agente4-Mestre] Calculando score para %s", transaction.get("transaction_id"))
 
     try:
-        start = raw.index("{")
-        end = raw.rindex("}") + 1
-        result = json.loads(raw[start:end])
-    except (ValueError, json.JSONDecodeError) as exc:
-        logger.warning("[Agente4-Mestre] Falha ao parsear JSON: %s | raw: %s", exc, raw)
+        result = gemini_client.generate_json(
+            model_id=settings.gemini_model_agent4,
+            system_prompt=_SYSTEM_PROMPT,
+            user_message=user_msg,
+            temperature=0.4,
+            max_output_tokens=1500,
+        )
+    except Exception as exc:
+        logger.warning("[Agente4-Mestre] Erro na chamada Gemini: %s", exc)
         tx_id = transaction.get("transaction_id", "UNKNOWN")
         result = {
             "transaction_id": tx_id,
@@ -156,17 +134,16 @@ def run(
                 "priority": "ALTA",
                 "timestamp": datetime.now().isoformat(),
                 "message": (
-                    f"ATENÇÃO: Transação {tx_id} foi sinalizada como suspeita com alto risco. "
-                    f"Houve erro no processamento do relatório completo. "
-                    f"Revisão humana imediata necessária.\n\n"
-                    f"Dados brutos: {str(transaction)[:300]}"
+                    f"ATENÇÃO: Transação {tx_id} sinalizada com alto risco. "
+                    f"Erro no processamento do relatório completo. "
+                    f"Revisão humana imediata necessária."
                 ),
                 "immediate_actions": [
                     "Revisar manualmente a transação",
                     "Verificar histórico do cliente",
                     "Acionar protocolo de segurança padrão",
                 ],
-                "case_summary": f"Erro de processamento na IA Mestre para {tx_id}. Revisão manual obrigatória.",
+                "case_summary": f"Erro de processamento para {tx_id}. Revisão manual obrigatória.",
             },
             "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana.",
         }
