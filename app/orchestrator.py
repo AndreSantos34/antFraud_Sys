@@ -38,6 +38,7 @@ from app.agents import (
     agent_master,
 )
 from app import case_storage
+from app.db import crud as db_crud
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +121,14 @@ def analyze_transaction(
             transaction.get("transaction_id"),
             risk.get("total_criteria_met", 0),
         )
+
+    # Persiste a transação no MySQL com a classificação final (best-effort)
+    # Executado para todas as transações, suspeitas ou normais.
+    db_crud.save_transaction({
+        **transaction,
+        "label": risk.get("classification"),
+        "reason": risk.get("justification"),
+    })
 
     return {
         "transaction_id": transaction.get("transaction_id"),

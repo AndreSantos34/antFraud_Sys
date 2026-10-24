@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     high_freq_max_tx: int = 3
     high_freq_window_min: int = 10
 
+    # ── Banco de dados MySQL ──────────────────────────────────────────────────
+    # Deixe vazio ("") para desabilitar MySQL e usar apenas arquivos JSON locais.
+    # Exemplo: mysql+pymysql://antfraud_user:SENHA@localhost:3306/antfraud_db
+    database_url: str = ""
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

@@ -13,3 +13,12 @@ requests>=2.31.0
 
 # ── Variáveis de ambiente ─────────────────────────────────────────────────────
 python-dotenv>=1.0.1
+
+# ── Banco de dados MySQL ──────────────────────────────────────────────────────
+# SQLAlchemy: ORM e gerenciamento de conexões
+sqlalchemy>=2.0.30
+# PyMySQL: driver MySQL puro-Python (sem dependência de biblioteca C)
+# Alternativa: mysqlclient (requer build tools no Windows — evitado aqui)
+pymysql>=1.1.0
+# cryptography: necessário para autenticação caching_sha2_password (MySQL 8.x padrão)
+cryptography>=42.0.0

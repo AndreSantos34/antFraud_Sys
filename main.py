@@ -26,6 +26,7 @@ from app.core.config import get_settings
 from app.routes.fraud import router as fraud_router
 from app.routes.websocket import router as ws_router
 from app.monitor import fraud_monitor
+from app.db.models import init_db
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -41,6 +42,12 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gerencia o ciclo de vida da aplicação."""
+    # Inicializa tabelas MySQL (CREATE TABLE IF NOT EXISTS — não destrói dados)
+    try:
+        init_db()
+    except Exception as exc:
+        logger.warning("⚠️  MySQL indisponível na inicialização: %s", exc)
+
     monitor_task = None
 
     if settings.monitor_autostart:

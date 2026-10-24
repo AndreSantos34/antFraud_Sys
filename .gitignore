@@ -1,0 +1,53 @@
+﻿# ── Credenciais e segredos ────────────────────────────────────────────────────
+# NUNCA versione o arquivo .env — ele contém chaves de API e senhas reais
+.env
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pyc
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+wheels/
+*.spec
+
+# ── Ambientes virtuais ────────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# ── IDEs e editores ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Testes e cobertura ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Dados gerados pela aplicação ──────────────────────────────────────────────
+# Os casos JSON gerados nao sao versionados (gerados em tempo de execucao)
+app/data/cases/
+
+# ── Sistema operacional ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
