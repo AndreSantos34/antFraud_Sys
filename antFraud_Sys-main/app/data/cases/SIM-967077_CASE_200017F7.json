@@ -1,0 +1,171 @@
+{
+  "case_id": "SIM-967077_CASE_200017F7",
+  "trace_id": "200017f7-bd8f-417e-8d55-ab31008bd30b",
+  "transaction_id": "SIM-967077",
+  "transaction": {
+    "transaction_id": "SIM-967077",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1003",
+    "amount": 13841.54,
+    "datetime": "2026-10-23T23:37:05.047027",
+    "location": "Fortaleza, CE",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-967077",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,841.54 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 13.841,54 e à ocorrência em horário incomum, às 23h37. Adicionalmente, a operação foi realizada a partir de um dispositivo desconhecido, o que reforça o perfil atípico da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-967077",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,841.54 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-967077",
+    "case_id": "SIM-967077_CASE_200017F7",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado devido ao valor elevado da transação (R$ 13.841,54), que excede o limiar padrão de R$ 5.000,00, representando uma exposição financeira relevante.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, pois foram confirmados três critérios de risco (valor elevado, horário incomum às 23h37 e uso de dispositivo desconhecido), exigindo atenção proporcional sem caráter de emergência crítica.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, visto que há lacunas importantes no histórico comportamental do cliente, embora os indicadores técnicos da transação estejam bem documentados."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 13.841,54 excede o limiar de R$ 5.000,00.",
+      "Transação realizada no horário de 23:37, considerado incomum.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental calculado em 0.5.",
+      "Canal utilizado é o internet_banking."
+    ],
+    "weak_evidence": [
+      "Localização informada como Fortaleza, CE, sem dados históricos para comparação."
+    ],
+    "refutation_points": [
+      "Receiver_id não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo devido à combinação de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente antes de prosseguir com novas etapas operacionais.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível.",
+      "Faixa de valor típica e horários habituais não informados.",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-967077",
+    "case_id": "SIM-967077_CASE_200017F7",
+    "trace_id": "200017f7-bd8f-417e-8d55-ab31008bd30b",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 13,841.54 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "Histórico do cliente indisponível.",
+        "Faixa de valor típica e horários habituais não informados.",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-967077 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-967077 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-967077",
+    "alert_message": "Transação SIM-967077 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação.",
+      "Manter em monitoramento intensivo devido à combinação de dispositivo desconhecido e horário incomum.",
+      "Aguardar confirmação do cliente antes de prosseguir com novas etapas operacionais."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 51.645255839s."
+    ],
+    "completed_at": "2026-10-23T17:47:19.413806",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:47:30.067174"
+}

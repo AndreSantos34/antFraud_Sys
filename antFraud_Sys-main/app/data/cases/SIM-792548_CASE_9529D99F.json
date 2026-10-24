@@ -1,0 +1,183 @@
+{
+  "case_id": "SIM-792548_CASE_9529D99F",
+  "trace_id": "9529d99f-440f-4a0f-8904-abc76a832f2b",
+  "transaction_id": "SIM-792548",
+  "transaction": {
+    "transaction_id": "SIM-792548",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1001",
+    "amount": 7426.15,
+    "datetime": "2026-10-23T03:34:43.600411",
+    "location": "São Paulo, SP",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-792548",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,426.15 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 7.426,15, que excede o limiar estabelecido, e a realização da operação em horário incomum durante a madrugada, às 03h. Adicionalmente, a operação foi efetuada por meio de um dispositivo desconhecido, o que reforça o perfil de risco da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-792548",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,426.15 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada no horário incomum das 03:34 com um dispositivo desconhecido (smartphone_desconhecido)",
+      "Valor elevado de R$ 7.426,15 associado a um dispositivo desconhecido"
+    ],
+    "correlated_events": [
+      "A transação SIM-792548 ocorreu de madrugada (03:34) utilizando um smartphone desconhecido, coincidindo com as anomalias detectadas no perfil do remetente",
+      "O valor de R$ 7.426,15 excede o limiar de R$ 5.000,00 e coincide com o perfil de simulação 'alto_valor_madrugada_dispositivo'"
+    ],
+    "investigation_summary": "A transação SIM-792548, no valor de R$ 7.426,15, apresenta indicadores de risco devido ao seu valor elevado, horário incomum às 03:34 e utilização de um smartphone desconhecido. O perfil do remetente CLI-2005 registra um desvio comportamental de 0.5 e anomalias correlacionadas com esses critérios. O perfil do destinatário e o histórico do remetente contêm lacunas informacionais que limitam uma visão contextual mais ampla.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-792548",
+    "case_id": "SIM-792548_CASE_9529D99F",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado, pois a transação envolve um valor elevado de R$ 7.426,15 (acima do limiar de R$ 5.000,00), o que representa exposição financeira relevante, embora o score geral seja de 42/100 classificado como nível médio.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, fundamentada na ocorrência simultânea de múltiplos indicadores de risco, como horário incomum (madrugada às 03:34) e uso de dispositivo desconhecido, exigindo atenção proporcional sem caráter de bloqueio imediato.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial (status de coleta parcial), sustentada por regras determinísticas claras (valor elevado, horário incomum, dispositivo desconhecido), mas limitada por lacunas informacionais importantes no histórico do cliente (como faixa de valor típica e horários habituais)."
+    },
+    "critical_evidence": [
+      "Valor da transação de R$ 7.426,15 excede o limiar de R$ 5.000,00.",
+      "Transação realizada no horário incomum de 03:34, fora do padrão habitual.",
+      "Utilização de dispositivo desconhecido (smartphone_desconhecido)."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental de 0.5 registrado no perfil do remetente CLI-2005.",
+      "Indicadores cruzados conectando horário incomum e dispositivo desconhecido."
+    ],
+    "weak_evidence": [
+      "Perfil de simulação 'alto_valor_madrugada_dispositivo' associado ao teste da transação."
+    ],
+    "refutation_points": [
+      "O destinatário CLI-1001 não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a autorização da transação pelo cliente.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta em monitoramento intensivo para novas operações atípicas.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-792548",
+    "case_id": "SIM-792548_CASE_9529D99F",
+    "trace_id": "9529d99f-440f-4a0f-8904-abc76a832f2b",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-792548 no valor de R$ 7.426,15 foi realizada em 2026-10-23T03:34:43.600411 pelo canal app_mobile.",
+        "O remetente é o cliente CLI-2005 e o destinatário é o cliente CLI-1001.",
+        "A localização informada é São Paulo, SP, utilizando um dispositivo classificado como smartphone_desconhecido.",
+        "O perfil de simulação associado é alto_valor_madrugada_dispositivo.",
+        "O valor de R$ 7.426,15 excede o limiar de R$ 5.000,00.",
+        "A transação ocorreu às 03:34, fora do horário habitual (22h–6h).",
+        "O perfil do remetente CLI-2005 registra um desvio comportamental de 0.5.",
+        "O status da coleta de dados é parcial, com ausência de informações sobre typical_amount_range, typical_hours, typical_locations, known_devices e receiver_notes."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e dispositivo desconhecido reflete anomalias comportamentais no perfil do remetente CLI-2005.",
+        "É possível que o uso do smartphone desconhecido indique uma tentativa de acesso não autorizado ou a troca de aparelho pelo cliente legítimo.",
+        "Os dados sugerem que o perfil de simulação 'alto_valor_madrugada_dispositivo' correlaciona-se diretamente com os riscos identificados, embora o score de risco seja moderado (42/100)."
+      ],
+      "limitations": [
+        "Dado não disponível — typical_amount_range",
+        "Dado não disponível — typical_hours",
+        "Dado não disponível — typical_locations",
+        "Dado não disponível — known_devices",
+        "Dado não disponível — receiver_notes"
+      ],
+      "risk_justification": "O risco é classificado como médio (score 42/100) devido ao valor de R$ 7.426,15 acima do limiar, combinado com o horário de madrugada (03:34) e o uso de dispositivo desconhecido. A confiança na análise é de 50% em virtude das lacunas informacionais no histórico do cliente.",
+      "full_narrative": "A transação SIM-792548, no valor de R$ 7.426,15, foi efetuada pelo cliente CLI-2005 em direção ao destinatário CLI-1001 na data de 23 de outubro de 2026, às 03:34, por meio do aplicativo móvel em São Paulo, SP. A operação acionou alertas de segurança por exceder o limiar estabelecido de R$ 5.000,00, ocorrer durante o período da madrugada e utilizar um dispositivo identificado como smartphone_desconhecido. O perfil de simulação indica o comportamento de 'alto_valor_madrugada_dispositivo'.\n\nA investigação secundária apontou um desvio comportamental de 0.5 para o remetente, além de correlações entre o horário atípico e o uso do novo dispositivo. No entanto, a análise enfrenta limitações informacionais significativas, pois dados essenciais como faixa de valor típica, horários habituais, locais frequentes e dispositivos conhecidos do cliente não estão disponíveis, resultando em um status de coleta parcial e um nível de confiança de 50%.\n\nDiante desses elementos, o risco foi consolidado em nível médio com score de 42/100. A gravidade da exposição financeira é moderada, exigindo atenção proporcional e validações adicionais com o cliente, mantendo-se a cautela necessária para evitar impactos operacionais indevidos enquanto o monitoramento é intensificado."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita com Dispositivo Desconhecido e Horário Atípico (SIM-792548)",
+    "alert_message": "Foi identificada a transação SIM-792548 no valor de R$ 7.426,15 realizada pelo cliente CLI-2005 às 03:34 utilizando um smartphone desconhecido em São Paulo, SP. A operação apresenta múltiplos indicadores de risco, incluindo valor acima do limiar e horário de madrugada.\n\nRecomenda-se o encaminhamento para revisão humana e validação por canal seguro, mantendo a conta sob monitoramento intensivo devido à ausência de dados históricos completos.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:49:52.512401",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:49:56.434316"
+}

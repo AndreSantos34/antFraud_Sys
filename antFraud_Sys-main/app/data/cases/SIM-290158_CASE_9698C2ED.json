@@ -1,0 +1,181 @@
+{
+  "case_id": "SIM-290158_CASE_9698C2ED",
+  "trace_id": "9698c2ed-1546-43fd-8123-6f0717d39b75",
+  "transaction_id": "SIM-290158",
+  "transaction": {
+    "transaction_id": "SIM-290158",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1004",
+    "amount": 9015.55,
+    "datetime": "2026-10-23T03:57:01.768228",
+    "location": "Tóquio, Japão",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-290158",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 9,015.55 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 9.015,55, que excede o limiar estabelecido, e a ocorrência em horário incomum às 03h57. Adicionalmente, a operação foi realizada por meio de um dispositivo desconhecido, o que reforça o alerta para análise contextual.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-290158",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 9,015.55 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1004",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 9.015,55 (excedendo o limiar de R$ 5.000,00) ocorre simultaneamente com o horário incomum às 03h (fora do horário habitual de 22h-6h) e o uso de um dispositivo desconhecido ('smartphone_desconhecido')."
+    ],
+    "correlated_events": [
+      "A transação SIM-290158 apresenta desvio comportamental com score de 0.5, originada no canal app_mobile a partir de uma localização em Tóquio, Japão, utilizando um dispositivo não reconhecido pelo perfil do remetente."
+    ],
+    "investigation_summary": "A transação SIM-290158 no valor de R$ 9.015,55, realizada em 2026-10-23 às 03:57 a partir de Tóquio, Japão, apresenta indicadores de risco como valor elevado, horário incomum e uso de dispositivo desconhecido. O perfil do remetente (CLI-2001) registra um score de desvio comportamental de 0.5 e anomalias correspondentes a esses critérios. O receptor (CLI-1004) não possui histórico em outras transações suspeitas.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — histórico de transações anteriores do remetente"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-290158",
+    "case_id": "SIM-290158_CASE_9698C2ED",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é classificado como médio devido ao valor elevado da transação de R$ 9.015,55, que excede o limiar de segurança de R$ 5.000,00, somado à ocorrência simultânea de horário incomum e dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média com base no score de risco de 42/100 e no desvio comportamental moderado (0.5), exigindo atenção sem caracterizar uma emergência iminente.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, pois embora existam múltiplos indicadores comportamentais confirmados, há lacunas significativas de dados históricos do cliente, como faixa típica de valores e horários."
+    },
+    "critical_evidence": [
+      "Valor elevado de R$ 9.015,55 excedendo o limiar de R$ 5.000,00",
+      "Transação realizada às 03:57, fora do horário habitual",
+      "Uso de 'smartphone_desconhecido' não reconhecido pelo perfil do remetente"
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com score de 0.5 registrado para o cliente CLI-2001",
+      "Origem da transação a partir de Tóquio, Japão via canal app_mobile"
+    ],
+    "weak_evidence": [
+      "Coleta de dados classificada como parcial pelo agente de investigação"
+    ],
+    "refutation_points": [
+      "O receptor (CLI-1004) não possui histórico em outras transações suspeitas"
+    ],
+    "recommendations": [
+      {
+        "action_code": "REQ_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do remetente devido ao uso de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITOR_INT",
+        "description": "Manter em monitoramento intensivo as próximas atividades associadas ao cliente CLI-2001.",
+        "proportional": true
+      },
+      {
+        "action_code": "LEVEL_2_REVIEW",
+        "description": "Encaminhar para análise Nível 2 para reavaliar o desvio comportamental frente a novas informações.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — histórico de transações anteriores do remetente",
+      "LLM indisponível — relatório executivo gerado automaticamente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-290158",
+    "case_id": "SIM-290158_CASE_9698C2ED",
+    "trace_id": "9698c2ed-1546-43fd-8123-6f0717d39b75",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "REQ_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "Valor R$ 9,015.55 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ],
+      "ai_hypotheses": [],
+      "limitations": [
+        "Dado não disponível — typical_amount_range",
+        "Dado não disponível — typical_hours",
+        "Dado não disponível — typical_locations",
+        "Dado não disponível — known_devices",
+        "Dado não disponível — histórico de transações anteriores do remetente",
+        "LLM indisponível — relatório executivo gerado automaticamente."
+      ],
+      "risk_justification": "Transação SIM-290158 apresenta score 42/100 nível medio.",
+      "full_narrative": "ATENÇÃO: Transação SIM-290158 foi escalada com 3 critério(s) de suspeita. Score de risco calculado deterministicamente: 42/100 (medio). Relatório narrativo indisponível — LLM fora de serviço. Revisão humana recomendada."
+    },
+    "alert_subject": "⚠️ ALERTA DE SUSPEITA — MEDIO — SIM-290158",
+    "alert_message": "Transação SIM-290158 apresenta indicadores de suspeita. Score: 42/100.",
+    "immediate_actions": [
+      "Solicitar autenticação adicional (2FA) para confirmar a identidade do remetente devido ao uso de dispositivo desconhecido e horário incomum.",
+      "Manter em monitoramento intensivo as próximas atividades associadas ao cliente CLI-2001.",
+      "Encaminhar para análise Nível 2 para reavaliar o desvio comportamental frente a novas informações."
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [
+      "Agente4-LLM: HTTP 429: Rate limit atingido: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 3.918331807s."
+    ],
+    "completed_at": "2026-10-23T17:41:07.114040",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:41:17.761173"
+}

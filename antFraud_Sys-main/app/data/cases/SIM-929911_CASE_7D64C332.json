@@ -1,0 +1,180 @@
+{
+  "case_id": "SIM-929911_CASE_7D64C332",
+  "trace_id": "7d64c332-1d16-46d4-beb5-82d1c7e985b5",
+  "transaction_id": "SIM-929911",
+  "transaction": {
+    "transaction_id": "SIM-929911",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1001",
+    "amount": 15861.69,
+    "datetime": "2026-10-23T23:23:28.682554",
+    "location": "Miami, EUA",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-929911",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 15,861.69 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação de R$ 15.861,69 supera o limiar de valor elevado e foi realizada às 23h, horário considerado incomum e fora do período habitual. Além disso, a operação ocorreu a partir do dispositivo desconhecido_B, o que, somado aos demais fatores, apresenta indicadores de suspeita.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-929911",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 15,861.69 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação (R$ 15.861,69) cruza com o horário incomum (23:23) e o uso de dispositivo desconhecido.",
+      "O uso de 'dispositivo_desconhecido_B' reforça a anomalia de horário e valor detectada no perfil do remetente."
+    ],
+    "correlated_events": [
+      "A transação ocorreu em Miami, EUA, utilizando o canal pix_automatico por meio de um dispositivo desconhecido em horário considerado fora do habitual.",
+      "O valor da transação excede o limiar de R$ 5.000,00 registrado nas anomalias do cliente."
+    ],
+    "investigation_summary": "A transação SIM-929911 apresenta indicadores de risco como valor elevado (R$ 15.861,69), horário incomum (23:23) e utilização de dispositivo desconhecido. O perfil do remetente (CLI-2001) aponta desvio comportamental com pontuação de 0.5 e anomalias confirmadas nestes mesmos quesitos. A análise é limitada pela ausência de histórico de transações e dados típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-929911",
+    "case_id": "SIM-929911_CASE_7D64C332",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A severidade é moderada devido ao valor elevado de R$ 15.861,69 que supera o limiar de R$ 5.000,00, além do uso de um canal automatizado (pix_automatico) fora do horário habitual.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo um score de risco de 42/100 com três critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção proporcional sem caráter de bloqueio imediato.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é limitada pela ausência de dados históricos completos do cliente (como faixa de valor típica, horários e locais usuais), classificada como coleta parcial."
+    },
+    "critical_evidence": [
+      "Valor de R$ 15.861,69 excede o limiar de R$ 5.000,00.",
+      "Utilização de dispositivo desconhecido ('dispositivo_desconhecido_B')."
+    ],
+    "supporting_evidence": [
+      "Transação realizada às 23:23, fora do horário habitual do cliente.",
+      "Desvio comportamental com pontuação de 0.5 no perfil do remetente."
+    ],
+    "weak_evidence": [
+      "Localização em Miami, EUA, sem histórico de localização típica para comparação."
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1001) não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação via pix_automatico.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente devido ao uso de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-929911",
+    "case_id": "SIM-929911_CASE_7D64C332",
+    "trace_id": "7d64c332-1d16-46d4-beb5-82d1c7e985b5",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-929911 possui o valor de R$ 15.861,69, superando o limiar de R$ 5.000,00.",
+        "A operação ocorreu às 23:23 em 23/10/2026, utilizando o canal pix_automatico.",
+        "A localização registrada da transação foi Miami, EUA.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido_B'.",
+        "O remetente é o cliente CLI-2001 e o recebedor é o cliente CLI-1001.",
+        "O perfil comportamental do cliente CLI-2001 apresenta desvio com pontuação de 0.5 e anomalias confirmadas."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário noturno e uso de um dispositivo desconhecido sugere potencial comprometimento da conta do remetente.",
+        "É possível que o canal pix_automatico tenha sido acionado de forma atípica devido ao perfil de risco médio identificado.",
+        "Os dados sugerem que a ausência de histórico completo limita a certeza sobre a legitimidade da operação, mantendo o nível de risco moderado em 42/100."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica do cliente (typical_amount_range).",
+        "Falta de dados sobre horários habituais do cliente (typical_hours).",
+        "Ausência de locais usuais de transação (typical_locations).",
+        "Falta de cadastro de dispositivos conhecidos (known_devices).",
+        "Ausência de notas ou histórico sobre o recebedor (receiver_notes)."
+      ],
+      "risk_justification": "O risco é classificado como médio (score 42/100) devido ao valor de R$ 15.861,69 acima do limiar, somado ao horário incomum às 23h e ao uso de um dispositivo desconhecido em Miami, EUA. A gravidade é moderada e a confiança analítica está restrita a 50% pela coleta parcial de dados históricos.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-929911 realizada pelo cliente CLI-2001 em favor do recebedor CLI-1001, no valor de R$ 15.861,69. A operação foi efetuada através do canal pix_automatico às 23:23, a partir de Miami, EUA, utilizando um terminal identificado como 'dispositivo_desconhecido_B'. A detecção inicial apontou três critérios de suspeita relacionados ao montante elevado, ao horário fora do habitual e à utilização de um dispositivo não reconhecido pelo sistema.\n\nDurante a investigação, cruzamentos de dados evidenciaram que o perfil do remetente exibe desvio comportamental com pontuação de 0.5. No entanto, a análise enfrenta limitações significativas decorrentes da ausência de histórico transacional completo, incluindo a faixa de valores típicos, horários e locais usuais do cliente, além da falta de registros sobre dispositivos conhecidos. Apesar dessas lacunas, o modelo de risco atribuiu um score de 42/100, classificando a urgência como média e a confiança em 50%.\n\nDiante do cenário exposto, a recomendação central consiste em intensificar o monitoramento e adotar cautela operacional. O conjunto de indicadores sugere anomalias que justificam checagens adicionais por canais seguros, respeitando o limite de atuação consultiva do sistema de prevenção a fraudes."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada (SIM-929911)",
+    "alert_message": "Foi identificada a transação SIM-929911 no valor de R$ 15.861,69, realizada via pix_automatico às 23:23 a partir de Miami, EUA, utilizando um dispositivo desconhecido. A operação apresenta múltiplos indicadores de risco associados ao perfil do cliente CLI-2001.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:36:33.709020",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:36:37.270922"
+}

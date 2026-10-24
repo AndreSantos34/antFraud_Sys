@@ -1,0 +1,179 @@
+{
+  "case_id": "SIM-595816_CASE_9EFFDCA8",
+  "trace_id": "9effdca8-38c9-4e9a-9eea-8c979eecdaa3",
+  "transaction_id": "SIM-595816",
+  "transaction": {
+    "transaction_id": "SIM-595816",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1001",
+    "amount": 5815.14,
+    "datetime": "2026-10-23T23:57:02.245724",
+    "location": "Amsterdã, Holanda",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-595816",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 5,815.14 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 5.815,14 e ao registro em horário incomum, às 23h57, fora da faixa habitual. Além disso, a operação foi realizada a partir de um dispositivo classificado como desconhecido, aumentando o risco contextual.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-595816",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 5,815.14 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 5.815,14 se cruza com o horário incomum às 23:57 e com o uso de um dispositivo desconhecido.",
+      "A transação efetuada em Amsterdã, Holanda, reforça o indicador de dispositivo desconhecido e de horário incomum."
+    ],
+    "correlated_events": [
+      "A transação SIM-595816 ocorreu fora do horário habitual e com um dispositivo desconhecido, corroborando o perfil de simulação de geo_suspeita_dispositivo_madrugada."
+    ],
+    "investigation_summary": "A transação SIM-595816 apresenta indicadores suspeitos de valor elevado, horário incomum e uso de dispositivo desconhecido. O valor de R$ 5.815,14 excede o limiar de R$ 5.000.00 e a operação foi realizada às 23:57 em Amsterdã, Holanda. O perfil comportamental do remetente exibe um desvio de 0.5 associado a essas anomalias. O histórico de transações e o perfil detalhado do destinatário encontram-se limitados pela ausência de dados.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_id ausente"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-595816",
+    "case_id": "SIM-595816_CASE_9EFFDCA8",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado, pois o score de risco é 42/100 (nível médio) e envolve um valor de R$ 5.815,14 que excede o limiar de R$ 5.000,00, além de ocorrer em horário e local fora do padrão habitual com dispositivo desconhecido.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo múltiplos critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção proporcional sem caráter de bloqueio imediato.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de dados históricos do perfil do remetente (faixa de valor típica, horários e locais típicos) e dados do destinatário."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 5.815,14, excedendo o limiar de R$ 5.000,00.",
+      "Operação executada às 23:57, horário considerado incomum.",
+      "Uso de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Transação efetuada em Amsterdã, Holanda, reforçando o indicador de dispositivo desconhecido.",
+      "Desvio comportamental de 0.5 associado às anomalias encontradas."
+    ],
+    "weak_evidence": [
+      "Perfil de simulação indica geo_suspeita_dispositivo_madrugada, mas faltam dados históricos para validação profunda."
+    ],
+    "refutation_points": [
+      "O receptor não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente na transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta em monitoramento intensivo para novas operações atípicas.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — receiver_id ausente"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-595816",
+    "case_id": "SIM-595816_CASE_9EFFDCA8",
+    "trace_id": "9effdca8-38c9-4e9a-9eea-8c979eecdaa3",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-595816 possui o valor de R$ 5.815,14 e foi realizada em 2026-10-23T23:57:02.245724.",
+        "A operação ocorreu em Amsterdã, Holanda, através do canal caixa_eletronico.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido_B'.",
+        "O perfil de simulação associado é 'geo_suspeita_dispositivo_madrugada'.",
+        "O score de risco atribuído é 42/100, classificado como nível médio com urgência média."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário noturno e dispositivo desconhecido indica um perfil de risco comportamental atípico.",
+        "É possível que a localização em Amsterdã, Holanda, represente uma viagem ou acesso não habitual do cliente.",
+        "Os dados sugerem que a ausência de histórico do destinatário e do remetente limita a precisão da avaliação de fraude."
+      ],
+      "limitations": [
+        "Dado não disponível — typical_amount_range",
+        "Dado não disponível — typical_hours",
+        "Dado não disponível — typical_locations",
+        "Dado não disponível — known_devices",
+        "Dado não disponível — receiver_id ausente"
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pelo cruzamento de um valor superior ao limiar (R$ 5.815,14) com horário noturno avançado (23:57) e uso de dispositivo desconhecido, embora limitado pela ausência de dados históricos.",
+      "full_narrative": "O presente relatório analisa a transação SIM-595816, efetuada no valor de R$ 5.815,14, registrada em 23 de outubro de 2026, às 23:57:02, a partir de Amsterdã, Holanda. A operação foi realizada por meio de um caixa eletrônico utilizando o 'dispositivo_desconhecido_B', inserindo-se no perfil de simulação de geo_suspeita_dispositivo_madrugada. A detecção inicial apontou múltiplos critérios suspeitos, destacando o valor acima do limiar de R$ 5.000,00 e o horário noturno fora do padrão habitual.\n\nA investigação secundária identificou que o desvio comportamental do remetente atinge 0.5, corroborando os alertas de anomalia contextual. No entanto, a coleta de dados apresentou status parcial, devido à total ausência de informações sobre a faixa de valores típica, horários, locais e dispositivos conhecidos do cliente, bem como dados detalhados sobre o destinatário CLI-1001.\n\nDiante desses elementos, o motor de risco calculou um score de 42/100, classificando a ocorrência como de nível e urgência médios. Recomenda-se cautela na tratativa, priorizando a confirmação da identidade e o monitoramento contínuo, uma vez que o receptor não possui histórico prévio em outras transações suspeitas."
+    },
+    "alert_subject": "Alerta de Monitoramento SOC: Transação Atípica em Caixa Eletrônico (SIM-595816)",
+    "alert_message": "Foi identificada a transação SIM-595816 no valor de R$ 5.815,14, executada às 23:57 em Amsterdã, Holanda, utilizando um dispositivo desconhecido. O evento apresenta score de risco médio (42/100) e requer atenção analítica para verificação de contexto e conformidade com o perfil do cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:53:07.649829",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:53:10.967836"
+}

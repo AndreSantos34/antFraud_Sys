@@ -1,0 +1,150 @@
+{
+  "case_id": "SIM-989551_CASE_930FAC1E",
+  "trace_id": "930fac1e-cee5-4b4e-9f0e-92b73a62bd37",
+  "transaction_id": "SIM-989551",
+  "transaction": {
+    "transaction_id": "SIM-989551",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1001",
+    "amount": 10356.33,
+    "datetime": "2026-10-23T23:24:10.197574",
+    "location": "Belo Horizonte, MG",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-989551",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 10,356.33 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-989551",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 10,356.33 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-989551",
+    "case_id": "SIM-989551_CASE_930FAC1E",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-989551",
+    "case_id": "SIM-989551_CASE_930FAC1E",
+    "trace_id": "930fac1e-cee5-4b4e-9f0e-92b73a62bd37",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-989551 foi realizada no valor de R$ 10.356,33 pelo cliente CLI-2005 para o recebedor CLI-1001.",
+        "O canal utilizado foi o app_mobile através de um dispositivo classificado como 'smartphone_desconhecido'.",
+        "A data e hora registradas da transação são 2026-10-23T23:24:10.197574, na localidade de Belo Horizonte, MG.",
+        "O sistema determinou que o valor excede o limiar de R$ 5.000,00 e o horário (23h) está fora do horário habitual (22h-6h)."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que o uso de um smartphone desconhecido combinado com um valor elevado na madrugada pode indicar uma tentativa de acesso não autorizado à conta.",
+        "É possível que o perfil de simulação 'alto_valor_madrugada_dispositivo' reflita um comportamento anômalo em relação aos hábitos anteriores do cliente."
+      ],
+      "limitations": [
+        "O histórico do cliente está indisponível, impedindo a verificação de padrões transacionais passados.",
+        "A coleta de dados ocorreu de forma parcial e a LLM encontrou-se indisponível durante a síntese narrativa do Agente 2."
+      ],
+      "risk_justification": "A transação apresenta risco médio (score 42/100) devido à combinação de valor elevado, horário incomum e dispositivo desconhecido. No entanto, a confiança analítica está limitada a 50% pela ausência do histórico do cliente.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-989551, no valor de R$ 10.356,33, efetuada em 23/10/2026 às 23:24 por CLI-2005 em favor de CLI-1001. Os critérios determinísticos confirmados incluem montante superior a R$ 5.000,00, horário classificado fora do padrão e a utilização de um 'smartphone_desconhecido' via canal mobile na localidade de Belo Horizonte, MG.\n\nCom base nestes indicadores cruzados, o modelo aponta um score de risco de 42/100, classificado como nível médio com urgência média. As hipóteses analíticas sugerem que o perfil da operação assemelha-se a cenários de risco elevado para operações noturnas em terminais não reconhecidos, embora tal leitura permaneça inferencial.\n\nDestaca-se como principal limitação a ausência do histórico comportamental do cliente, o que restringe a precisão da correlação e resulta em um nível de confiança de 50%. Recomenda-se cautela operacional e o prosseguimento das checagens por meio dos protocolos de segurança estabelecidos."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada - CLI-2005 (Risco Médio)",
+    "alert_message": "Uma transação no valor de R$ 10.356,33 foi efetuada por CLI-2005 em horário incomum (23h24) utilizando um dispositivo desconhecido. O sistema de risco pontuou a operação com score 42/100.\n\nRecomenda-se a verificação imediata dos dados cadastrais e o acompanhamento dos fluxos subsequentes para mitigar eventuais exposições de segurança.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:43:42.732223",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:43:56.658651"
+}

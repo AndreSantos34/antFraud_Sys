@@ -1,0 +1,222 @@
+[
+  {
+    "transaction_id": "TXN-001",
+    "customer_id": "CLI-1001",
+    "amount": 150.00,
+    "datetime": "2024-06-10T09:15:00",
+    "location": "São Paulo, SP",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Transação de valor baixo, horário comercial, dispositivo reconhecido."
+  },
+  {
+    "transaction_id": "TXN-002",
+    "customer_id": "CLI-1002",
+    "amount": 320.50,
+    "datetime": "2024-06-10T11:30:00",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "internet_banking",
+    "device": "notebook_pessoal",
+    "label": "normal",
+    "reason": "Valor moderado, horário comercial, dispositivo habitual."
+  },
+  {
+    "transaction_id": "TXN-003",
+    "customer_id": "CLI-1003",
+    "amount": 89.90,
+    "datetime": "2024-06-10T14:00:00",
+    "location": "Curitiba, PR",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Pequena compra, horário normal, sem anomalias."
+  },
+  {
+    "transaction_id": "TXN-004",
+    "customer_id": "CLI-1004",
+    "amount": 2100.00,
+    "datetime": "2024-06-10T10:45:00",
+    "location": "Belo Horizonte, MG",
+    "channel": "internet_banking",
+    "device": "desktop_corporativo",
+    "label": "normal",
+    "reason": "Valor alto mas dentro do padrão do cliente, horário comercial."
+  },
+  {
+    "transaction_id": "TXN-005",
+    "customer_id": "CLI-1005",
+    "amount": 45.00,
+    "datetime": "2024-06-10T16:20:00",
+    "location": "Porto Alegre, RS",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Valor muito baixo, operação rotineira."
+  },
+  {
+    "transaction_id": "TXN-006",
+    "customer_id": "CLI-1006",
+    "amount": 760.00,
+    "datetime": "2024-06-11T08:00:00",
+    "location": "Salvador, BA",
+    "channel": "internet_banking",
+    "device": "notebook_pessoal",
+    "label": "normal",
+    "reason": "Pagamento de conta, dispositivo e localização habituais."
+  },
+  {
+    "transaction_id": "TXN-007",
+    "customer_id": "CLI-1007",
+    "amount": 1200.00,
+    "datetime": "2024-06-11T13:10:00",
+    "location": "Fortaleza, CE",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Transferência entre contas do mesmo titular."
+  },
+  {
+    "transaction_id": "TXN-008",
+    "customer_id": "CLI-1008",
+    "amount": 530.00,
+    "datetime": "2024-06-11T15:45:00",
+    "location": "Recife, PE",
+    "channel": "internet_banking",
+    "device": "desktop_corporativo",
+    "label": "normal",
+    "reason": "Pagamento de fornecedor, contexto empresarial habitual."
+  },
+  {
+    "transaction_id": "TXN-009",
+    "customer_id": "CLI-1009",
+    "amount": 210.00,
+    "datetime": "2024-06-12T09:30:00",
+    "location": "Manaus, AM",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Compra online, horário e dispositivo normais."
+  },
+  {
+    "transaction_id": "TXN-010",
+    "customer_id": "CLI-1010",
+    "amount": 980.00,
+    "datetime": "2024-06-12T11:00:00",
+    "location": "Brasília, DF",
+    "channel": "internet_banking",
+    "device": "notebook_pessoal",
+    "label": "normal",
+    "reason": "Pagamento de serviço recorrente, histórico consistente."
+  },
+  {
+    "transaction_id": "TXN-011",
+    "customer_id": "CLI-1011",
+    "amount": 400.00,
+    "datetime": "2024-06-12T14:50:00",
+    "location": "Florianópolis, SC",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "normal",
+    "reason": "Transferência de rotina, sem indicadores de risco."
+  },
+  {
+    "transaction_id": "TXN-012",
+    "customer_id": "CLI-1012",
+    "amount": 670.00,
+    "datetime": "2024-06-13T10:15:00",
+    "location": "Goiânia, GO",
+    "channel": "internet_banking",
+    "device": "desktop_corporativo",
+    "label": "normal",
+    "reason": "Operação corporativa padrão, dentro do perfil do cliente."
+  },
+  {
+    "transaction_id": "TXN-013",
+    "customer_id": "CLI-2001",
+    "amount": 9800.00,
+    "datetime": "2024-06-10T02:37:00",
+    "location": "São Paulo, SP",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido",
+    "label": "suspeita",
+    "reason": "Valor muito elevado, horário incomum (madrugada) e dispositivo não reconhecido."
+  },
+  {
+    "transaction_id": "TXN-014",
+    "customer_id": "CLI-2002",
+    "amount": 4999.99,
+    "datetime": "2024-06-10T23:58:00",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "label": "suspeita",
+    "reason": "Valor próximo ao limite de triagem, horário noturno tardio, dispositivo desconhecido."
+  },
+  {
+    "transaction_id": "TXN-015",
+    "customer_id": "CLI-2003",
+    "amount": 500.00,
+    "datetime": "2024-06-11T03:12:00",
+    "location": "Curitiba, PR",
+    "channel": "app_mobile",
+    "device": "smartphone_conhecido",
+    "label": "suspeita",
+    "reason": "Horário incomum (madrugada), fora do padrão comportamental do cliente."
+  },
+  {
+    "transaction_id": "TXN-016",
+    "customer_id": "CLI-2004",
+    "amount": 850.00,
+    "datetime": "2024-06-11T10:01:00",
+    "location": "Tóquio, Japão",
+    "channel": "internet_banking",
+    "device": "notebook_pessoal",
+    "label": "suspeita",
+    "reason": "Mudança geográfica incompatível: cliente opera normalmente em Belo Horizonte/MG."
+  },
+  {
+    "transaction_id": "TXN-017",
+    "customer_id": "CLI-2005",
+    "amount": 300.00,
+    "datetime": "2024-06-12T08:05:00",
+    "location": "Porto Alegre, RS",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "label": "suspeita",
+    "reason": "Três transações de R$ 300,00 em menos de 8 minutos com dispositivo desconhecido (frequência elevada + valor repetido)."
+  },
+  {
+    "transaction_id": "TXN-018",
+    "customer_id": "CLI-2005",
+    "amount": 300.00,
+    "datetime": "2024-06-12T08:09:00",
+    "location": "Porto Alegre, RS",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "label": "suspeita",
+    "reason": "Continuação do padrão de frequência elevada com valor idêntico (repetição de valor suspeita)."
+  },
+  {
+    "transaction_id": "TXN-019",
+    "customer_id": "CLI-2005",
+    "amount": 300.00,
+    "datetime": "2024-06-12T08:13:00",
+    "location": "Porto Alegre, RS",
+    "channel": "app_mobile",
+    "device": "smartphone_desconhecido",
+    "label": "suspeita",
+    "reason": "Terceira transação idêntica em sequência: frequência elevada + valor repetido + dispositivo desconhecido."
+  },
+  {
+    "transaction_id": "TXN-020",
+    "customer_id": "CLI-2006",
+    "amount": 7500.00,
+    "datetime": "2024-06-13T04:45:00",
+    "location": "Miami, EUA",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido",
+    "label": "suspeita",
+    "reason": "Valor muito elevado, horário de madrugada, localização internacional e dispositivo desconhecido: múltiplos indicadores combinados."
+  }
+]

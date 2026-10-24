@@ -1,0 +1,178 @@
+{
+  "case_id": "SIM-188373_CASE_DF26466F",
+  "trace_id": "df26466f-44d4-4606-92e2-b67a4e1c6d22",
+  "transaction_id": "SIM-188373",
+  "transaction": {
+    "transaction_id": "SIM-188373",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1002",
+    "amount": 14448.78,
+    "datetime": "2026-10-23T02:01:52.211865",
+    "location": "Tóquio, Japão",
+    "channel": "pix_automatico",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-188373",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 14,448.78 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 14.448,78 e à ocorrência em um horário incomum às 02h da madrugada. Adicionalmente, a operação foi realizada a partir de um smartphone desconhecido, elevando o risco do contexto analisado.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-188373",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 14,448.78 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada no canal pix_automatico utilizando um dispositivo classificado como desconhecido fora do horário habitual.",
+      "Valor elevado de R$ 14.448,78 associado a um horário incomum (02h) e dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-188373 ocorreu em Tóquio, Japão, às 02:01:52, utilizando o canal pix_automatico e o dispositivo smartphone_desconhecido, apresentando desvio comportamental com score de 0.5."
+    ],
+    "investigation_summary": "A transação SIM-188373 apresenta indicadores de alerta devido ao valor elevado de R$ 14.448,78, que excede o limiar de R$ 5.000,00, associado a um horário incomum às 02h e à utilização de um smartphone desconhecido. O evento ocorreu em Tóquio, Japão, por meio do canal pix_automatico, com um score de desvio comportamental de 0.5. Não há histórico de transações anteriores disponíveis para o remetente CLI-2004 para comparação de linha de base.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-188373",
+    "case_id": "SIM-188373_CASE_DF26466F",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado devido ao valor de R$ 14.448,78 que excede o limiar de R$ 5.000,00, além de envolver o canal pix_automatico, embora o score de risco geral seja 42/100 (nível médio).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média baseada no score determinístico 42/100 e na presença de três critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido).",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada por contar com evidências claras de desvio comportamental (score de 0.5), mas limitada pela ausência de histórico de linha de base do cliente."
+    },
+    "critical_evidence": [
+      "Valor de R$ 14.448,78 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 02:01, fora do horário habitual.",
+      "Utilização de 'smartphone_desconhecido'."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com score de 0.5.",
+      "Ocorrência em Tóquio, Japão, via canal pix_automatico."
+    ],
+    "weak_evidence": [
+      "Perfil do recebedor CLI-1002 não apresenta histórico em outras ocorrências suspeitas."
+    ],
+    "refutation_points": [
+      "O recebedor CLI-1002 não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) do cliente para confirmar a operação no canal pix_automatico.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo devido ao uso de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-188373",
+    "case_id": "SIM-188373_CASE_DF26466F",
+    "trace_id": "df26466f-44d4-4606-92e2-b67a4e1c6d22",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-188373 no valor de R$ 14.448,78 foi realizada em 2026-10-23T02:01:52.211865.",
+        "O canal utilizado foi o pix_automatico, originado em Tóquio, Japão, a partir de um smartphone_desconhecido.",
+        "O cliente remetente é CLI-2004 e o recebedor é CLI-1002.",
+        "O score de desvio comportamental registrou 0.5 e o score de risco final foi de 42/100 (nível médio).",
+        "Não há histórico de transações anteriores disponíveis para o remetente CLI-2004."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e dispositivo desconhecido aponta para um contexto de risco moderado.",
+        "É possível que a transação reflita uma operação atípica do usuário devido à ausência de linha de base comportamental.",
+        "Os dados sugerem que o canal pix_automatico associado a um novo dispositivo requer cautela adicional quanto à identidade do operador."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range) para o cliente.",
+        "Ausência de horários habituais de transação (typical_hours).",
+        "Ausência de localizações frequentes (typical_locations) e dispositivos conhecidos (known_devices).",
+        "Ausência de notas ou histórico sobre o recebedor (receiver_notes)."
+      ],
+      "risk_justification": "O risco é classificado como médio (score 42/100) devido ao valor de R$ 14.448,78 acima do limiar, ocorrência às 02h da manhã e uso de dispositivo desconhecido, embora atenuado pela falta de histórico prévio de fraudes do recebedor CLI-1002.",
+      "full_narrative": "O presente relatório analisa a transação SIM-188373, executada em 23 de outubro de 2026, às 02:01, no valor de R$ 14.448,78. A operação foi realizada via pix_automatico a partir de Tóquio, Japão, utilizando um smartphone_desconhecido. Esses elementos ativam múltiplos critérios de alerta, destacando-se o montante superior ao limiar de R$ 5.000,00 e o horário incomum de madrugada.\n\nA investigação identificou um desvio comportamental com score de 0.5, amparado por três critérios de suspeita confirmados. No entanto, a análise analítica enfrenta limitações significativas decorrentes da ausência de dados históricos de linha de base para o cliente CLI-2004, tais como valores típicos, horários habituais e dispositivos previamente cadastrados.\n\nDiante do escore de risco consolidado em 42/100 (nível médio) e da ausência de antecedentes desabonadores para o recebedor CLI-1002, recomenda-se a adoção de ações consultivas para mitigação de incertezas, priorizando a verificação adicional de identidade e o monitoramento intensivo do canal envolvido."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Pix Automático Atípica (SIM-188373)",
+    "alert_message": "A transação SIM-188373 no valor de R$ 14.448,78 foi identificada com score de risco médio (42/100) devido à ocorrência em horário madrugad playerId, uso de dispositivo desconhecido em Tóquio, Japão, e canal pix_automatico. Recomenda-se acompanhamento de segurança e verificação de conformidade.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:52:57.401728",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:53:01.262583"
+}

@@ -1,0 +1,154 @@
+{
+  "case_id": "SIM-207709_CASE_7E4C906A",
+  "trace_id": "7e4c906a-dccd-4a80-95da-91e257698634",
+  "transaction_id": "SIM-207709",
+  "transaction": {
+    "transaction_id": "SIM-207709",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1001",
+    "amount": 10811.06,
+    "datetime": "2026-10-23T04:49:08.109675",
+    "location": "Miami, EUA",
+    "channel": "pix_automatico",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-207709",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 10,811.06 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-207709",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 10,811.06 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-207709",
+    "case_id": "SIM-207709_CASE_7E4C906A",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-207709",
+    "case_id": "SIM-207709_CASE_7E4C906A",
+    "trace_id": "7e4c906a-dccd-4a80-95da-91e257698634",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-207709 foi realizada no valor de R$ 10.811,06.",
+        "O cliente remetente é CLI-2001 e o recebedor é CLI-1001.",
+        "A operação ocorreu em 2026-10-23T04:49:08.109675, a partir de Miami, EUA.",
+        "O canal utilizado foi o pix_automatico através de um smartphone_desconhecido.",
+        "Trata-se de uma transação simulada sob o perfil critico_multiplos_indicadores.",
+        "Foram confirmados 3 critérios deterministicamente: valor elevado acima de R$ 5.000,00, horário incomum entre 22h e 6h, e uso de dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que o risco global é de nível médio, com um score de 42/100, baseado nos três critérios confirmados.",
+        "É possível que a operação indique um desvio comportamental do cliente devido ao horário madrugador e ao dispositivo não reconhecido.",
+        "Os dados sugerem que a transação possui um nível de confiança de 50% devido à qualidade parcial dos dados e ausência do histórico do cliente."
+      ],
+      "limitations": [
+        "Histórico do cliente indisponível para comparação comportamental.",
+        "LLM indisponível durante a fase de investigação, resultando em síntese narrativa não gerada e justificativas automáticas.",
+        "Status de coleta de dados parcial."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à presença simultânea de valor elevado, horário incomum e dispositivo desconhecido. A confiança na análise é limitada a 50% em virtude da ausência de histórico do cliente e da coleta de dados parcial.",
+      "full_narrative": "O presente relatório apresenta a análise da transação SIM-207709 no valor de R$ 10.811,06, executada em 23/10/2026 às 04:49 no canal pix_automatico, partindo de Miami, EUA, com o uso de um smartphone desconhecido. A detecção automática identificou três critérios de alerta determinísticos: o montante excede o limiar de R$ 5.000,00, a operação ocorreu em horário atípico (madrugada) e o dispositivo utilizado não possui registro prévio reconhecido no perfil do cliente CLI-2001.\n\nA investigação secundária apontou um score de desvio de 0.50, com status de coleta parcial de dados. Constatou-se a indisponibilidade do histórico do cliente e limitações na geração de sínteses via LLM, o que restringe a visibilidade completa sobre o comportamento habitual do usuário. Apesar dessas lacunas, o modelo de risco atribuiu uma pontuação de 42/100, classificando a ocorrência como de nível e urgência médios, sustentada por uma taxa de confiança de 50% fundamentada nas evidências críticas já apuradas.\n\nDiante do cenário exposto, recomenda-se a cautela na condução do caso pelos analistas do SOC. As evidências de desvio comportamental por horário e dispositivo, combinadas com uma transação de expressão financeira relevante, exigem o acompanhamento de perto da operação, respeitando os limites consultivos do sistema e buscando validar a legitimidade da requisição por meio dos protocolos internos disponíveis."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada - SIM-207709",
+    "alert_message": "Foi identificada a transação SIM-207709 no valor de R$ 10.811,06 realizada em horário incomum (04:49) via pix_automatico, utilizando um smartphone desconhecido a partir de Miami, EUA. A análise registrou um score de risco médio de 42/100 com base em três critérios confirmados, operando sob limitações de dados históricos.\n\nRecomenda-se o acionamento dos procedimentos de monitoramento intensivo e a verificação suplementar dos dados cadastrais do cliente por meio de canais seguros, visando mitigar potenciais exposições a fraudes.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:52:39.962306",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:52:53.926152"
+}

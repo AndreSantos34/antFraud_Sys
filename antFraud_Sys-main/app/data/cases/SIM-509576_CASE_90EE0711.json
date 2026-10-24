@@ -1,0 +1,189 @@
+{
+  "case_id": "SIM-509576_CASE_90EE0711",
+  "trace_id": "90ee0711-58c0-4d3d-8448-41b3f0a3d621",
+  "transaction_id": "SIM-509576",
+  "transaction": {
+    "transaction_id": "SIM-509576",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1002",
+    "amount": 13271.7,
+    "datetime": "2026-10-23T01:27:42.282515",
+    "location": "Amsterdã, Holanda",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-509576",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,271.70 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 13.271,70, que excede o limiar estabelecido, realizada em um horário incomum às 01h27. Além disso, a operação foi efetuada por meio de um dispositivo não reconhecido ('dispositivo_desconhecido_B'), aumentando o risco contextual da atividade.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-509576",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,271.70 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado de R$ 13.271,70 reforça o risco do horário incomum (01:27) e do uso de um dispositivo desconhecido."
+    ],
+    "correlated_events": [
+      "A transação SIM-509576 apresenta desvio comportamental com score de 0.5, realizada através do canal caixa_eletronico com o dispositivo 'dispositivo_desconhecido_B' em Amsterdã, Holanda."
+    ],
+    "investigation_summary": "A transação SIM-509576, no valor de R$ 13.271,70, foi realizada pelo cliente CLI-2001 via caixa eletrônico em Amsterdã, Holanda, às 01:27 utilizando um dispositivo desconhecido. Foram confirmados os critérios de valor elevado, horário incomum e dispositivo desconhecido, acompanhados de um desvio comportamental de 0.5. O perfil de risco indica múltiplos indicadores críticos, embora o histórico do remetente e o perfil detalhado do destinatário apresentem lacunas.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range do remetente",
+      "typical_hours do remetente",
+      "typical_locations do remetente",
+      "known_devices do remetente",
+      "histórico do remetente (0 transações disponíveis)",
+      "receiver_notes do destinatário"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-509576",
+    "case_id": "SIM-509576_CASE_90EE0711",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é classificado como moderado devido ao valor elevado de R$ 13.271,70, que excede o limiar interno de R$ 5.000,00, além do uso de um dispositivo desconhecido e realização em horário incomum (madrugada).",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada por um score de risco de 42/100 e pela confirmação de 3 critérios de anomalia (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção proporcional sem travar imediatamente o fluxo.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é moderada. Embora existam múltiplos indicadores comportamentais e desvio de 0.5, a análise é limitada por lacunas importantes de dados, como o histórico de transações e padrões habituais do remetente."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 13.271,70, excedendo o limiar padrão de R$ 5.000,00.",
+      "Utilização de 'dispositivo_desconhecido_B' não vinculado previamente ao cliente.",
+      "Horário da transação às 01:27, situado fora do padrão comportamental habitual."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com score de 0.5 registrado para o cliente CLI-2001.",
+      "Realização da operação via canal caixa_eletronico na localidade de Amsterdã, Holanda."
+    ],
+    "weak_evidence": [
+      "O canal caixa_eletronico apresenta contexto físico, mas os dados detalhados de geolocalização e histórico de locais estão ausentes."
+    ],
+    "refutation_points": [
+      "O destinatário (CLI-1002) não aparece em outras transações suspeitas.",
+      "O status de coleta de dados aponta ausência de histórico prévio para comparação aprofundada, o que pode gerar falsos positivos."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) ao cliente para confirmar a legitimidade da transação realizada em dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "ENCAMINHAR_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental e dos indicadores cruzados.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta do remetente em monitoramento intensivo devido à ausência de histórico e múltiplos indicadores de alerta.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range do remetente",
+      "typical_hours do remetente",
+      "typical_locations do remetente",
+      "known_devices do remetente",
+      "histórico do remetente (0 transações disponíveis)",
+      "receiver_notes do destinatário"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-509576",
+    "case_id": "SIM-509576_CASE_90EE0711",
+    "trace_id": "90ee0711-58c0-4d3d-8448-41b3f0a3d621",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-509576 foi realizada em 2026-10-23T01:27:42.282515 no valor de R$ 13.271,70.",
+        "O cliente remetente é CLI-2001 e o destinatário é CLI-1002.",
+        "A operação ocorreu no canal caixa_eletronico, na localização Amsterdã, Holanda, utilizando o 'dispositivo_desconhecido_B'.",
+        "O valor de R$ 13.271,70 excede o limiar interno de R$ 5.000,00.",
+        "O horário da transação (01:27) está situado entre 22h e 6h.",
+        "O score de risco calculado é de 42/100, classificado como nível médio com urgência média.",
+        "Foram confirmados 3 critérios de anomalia e um desvio comportamental de 0.5."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e uso de dispositivo desconhecido aponta para um cenário de potencial comprometimento de conta ou atividade atípica.",
+        "É possível que a ausência de histórico de transações e padrões habituais do remetente gere falsos positivos na classificação de risco.",
+        "Os dados sugerem que a operação em Amsterdã, Holanda, através de um caixa eletrônico e dispositivo não reconhecido, apresenta um perfil de risco com múltiplos indicadores críticos."
+      ],
+      "limitations": [
+        "typical_amount_range do remetente",
+        "typical_hours do remetente",
+        "typical_locations do remetente",
+        "known_devices do remetente",
+        "histórico do remetente com 0 transações disponíveis",
+        "receiver_notes do destinatário"
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela confluência de valor elevado (R$ 13.271,70), horário incomum às 01:27 e utilização de um dispositivo desconhecido. No entanto, a confiança é moderada (50%) devido à ausência de histórico prévio do remetente, exigindo cautela e verificação adicional.",
+      "full_narrative": "A transação SIM-509576, no valor de R$ 13.271,70, foi submetida pelo cliente CLI-2001 em favor do destinatário CLI-1002, utilizando o canal caixa_eletronico na localidade de Amsterdã, Holanda. A operação ocorreu às 01:27 do dia 2026-10-23, por meio do 'dispositivo_desconhecido_B'. A detecção inicial identificou três critérios de anomalia, destacando que o montante supera o limiar padrão de R$ 5.000,00, o horário situa-se na madrugada e o dispositivo não possui vínculo prévio conhecido com o cliente.\n\nA investigação subsequente confirmou o desvio comportamental com escore de 0.5 e apontou lacunas críticas na coleta de dados, visto que o histórico do remetente apresenta zero transações disponíveis para comparação, além da ausência de faixas típicas de valores, horários e localizações habituais. O modelo de risco classificou a operação com score de 42/100 (nível médio), ponderando que, embora existam múltiplos indicadores de alerta, a falta de histórico prévio pode influenciar na precisão da avaliação e na geração de potenciais alertas falso-positivos.\n\nDessa forma, recomenda-se uma abordagem prudente e analítica para o caso. A ausência de dados contextuais do remetente impede uma validação comportamental definitiva, tornando imprescindível a checagem humana e a adoção de medidas consultivas para confirmar a legitimidade da atividade sem impactar indevidamente o fluxo operacional."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica em Caixa Eletrônico (SIM-509576)",
+    "alert_message": "Foi identificada a transação SIM-509576 no valor de R$ 13.271,70, realizada em Amsterdã, Holanda, por meio de um dispositivo desconhecido e em horário de madrugada (01:27). O caso apresenta pontuação de risco 42/100 com limitações de histórico para o cliente remetente, demandando atenção do analista SOC.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:44:12.226789",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:44:19.617546"
+}

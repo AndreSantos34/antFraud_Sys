@@ -1,0 +1,151 @@
+{
+  "case_id": "SIM-861482_CASE_7C40473A",
+  "trace_id": "7c40473a-825c-46ed-a1e1-b94747f1a2c1",
+  "transaction_id": "SIM-861482",
+  "transaction": {
+    "transaction_id": "SIM-861482",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1003",
+    "amount": 10851.77,
+    "datetime": "2026-10-23T03:45:07.473166",
+    "location": "Goiânia, GO",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-861482",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 10,851.77 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-861482",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 10,851.77 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-861482",
+    "case_id": "SIM-861482_CASE_7C40473A",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-861482",
+    "case_id": "SIM-861482_CASE_7C40473A",
+    "trace_id": "7c40473a-825c-46ed-a1e1-b94747f1a2c1",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação ID SIM-861482 no valor de R$ 10.851,77 foi realizada em 2026-10-23T03:45:07.473166.",
+        "A origem informada é Goiânia, GO, utilizando o canal pix_automatico.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido_B'.",
+        "O horário da transação (03h45) está fora do horário habitual (22h–6h), e o valor excede o limiar de R$ 5.000,00.",
+        "O status da coleta de dados indica escopo parcial, com ausência do histórico do cliente."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de transação de alto valor durante a madrugada utilizando um dispositivo desconhecido pode indicar um comportamento atípico ou potencial desvio de padrão do usuário.",
+        "É possível que a ausência de histórico do cliente esteja ocultando padrões anteriores de comportamento legítimo ou reincidência de alertas."
+      ],
+      "limitations": [
+        "Histórico do cliente indisponível para comparação e validação de perfil.",
+        "LLM indisponível durante a investigação, resultando em síntese narrativa não gerada e justificativas automáticas."
+      ],
+      "risk_justification": "A transação apresentou score de risco de 42/100 (nível médio) com base em três critérios confirmados deterministicamente: valor elevado, horário incomum e dispositivo desconhecido. A confiança analítica está limitada a 50% devido à ausência do histórico do cliente e dados parciais.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-861482 no valor de R$ 10.851,77, executada por meio do canal pix_automatico em Goiânia, GO, no dia 23 de outubro de 2026 às 03h45. Os dados coletados evidenciam três critérios de risco de forma determinística: o montante supera o limiar estipulado de R$ 5.000,00, a operação ocorreu em horário considerado incomum (madrugada) e o acesso foi realizado através do 'dispositivo_desconhecido_B'.\n\nComo hipóteses do modelo, infere-se que tais indicadores combinados elevam a probabilidade de exposição a fraudes ou acessos não autorizados. No entanto, a análise enfrenta limitações operacionais importantes, destacando-se a indisponibilidade do histórico do cliente e a ausência de síntese narrativa por indisponibilidade momentânea de LLM no estágio de investigação, o que restringe a confiança da avaliação para 50%.\n\nDiante do escore de 42/100, classificado como risco médio e urgência média, recomenda-se cautela na tratativa do caso. O raciocínio integrado aponta que, embora existam múltiplos gatilhos de alerta baseados estritamente nas regras do pipeline, a falta de dados contextuais do cliente impede uma conclusão definitiva sobre a legitimidade da operação."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica via Pix Automático (SIM-861482)",
+    "alert_message": "Foi identificada a transação SIM-861482 no valor de R$ 10.851,77, realizada em horários de madrugada a partir de um dispositivo desconhecido. O escore de risco calculado é de 42/100, com critérios confirmados de valor elevado e horário atípico.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:49:39.675347",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:49:53.161048"
+}

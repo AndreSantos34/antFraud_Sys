@@ -1,0 +1,187 @@
+{
+  "case_id": "SIM-794400_CASE_D50660CB",
+  "trace_id": "d50660cb-fe48-4607-aae6-aebd277f0b1e",
+  "transaction_id": "SIM-794400",
+  "transaction": {
+    "transaction_id": "SIM-794400",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1002",
+    "amount": 12605.01,
+    "datetime": "2026-10-23T04:28:42.043626",
+    "location": "Lagos, Nigéria",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-794400",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 12,605.01 excede o limiar de R$ 5,000.00.",
+      "Transação às 04h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 12.605,01, que excede o limiar estabelecido, realizada em horário incomum às 04h28. Além disso, a operação foi efetuada através de um dispositivo desconhecido.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-794400",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 12,605.01 excede o limiar de R$ 5,000.00.",
+        "Transação às 04h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1002",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação de R$ 12.605,01 cruza-se com o uso de um canal e dispositivo não reconhecidos ('dispositivo_desconhecido_B').",
+      "A realização da transação em horário incomum (04h) reforça a anomalia do uso de um dispositivo desconhecido em uma localização distinta (Lagos, Nigéria)."
+    ],
+    "correlated_events": [
+      "A transação SIM-794400 ocorreu fora do horário habitual e utilizou o 'dispositivo_desconhecido_B', gerando um desvio comportamental com score de 0.5.",
+      "O montante de R$ 12.605,01 excede o limiar interno estabelecido de R$ 5.000,00 no mesmo evento em que ocorre a anomalia temporal às 04h."
+    ],
+    "investigation_summary": "A transação SIM-794400 apresenta indicadores de risco associados a um valor elevado de R$ 12.605,01, realização em horário incomum às 04h e utilização de um dispositivo desconhecido a partir de Lagos, Nigéria. O perfil do remetente CLI-2002 registra um desvio comportamental com score de 0.5 e anomalias confirmadas nestes três critérios. A operação não permite inferir fraude definitiva, mas exibe múltiplos sinais de alerta simultâneos.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente (0 transações disponíveis)"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-794400",
+    "case_id": "SIM-794400_CASE_D50660CB",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é médio, pois envolve um montante elevado de R$ 12.605,01 (acima do limiar de R$ 5.000,00) originado em Lagos, Nigéria, por meio de um dispositivo desconhecido e em horário incomum (04h), embora o score geral da transação tenha sido moderado em 42/100.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média devido à presença simultânea de múltiplos indicadores confirmados (valor elevado, horário incomum e dispositivo desconhecido) com um desvio comportamental de 0.5, exigindo atenção moderada sem caracterizar bloqueio imediato.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à ausência de dados históricos do remetente (typical_amount_range, typical_hours, typical_locations, known_devices) e ao status de coleta de dados incompleto, limitando a visibilidade do comportamento padrão do cliente."
+    },
+    "critical_evidence": [
+      "Transação com valor de R$ 12.605,01, excedendo o limiar de R$ 5.000,00.",
+      "Utilização do 'dispositivo_desconhecido_B' a partir de Lagos, Nigéria.",
+      "Realização da transação às 04h, fora do horário habitual."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com score de 0.5 registrado para o remetente CLI-2002.",
+      "Cruzamento de indicadores entre valor elevado, canal/dispositivo não reconhecido e horário incomum."
+    ],
+    "weak_evidence": [
+      "O receptor CLI-1002 não aparece em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "O receptor não possui histórico de envolvimento em outras transações suspeitas.",
+      "O score de risco final situou-se em um patamar moderado (42/100), indicando que nem todos os critérios máximos de fraude foram atingidos."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a autorização da transação pelo cliente.",
+        "proportional": true
+      },
+      {
+        "action_code": "ENCAMINHAR_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 para verificação aprofundada do desvio comportamental.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente antes de prosseguir com o fluxo da operação.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range",
+      "typical_hours",
+      "typical_locations",
+      "known_devices",
+      "histórico do remetente (0 transações disponíveis)"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-794400",
+    "case_id": "SIM-794400_CASE_D50660CB",
+    "trace_id": "d50660cb-fe48-4607-aae6-aebd277f0b1e",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-794400 foi realizada no valor de R$ 12.605,01 em 2026-10-23T04:28:42.043626.",
+        "O cliente remetente é CLI-2002 e o recebedor é CLI-1002.",
+        "A localização informada é Lagos, Nigéria, através do canal internet_banking.",
+        "O dispositivo utilizado é 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar interno de R$ 5.000,00 e o horário (04h) está fora do período habitual (22h-6h).",
+        "O perfil do remetente registra um desvio comportamental com score de 0.5 e histórico com 0 transações disponíveis."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário incomum e dispositivo desconhecido aponta para um potencial risco de acesso não autorizado.",
+        "É possível que a transação tenha sido realizada por um agente mal-intencionado aproveitando-se de credenciais comprometidas.",
+        "Os dados sugerem que a ausência de histórico de transações limita a capacidade de traçar um perfil comportamental definitivo do cliente."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range).",
+        "Ausência de horários típicos (typical_hours).",
+        "Ausência de localizações típicas (typical_locations).",
+        "Ausência de dispositivos conhecidos (known_devices).",
+        "Histórico do remetente com 0 transações disponíveis, resultando em status de coleta parcial."
+      ],
+      "risk_justification": "A transação apresenta risco médio (score 42/100) devido à convergência de um valor elevado, horário incomum, localização em Lagos (Nigéria) e uso de dispositivo desconhecido, contrabalançado pela ausência de histórico comportamental prévio do cliente.",
+      "full_narrative": "O presente relatório analisa a transação SIM-794400, efetuada em 23 de outubro de 2026, às 04h28, no valor de R$ 12.605,01, partindo de Lagos, Nigéria, via internet banking. A operação foi marcada por múltiplos indicadores de alerta, incluindo o uso do 'dispositivo_desconhecido_B', superação do limiar estabelecido de R$ 5.000,00 e execução em horário atípico, resultando em um score de risco de 42/100 e desvio comportamental de 0.5.\n\nDurante a investigação, cruzou-se a anomalia temporal com a utilização de uma localização e um equipamento não reconhecidos na base de dados. Observou-se que o remetente CLI-2002 não possui histórico prévio de transações registradas, o que restringe a visibilidade para a validação de um comportamento padrão.\n\nDiante do exposto, o cenário revela incerteza analítica moderada, exigindo cautela na condução do caso. Recomenda-se o encaminhamento para verificação humana e checagem de autenticidade por canal seguro, preservando a integridade das operações sem intervenção operativa direta."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita com Indicadores Múltiplos - SIM-794400",
+    "alert_message": "A transação SIM-794400 no valor de R$ 12.605,01 disparou alertas críticos devido à origem em Lagos, Nigéria, uso de dispositivo desconhecido e horário atípico. Solicita-se acompanhamento e verificação do perfil do cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:51:57.978154",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:52:01.461255"
+}

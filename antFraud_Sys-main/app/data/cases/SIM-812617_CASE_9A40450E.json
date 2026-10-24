@@ -1,0 +1,184 @@
+{
+  "case_id": "SIM-812617_CASE_9A40450E",
+  "trace_id": "9a40450e-d342-4422-8b2d-cdbffe5a4091",
+  "transaction_id": "SIM-812617",
+  "transaction": {
+    "transaction_id": "SIM-812617",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1005",
+    "amount": 5514.97,
+    "datetime": "2026-10-23T03:24:37.357850",
+    "location": "Tóquio, Japão",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-812617",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 5,514.97 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido ao valor elevado de R$ 5.514,97 combinado com a realização em horário incomum às 03h, período considerado de risco. Além disso, a operação foi efetuada através de um dispositivo desconhecido, o que reforça o alerta para o perfil analisado.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-812617",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 5,514.97 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1005",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada em horário incomum (03h24) coincidente com o uso de um dispositivo desconhecido.",
+      "Valor elevado (R$ 5.514,97) associado a desvio comportamental pontuado em 0.5 e critérios confirmados de risco."
+    ],
+    "correlated_events": [
+      "A transação de ID SIM-812617 ocorreu na madrugada (03:24) a partir de um dispositivo não reconhecido ('dispositivo_desconhecido_B') e em localização externa ('Tóquio, Japão'), excedendo o limiar de valor de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-812617 apresenta indicadores de risco relacionados a valor elevado, horário incomum e utilização de um dispositivo desconhecido pelo cliente CLI-2001. O perfil do remetente registra desvio comportamental com anomalias apontadas para valor, horário e dispositivo, além de ausência de histórico de transações anteriores. Destaca-se que o perfil do destinatário possui notas informando dados não disponíveis.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range do remetente.",
+      "Dado não disponível — typical_hours do remetente.",
+      "Dado não disponível — typical_locations do remetente.",
+      "Dado não disponível — known_devices do remetente.",
+      "Dado não disponível — receiver_id ausente para o destinatário CLI-1005."
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-812617",
+    "case_id": "SIM-812617_CASE_9A40450E",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A gravidade é moderada (score 42/100) devido à combinação de valor elevado (R$ 5.514,97), horário atípico (03:24) e o uso de um dispositivo desconhecido, o que eleva o potencial de impacto financeiro em caso de acesso não autorizado.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo múltiplos critérios de risco confirmados simultaneamente (valor, horário e dispositivo), exigindo atenção prudente sem caráter de emergência iminente.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é limitada pela coleta parcial de dados, apresentando lacunas importantes no histórico comportamental do remetente (faixa de valores típica, horários, localizações e dispositivos conhecidos) e ausência de informações sobre o destinatário."
+    },
+    "critical_evidence": [
+      "Transação realizada em horário incomum (03h24), fora do padrão habitual.",
+      "Utilização de um dispositivo não reconhecido ('dispositivo_desconhecido_B').",
+      "Valor da transação (R$ 5.514,97) superior ao limiar de R$ 5.000,00."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental pontuado em 0.5 para o cliente CLI-2001.",
+      "Localização registrada em Tóquio, Japão, por canal de caixa eletrônico."
+    ],
+    "weak_evidence": [
+      "Ausência de histórico prévio estruturado para o remetente devido à indisponibilidade de dados típicos."
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1005) não consta em outras listas de transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) do cliente CLI-2001 para confirmar a legitimidade da transação em dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o processamento definitivo.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas movimentações originadas pelo dispositivo desconhecido B.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range do remetente.",
+      "Dado não disponível — typical_hours do remetente.",
+      "Dado não disponível — typical_locations do remetente.",
+      "Dado não disponível — known_devices do remetente.",
+      "Dado não disponível — receiver_id ausente para o destinatário CLI-1005."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-812617",
+    "case_id": "SIM-812617_CASE_9A40450E",
+    "trace_id": "9a40450e-d342-4422-8b2d-cdbffe5a4091",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-812617 foi realizada no valor de R$ 5.514,97 em 23/10/2026 às 03:24:37.",
+        "O remetente é o cliente CLI-2001 e o destinatário é CLI-1005.",
+        "A operação ocorreu no canal caixa_eletronico, a partir da localização 'Tóquio, Japão' e utilizando o 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar de R$ 5.000,00 e o horário das 03h está fora do período habitual (22h–6h).",
+        "Há ausência de histórico de transações anteriores e dados comportamentais do remetente (typical_amount_range, typical_hours, typical_locations, known_devices)."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a transação apresenta indicadores de suspeita devido à combinação de valor elevado, horário incomum e dispositivo não reconhecido.",
+        "É possível que o uso do 'dispositivo_desconhecido_B' em localização internacional (Tóquio, Japão) represente uma tentativa de acesso não autorizado ou desvio comportamental.",
+        "Os dados sugerem que o perfil de risco moderado (score 42/100) decorre da falta de histórico prévio para validação do padrão do cliente."
+      ],
+      "limitations": [
+        "Dado não disponível — typical_amount_range do remetente.",
+        "Dado não disponível — typical_hours do remetente.",
+        "Dado não disponível — typical_locations do remetente.",
+        "Dado não disponível — known_devices do remetente.",
+        "Dado não disponível — receiver_id ausente para o destinatário CLI-1005."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela simultaneidade de fatores anômalos — valor superior a R$ 5.000, horário de madrugada e dispositivo desconhecido em Tóquio —, mitigado parcialmente pela ausência de alertas prévios para o destinatário e limitado por lacunas no histórico do cliente.",
+      "full_narrative": "A análise da transação SIM-812617, realizada pelo cliente CLI-2001 em favor de CLI-1005, revelou um conjunto de indicadores de risco moderado. A operação no valor de R$ 5.514,97 ocorreu às 03:24 por meio de um caixa eletrônico em Tóquio, utilizando o 'dispositivo_desconhecido_B'. Estes elementos cumprem critérios de alerta devido ao desvio de horário, montante elevado e uso de um terminal não reconhecido pelo histórico do cliente.\n\nAs investigações complementares apontam uma coleta parcial de dados, destacando lacunas importantes como a ausência de faixas de valores típicos, horários e localizações habituais do remetente. Apesar disso, o recebedor CLI-1005 não possui registros anteriores em listas de suspeitas, o que mantém a gravidade em nível intermediário (score 42/100).\n\nDada a combinação de fatores comportamentais anômalos e o perfil de confiança limitado a 50%, recomenda-se cautela operacional e validação adicional da identidade do cliente por canais seguros, visando resguardar a operação contra eventuais acessos não autorizados."
+    },
+    "alert_subject": "Alerta de Risco Moderado: Transação em Dispositivo Desconhecido e Horário Atípico (SIM-812617)",
+    "alert_message": "O sistema identificou a transação SIM-812617 no valor de R$ 5.514,97, originada em Tóquio, Japão, às 03:24, através do 'dispositivo_desconhecido_B'. A operação apresenta múltiplos indicadores de risco, incluindo horário atípico e valor acima do limiar padrão. Recomenda-se o acionamento de protocolos de monitoramento intensivo e verificação suplementar com o cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:57:53.234515",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:57:56.794413"
+}

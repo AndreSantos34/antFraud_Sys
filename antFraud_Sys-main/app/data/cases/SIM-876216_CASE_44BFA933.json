@@ -1,0 +1,187 @@
+{
+  "case_id": "SIM-876216_CASE_44BFA933",
+  "trace_id": "44bfa933-54fb-4e53-a8ae-a99fe5d4f309",
+  "transaction_id": "SIM-876216",
+  "transaction": {
+    "transaction_id": "SIM-876216",
+    "customer_id": "CLI-2003",
+    "receiver_id": "CLI-1003",
+    "amount": 7456.0,
+    "datetime": "2026-10-23T02:11:36.961340",
+    "location": "Moscou, Rússia",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-876216",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,456.00 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação de R$ 7.456,00 excede o limiar estabelecido e foi realizada durante a madrugada, período considerado de horário incomum. Além disso, a operação utilizou um dispositivo desconhecido, fatores que combinados aumentam a suspeita sobre a operação.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-876216",
+    "sender_profile": {
+      "customer_id": "CLI-2003",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,456.00 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O horário incomum da transação (02h) coincide com o perfil de simulação de geo_suspeita_dispositivo_madrugada.",
+      "O uso de um dispositivo desconhecido ocorre simultaneamente a uma localização em Moscou, Rússia, e fora do horário habitual."
+    ],
+    "correlated_events": [
+      "A transação SIM-876216 no valor de 7456.0 foi realizada em Moscou, Rússia, através do canal app_mobile e utilizando o dispositivo desconhecido_B.",
+      "O perfil de anomalias encontrou desvios no valor (acima de 5000.0), no horário (02h) e no dispositivo utilizado pelo remetente CLI-2003."
+    ],
+    "investigation_summary": "A transação SIM-876216 de 7456.0 realizada pelo cliente CLI-2003 apresenta indicadores de risco como valor elevado, horário incomum às 02h e uso de um dispositivo desconhecido em Moscou, Rússia. O perfil do remetente aponta desvio comportamental com pontuação de 0.5 e anomalias confirmadas. A operação foi executada via canal mobile sob um perfil de simulação de geo_suspeita_dispositivo_madrugada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "typical_amount_range do remetente",
+      "typical_hours do remetente",
+      "typical_locations do remetente",
+      "known_devices do remetente",
+      "histórico do remetente com 0 transações disponíveis",
+      "receiver_notes detalhadas"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-876216",
+    "case_id": "SIM-876216_CASE_44BFA933",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado de R$ 7.456,00 (que excede o limiar de R$ 5.000,00) combinado com a realização da transação em localização internacional em Moscou, Rússia, indicando exposição financeira moderada.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média (score 42/100) pois a transação reúne múltiplos critérios de alerta (valor elevado, horário incomum às 02h da manhã e uso de dispositivo desconhecido), exigindo atenção proporcional antes da consolidação definitiva.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à ausência de dados históricos detalhados do perfil do remetente (como faixa de valor típica, horários, localizações e dispositivos conhecidos), limitando a comparação com o comportamento habitual completo."
+    },
+    "critical_evidence": [
+      "Transação realizada em Moscou, Rússia, com o valor de R$ 7.456,00 excedendo o limiar de R$ 5.000,00.",
+      "Operação executada às 02h11, fora do horário habitual (22h–6h).",
+      "Utilização de 'dispositivo_desconhecido_B', não registrado previamente."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com pontuação de 0.5 registrada para o cliente CLI-2003.",
+      "Coincidência dos indicadores com o perfil de simulação de geo_suspeita_dispositivo_madrugada."
+    ],
+    "weak_evidence": [
+      "O receptor CLI-1003 não aparece em outras transações suspeitas."
+    ],
+    "refutation_points": [
+      "Dado não disponível para receiver_notes, o receiver_id está ausente de histórico de fraudes anteriores."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) do cliente CLI-2003 para confirmar a legitimidade da transação em dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente por canal seguro antes da liberação final da operação em Moscou.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas atividades do cliente CLI-2003 devido ao desvio comportamental identificado.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "typical_amount_range do remetente",
+      "typical_hours do remetente",
+      "typical_locations do remetente",
+      "known_devices do remetente",
+      "histórico do remetente com 0 transações disponíveis",
+      "receiver_notes detalhadas"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-876216",
+    "case_id": "SIM-876216_CASE_44BFA933",
+    "trace_id": "44bfa933-54fb-4e53-a8ae-a99fe5d4f309",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-876216 foi realizada em 2026-10-23T02:11:36.961340 no valor de R$ 7.456,00.",
+        "O cliente remetente é CLI-2003 e o recebedor é CLI-1003.",
+        "A localização registrada da transação é Moscou, Rússia.",
+        "O canal utilizado foi app_mobile com o 'dispositivo_desconhecido_B'.",
+        "A transação foi simulada sob o perfil 'geo_suspeita_dispositivo_madrugada'."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a localização em Moscou, Rússia, combinada com o horário de madrugada (02h) e o dispositivo desconhecido, sugere um potencial acesso não autorizado.",
+        "É possível que o desvio comportamental com pontuação de 0.5 reflita uma mudança abrupta no padrão de uso do cliente CLI-2003.",
+        "Os dados sugerem que a operação apresenta risco moderado devido ao valor exceder o limiar de R$ 5.000,00."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica do remetente (typical_amount_range).",
+        "Falta de dados sobre horários e localizações habituais do remetente.",
+        "Ausência de dispositivos conhecidos cadastrados para o remetente.",
+        "Histórico do remetente com 0 transações disponíveis para comparação profunda.",
+        "Notas detalhadas do recebedor (receiver_notes) indisponíveis."
+      ],
+      "risk_justification": "A transação apresenta risco médio (score 42/100) devido à combinação de valor elevado (R$ 7.456,00), horário incomum (02h) e uso de dispositivo desconhecido em localização internacional (Moscou, Rússia). A ausência de histórico completo do cliente limita a precisão da análise, exigindo atenção proporcional.",
+      "full_narrative": "O presente relatório analisa a transação SIM-876216, executada no valor de R$ 7.456,00 pelo cliente CLI-2003 em favor de CLI-1003. A operação ocorreu às 02h11 de 23 de outubro de 2026, a partir de Moscou, Rússia, utilizando o canal app_mobile e o 'dispositivo_desconhecido_B'. O perfil de simulação associado indica uma 'geo_suspeita_dispositivo_madrugada', alinhando-se com os múltiplos indicadores de alerta detectados no pipeline.\n\nA partir das evidências coletadas, a IA infere que a simultaneidade de um local geográfico internacional, um horário de madrugada e um equipamento não catalogado eleva a probabilidade de uma anomalia comportamental. O escore de risco calculado situou-se em 42 de 100, caracterizando um nível médio de severidade e urgência operacional moderada. A confiança na avaliação foi parcial (50%), diretamente impactada pelas lacunas informacionais.\n\nComo principais limitações, destaca-se a total ausência de histórico transacional anterior para o cliente CLI-2003, além da falta de registros sobre faixas de valores típicos, horários habituais e dispositivos conhecidos. Tais lacunas impedem uma validação comportamental cruzada mais robusta, mantendo a necessidade de cautela na interpretação do evento.\n\nDiante do cenário exposto, recomenda-se a adoção de medidas consultivas e de verificação adicional junto ao cliente por canais seguros, visando mitigar a exposição a eventuais fraudes sem impactar indevidamente a experiência legítima, caso confirmada a autenticidade."
+    },
+    "alert_subject": "Alerta de Monitoramento: Transação Suspeita com Geolocalização e Dispositivo Desconhecido (SIM-876216)",
+    "alert_message": "Foi identificada a transação SIM-876216 no valor de R$ 7.456,00 realizada pelo cliente CLI-2003 a partir de Moscou, Rússia, às 02h11, utilizando um dispositivo desconhecido via aplicativo móvel. A operação apresenta múltiplos indicadores de alerta e escore de risco médio (42/100).\n\nRecomenda-se o acionamento dos protocolos de verificação suplementar e acompanhamento intensivo das atividades associadas ao cliente para garantir a segurança da operação.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:55:56.556766",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:56:00.503545"
+}

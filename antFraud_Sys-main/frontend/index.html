@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nuclea — Inteligência Antifraude</title>
+<style>
+:root {
+  --bg:        #0e1018;
+  --surface:   #161922;
+  --surface2:  #1e2130;
+  --surface3:  #252a3a;
+  --border:    #2a2f42;
+  --border2:   #353b52;
+  --text:      #e8eaf6;
+  --muted:     #7b82a8;
+  --muted2:    #555d80;
+  --accent:    #6c63ff;
+  --accent2:   #4e46e0;
+  --alto:      #e05c5c;
+  --alto-bg:   rgba(224,92,92,.13);
+  --medio:     #e09a2c;
+  --medio-bg:  rgba(224,154,44,.13);
+  --baixo:     #3db87a;
+  --baixo-bg:  rgba(61,184,122,.13);
+  --info:      #42a5f5;
+  --success:   #3db87a;
+  --danger:    #e05c5c;
+  --sidebar-w: 210px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;line-height:1.5;display:flex;flex-direction:column;}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── Layout ── */
+.shell{display:flex;flex:1;min-height:0;}
+
+/* ══════════════ SIDEBAR ══════════════ */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+}
+.sb-logo{
+  padding:20px 16px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-logo-icon{
+  width:32px;height:32px;background:var(--accent);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.sb-logo-text h1{font-size:14px;font-weight:700;letter-spacing:-.2px;}
+.sb-logo-text span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+
+.sb-section{padding:14px 16px 4px;font-size:9px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.9px;}
+
+nav a{
+  display:flex;align-items:center;gap:9px;padding:8px 16px;
+  color:var(--muted);font-size:12px;cursor:pointer;text-decoration:none;
+  border-left:2px solid transparent;transition:all .12s;
+}
+nav a:hover{color:var(--text);background:var(--surface2);}
+nav a.active{color:var(--text);background:var(--surface2);border-left-color:var(--accent);}
+nav a svg{width:14px;height:14px;flex-shrink:0;}
+
+.sb-badge{
+  margin-left:auto;background:var(--accent);color:#fff;
+  font-size:9px;font-weight:700;border-radius:10px;padding:1px 6px;
+}
+
+.sb-bottom{margin-top:auto;border-top:1px solid var(--border);}
+.sb-access{
+  padding:10px 16px;font-size:10px;color:var(--muted2);
+  display:flex;align-items:center;gap:6px;
+}
+.sb-access svg{width:12px;height:12px;}
+.sb-profile{
+  padding:12px 16px;display:flex;align-items:center;gap:9px;
+  border-top:1px solid var(--border);
+}
+.sb-avatar{
+  width:30px;height:30px;border-radius:50%;background:var(--accent2);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;
+}
+.sb-profile-info{flex:1;min-width:0;}
+.sb-profile-info .pname{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-profile-info .prole{font-size:10px;color:var(--muted);}
+
+/* API Key input inside sidebar */
+.sb-apikey{padding:10px 16px;border-top:1px solid var(--border);}
+.sb-apikey label{font-size:9px;color:var(--muted2);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.6px;}
+.sb-apikey input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:5px;color:var(--text);padding:5px 8px;font-size:11px;outline:none;
+}
+.sb-apikey input:focus{border-color:var(--accent);}
+
+/* ══════════════ TOPBAR ══════════════ */
+.topbar{
+  position:fixed;top:0;left:var(--sidebar-w);right:0;height:46px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:12px;z-index:100;
+}
+.topbar-bread{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.topbar-bread span{color:var(--text);}
+.topbar-bread .sep{color:var(--muted2);}
+.topbar-demo{
+  margin-left:auto;background:rgba(224,154,44,.15);color:var(--medio);
+  border:1px solid rgba(224,154,44,.3);border-radius:4px;
+  padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:.5px;
+}
+.topbar-dt{font-size:11px;color:var(--muted);margin-left:12px;}
+.topbar-bell{
+  width:28px;height:28px;border-radius:6px;background:var(--surface2);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  margin-left:8px;
+}
+.topbar-bell svg{width:14px;height:14px;color:var(--muted);}
+
+/* ══════════════ MAIN ══════════════ */
+.main{margin-left:var(--sidebar-w);margin-top:46px;flex:1;padding:22px 24px 80px;overflow-y:auto;}
+
+/* ── Page header ── */
+.page-eyebrow{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;}
+.page-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+.page-header-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+
+/* ── Stat cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:16px 18px;
+}
+.stat-card .sc-label{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.stat-card .sc-value{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1;}
+.stat-card .sc-sub{font-size:10px;color:var(--muted2);margin-top:5px;}
+.stat-card.accent .sc-value{color:var(--accent);}
+.stat-card.danger .sc-value{color:var(--danger);}
+.stat-card.success .sc-value{color:var(--success);}
+.stat-card.warn .sc-value{color:var(--medio);}
+
+/* ── Two column row ── */
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:12px;margin-bottom:20px;}
+
+/* ── Chart card ── */
+.chart-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
+}
+.card-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.card-sub{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.chart-legend{display:flex;gap:14px;margin-bottom:10px;}
+.chart-legend span{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.chart-legend span::before{content:'';display:block;width:10px;height:3px;border-radius:2px;}
+.leg-tx::before{background:var(--accent);}
+.leg-sc::before{background:var(--medio);}
+
+#chartCanvas{width:100%;height:150px;}
+
+/* ── Agents card ── */
+.agents-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
+}
+.agents-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.agents-card-header .card-title{margin-bottom:0;}
+.agents-card-header svg{width:14px;height:14px;color:var(--muted);}
+
+.agent-row{
+  display:flex;align-items:center;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--border);
+}
+.agent-row:last-child{border-bottom:none;}
+.agent-icon{
+  width:28px;height:28px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex-shrink:0;
+}
+.agent-icon.a1{background:rgba(108,99,255,.15);}
+.agent-icon.a2{background:rgba(66,165,245,.15);}
+.agent-icon.a3{background:rgba(224,154,44,.15);}
+.agent-icon.a4{background:rgba(61,184,122,.15);}
+
+.agent-info{flex:1;min-width:0;}
+.agent-info .aname{font-size:12px;font-weight:600;}
+.agent-info .astatus{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.agent-time{font-size:10px;color:var(--muted2);white-space:nowrap;}
+.agent-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;}
+.agent-dot.ok{background:var(--success);box-shadow:0 0 5px var(--success);}
+.agent-dot.spin{background:var(--accent);animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.agents-footer{
+  margin-top:10px;padding-top:8px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:10px;color:var(--muted);
+}
+.agents-footer .ms{font-size:11px;font-weight:700;color:var(--success);}
+
+/* ══════════════ TRANSACTIONS TABLE ══════════════ */
+.txn-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+
+.txn-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
+.txn-header h3{font-size:13px;font-weight:600;}
+.txn-count{font-size:11px;color:var(--muted);}
+
+.txn-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+.filter-search{
+  display:flex;align-items:center;gap:7px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  padding:5px 10px;
+}
+.filter-search svg{width:13px;height:13px;color:var(--muted);flex-shrink:0;}
+.filter-search input{
+  background:none;border:none;outline:none;color:var(--text);
+  font-size:12px;width:180px;
+}
+.filter-search input::placeholder{color:var(--muted);}
+
+.filter-select{
+  background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  color:var(--text);padding:5px 10px;font-size:12px;outline:none;cursor:pointer;
+}
+.filter-select option{background:var(--surface2);}
+
+.txn-sort{padding:8px 18px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--border);}
+.txn-sort span{font-weight:600;color:var(--text);}
+
+/* ── Cards grid ── */
+.txn-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;
+}
+
+.txn-card{
+  padding:14px 16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .12s;position:relative;
+}
+.txn-card:hover{background:var(--surface2);}
+.txn-card.selected{background:var(--surface2);outline:2px solid var(--accent);outline-offset:-2px;}
+.txn-card:nth-child(3n){border-right:none;}
+.txn-card.empty-slot{border:2px dashed var(--border2);background:transparent;cursor:default;}
+.txn-card.empty-slot:hover{background:transparent;}
+
+.txn-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+
+.risk-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;
+}
+.rb-alto{background:var(--alto-bg);color:var(--alto);}
+.rb-medio{background:var(--medio-bg);color:var(--medio);}
+.rb-baixo{background:var(--baixo-bg);color:var(--baixo);}
+.rb-critico{background:rgba(224,92,92,.2);color:#ff4444;}
+
+.score-chip{font-size:11px;font-weight:700;}
+.score-chip.alto{color:var(--alto);}
+.score-chip.medio{color:var(--medio);}
+.score-chip.baixo{color:var(--baixo);}
+.score-chip.critico{color:#ff4444;}
+
+.risk-bar{height:3px;border-radius:2px;background:var(--border);margin-bottom:10px;}
+.risk-bar-fill{height:100%;border-radius:2px;transition:width .3s;}
+.fill-alto{background:var(--alto);}
+.fill-medio{background:var(--medio);}
+.fill-baixo{background:var(--baixo);}
+.fill-critico{background:#ff4444;}
+
+.txn-id{font-size:12px;font-weight:600;margin-bottom:2px;}
+.txn-time{font-size:10px;color:var(--muted);margin-bottom:10px;}
+
+.txn-field{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;}
+.txn-field .fl{font-size:10px;color:var(--muted2);}
+.txn-field .fv{font-size:11px;font-weight:600;}
+
+.txn-status{
+  margin-top:10px;display:flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;
+}
+.txn-status-dot{width:6px;height:6px;border-radius:50%;}
+.st-pending{color:var(--medio);}   .st-pending .txn-status-dot{background:var(--medio);}
+.st-review{color:var(--alto);}     .st-review .txn-status-dot{background:var(--alto);}
+.st-done{color:var(--success);}    .st-done .txn-status-dot{background:var(--success);}
+.st-analyzing{color:var(--accent);}.st-analyzing .txn-status-dot{background:var(--accent);animation:blink .8s infinite;}
+
+/* ── Pagination ── */
+.txn-footer{
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.txn-footer .tf-count{font-size:11px;color:var(--muted);}
+.pager{display:flex;gap:4px;}
+.pager button{
+  width:26px;height:26px;border-radius:5px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;
+}
+.pager button:hover{background:var(--surface3);}
+.pager button.active{background:var(--accent);border-color:var(--accent);}
+
+/* ══════════════ BOTTOM BAR ══════════════ */
+.bottom-bar{
+  position:fixed;bottom:0;left:var(--sidebar-w);right:0;
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;z-index:150;
+  min-height:54px;
+}
+.bb-icon{
+  width:34px;height:34px;border-radius:8px;background:var(--surface2);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.bb-info{flex:1;min-width:0;}
+.bb-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bb-sub{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bb-score{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;white-space:nowrap;
+}
+.bb-score .bs-num{font-size:16px;}
+.bb-empty{font-size:12px;color:var(--muted);font-style:italic;}
+
+.btn-review{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:background .12s;
+}
+.btn-review:hover{background:var(--accent2);}
+.btn-review svg{width:14px;height:14px;}
+
+/* ══════════════ MODAL ══════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  width:100%;max-width:780px;max-height:88vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+.modal-header{
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.modal-header h2{font-size:15px;font-weight:700;}
+.modal-close{
+  width:28px;height:28px;border-radius:6px;background:var(--surface2);
+  border:1px solid var(--border);color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.modal-body{padding:20px 22px;flex:1;}
+
+.m-section{margin-bottom:20px;}
+.m-section-title{
+  font-size:10px;font-weight:700;color:var(--muted2);
+  text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
+}
+.m-info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.m-info-item .mil{font-size:10px;color:var(--muted);margin-bottom:2px;}
+.m-info-item .miv{font-size:13px;font-weight:600;}
+
+.m-agents{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m-agent-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:12px;
+}
+.m-agent-card h4{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+.m-agent-card ul{list-style:none;}
+.m-agent-card ul li{font-size:11px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border);}
+.m-agent-card ul li:last-child{border-bottom:none;}
+.m-agent-card ul li span{color:var(--text);}
+
+.narrative{
+  background:var(--surface2);border-left:3px solid var(--accent);
+  border-radius:0 7px 7px 0;padding:12px 14px;font-size:12px;line-height:1.7;
+  color:var(--text);margin-top:8px;
+}
+
+.actions-list{display:flex;flex-direction:column;gap:8px;}
+.action-item2{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.ai-left{flex:1;}
+.ai-code{font-size:12px;font-weight:600;margin-bottom:2px;}
+.ai-desc{font-size:11px;color:var(--muted);}
+.ai-btns{display:flex;gap:6px;}
+
+.btn-approve{background:rgba(61,184,122,.15);color:var(--success);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;}
+.btn-approve:hover{background:rgba(61,184,122,.25);}
+.btn-reject{background:rgba(224,92,92,.12);color:var(--danger);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;}
+.btn-reject:hover{background:rgba(224,92,92,.22);}
+
+.badge-sm{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;}
+.bsm-pending{background:rgba(108,99,255,.15);color:var(--accent);}
+.bsm-approved,.bsm-executed{background:rgba(61,184,122,.15);color:var(--success);}
+.bsm-rejected,.bsm-failed{background:rgba(224,92,92,.12);color:var(--danger);}
+
+/* ── Tag list ── */
+.tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.tag{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;color:var(--muted);}
+
+/* ── Toast ── */
+#toast{
+  position:fixed;bottom:68px;right:20px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:10px 16px;font-size:12px;display:none;z-index:9999;max-width:320px;
+}
+#toast.show{display:block;animation:fi .18s;}
+#toast.success{border-color:var(--success);}
+#toast.danger{border-color:var(--danger);}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;}}
+
+/* ── Loading ── */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:12px;}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .65s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:12px;}
+
+/* ── Btn export ── */
+.btn-export{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  border-radius:7px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;
+}
+.btn-export:hover{background:var(--surface3);}
+.btn-export svg{width:13px;height:13px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">🛡</div>
+    <div class="sb-logo-text">
+      <h1>nuclea</h1>
+      <span>Inteligência Antifraude</span>
+    </div>
+  </div>
+
+  <nav>
+    <div class="sb-section">Operação</div>
+    <a onclick="switchView('ingest')" data-view="ingest">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      Entrada de transações
+    </a>
+    <a onclick="switchView('results')" data-view="results" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Área de resultados
+    </a>
+    <a onclick="switchView('risk')" data-view="risk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Risco e recomendações
+    </a>
+
+    <div class="sb-section" style="margin-top:6px;">Governança</div>
+    <a onclick="switchView('audit')" data-view="audit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Trilha de auditoria
+    </a>
+    <a onclick="switchView('simulate')" data-view="simulate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Controle de acesso
+    </a>
+  </nav>
+
+  <div class="sb-bottom">
+    <div class="sb-apikey">
+      <label>X-API-Key</label>
+      <input type="password" id="apiKeyInput" placeholder="Cole sua chave aqui" />
+    </div>
+    <div class="sb-access">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Acesso restrito
+    </div>
+    <div class="sb-profile">
+      <div class="sb-avatar">AM</div>
+      <div class="sb-profile-info">
+        <div class="pname">Analista M.</div>
+        <div class="prole">Cibersegurança</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════ TOPBAR ══════════════ -->
+<header class="topbar">
+  <div class="topbar-bread">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Workspace Núclea
+    <span class="sep">/</span>
+    <span id="breadcrumbPage">Prevenção de fraudes</span>
+  </div>
+  <div class="topbar-demo">AMBIENTE DEMONSTRATIVO</div>
+  <div class="topbar-dt" id="topbarDt"></div>
+  <div class="topbar-bell">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  </div>
+</header>
+
+<!-- ══════════════ MAIN CONTENT ══════════════ -->
+<main class="main" id="mainContent">
+
+  <!-- ── VIEW: Área de Resultados ── -->
+  <div id="view-results" class="view">
+    <div class="page-header-row">
+      <div>
+        <div class="page-eyebrow">02 / MONITORAMENTO</div>
+        <div class="page-title">Área de resultados</div>
+        <div class="page-sub">Investigações consolidadas para priorizar a revisão humana. Todos os indicadores são simulados.</div>
+      </div>
+      <button class="btn-export" onclick="exportReport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar relatório
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="sc-label">Transações analisadas</div>
+        <div class="sc-value" id="sTxTotal">—</div>
+        <div class="sc-sub">na amostra</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="sc-label">Indícios priorizados</div>
+        <div class="sc-value" id="sEscalated">—</div>
+        <div class="sc-sub" id="sEscaledPct">—% da amostra</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="sc-label">Revisões pendentes</div>
+        <div class="sc-value" id="sPending">—</div>
+        <div class="sc-sub">decisão humana</div>
+      </div>
+      <div class="stat-card success">
+        <div class="sc-label">Tempo de análise</div>
+        <div class="sc-value" id="sAvgTime">420 ms</div>
+        <div class="sc-sub">simulação</div>
+      </div>
+    </div>
+
+    <!-- Chart + Agents -->
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="card-title">Atividade e risco médio</div>
+        <div class="card-sub">Volume e score (0–100) por intervalo · dados simulados</div>
+        <div class="chart-legend">
+          <span class="leg-tx">Transações</span>
+          <span class="leg-sc">Score médio</span>
+        </div>
+        <canvas id="chartCanvas"></canvas>
+      </div>
+
+      <div class="agents-card">
+        <div class="agents-card-header">
+          <div class="card-title">Rede de agentes</div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div id="agentsCaseId" style="font-size:10px;color:var(--muted);margin-bottom:10px;font-family:monospace;">—</div>
+
+        <div class="agent-row">
+          <div class="agent-icon a1">🔍</div>
+          <div class="agent-info">
+            <div class="aname">Detector</div>
+            <div class="astatus" id="ag1status">3 sinais identificados</div>
+          </div>
+          <div class="agent-dot ok" id="ag1dot"></div>
+          <div class="agent-time" id="ag1time">—</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-icon a2">🔎</div>
+          <div class="agent-info">
+            <div class="aname">Investigador</div>
+            <div class="astatus" id="ag2status">Evidências correlacionadas</div>
+          </div>
+          <div class="agent-dot ok" id="ag2dot"></div>
+          <div class="agent-time" id="ag2time">—</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-icon a3">⚠️</div>
+          <div class="agent-info">
+            <div class="aname">Avaliador</div>
+            <div class="astatus" id="ag3status">Score calculado</div>
+          </div>
+          <div class="agent-dot ok" id="ag3dot"></div>
+          <div class="agent-time" id="ag3time">—</div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-icon a4">🤖</div>
+          <div class="agent-info">
+            <div class="aname">Consolidador</div>
+            <div class="astatus" id="ag4status">Resumo pronto para revisão</div>
+          </div>
+          <div class="agent-dot ok" id="ag4dot"></div>
+          <div class="agent-time" id="ag4time">—</div>
+        </div>
+
+        <div class="agents-footer">
+          <span>Execução simulada · ponta a ponta</span>
+          <span class="ms" id="agTotalTime">— ms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions section -->
+    <div class="txn-section">
+      <div class="txn-header">
+        <div>
+          <h3>Transações e investigações</h3>
+        </div>
+        <div class="txn-count" id="txnCount">— na amostra</div>
+        <div class="txn-filters">
+          <div class="filter-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="txFilter" placeholder="Buscar por ID ou conta mascarada" oninput="applyFilters()"/>
+          </div>
+          <select class="filter-select" id="filterRisk" onchange="applyFilters()">
+            <option value="">Todos os riscos</option>
+            <option value="critico">Crítico</option>
+            <option value="alto">Alto</option>
+            <option value="medio">Moderado</option>
+            <option value="baixo">Baixo</option>
+          </select>
+          <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+            <option value="">Todas as situações</option>
+            <option value="REQUIRES_HUMAN_REVIEW">Revisão pendente</option>
+            <option value="COMPLETED">Análise concluída</option>
+            <option value="ANALYZING">Em análise</option>
+          </select>
+          <button class="btn-export" onclick="loadCases()" style="padding:5px 10px;font-size:11px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+            Atualizar
+          </button>
+        </div>
+      </div>
+      <div class="txn-sort">Ordenado por risco decrescente · <span>cartões com maior prioridade primeiro</span></div>
+
+      <div class="txn-grid" id="txnGrid">
+        <div style="grid-column:1/-1;" class="loading"><span class="spinner"></span>Carregando casos…</div>
+      </div>
+
+      <div class="txn-footer">
+        <div class="tf-count" id="tfCount">—</div>
+        <div class="pager" id="pager"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEW: Entrada de Transações ── -->
+  <div id="view-ingest" class="view" style="display:none;">
+    <div class="page-eyebrow">01 / OPERAÇÃO</div>
+    <div class="page-title">Entrada de transações</div>
+    <div class="page-sub">Envie uma transação para análise síncrona ou ingestão assíncrona.</div>
+
+    <div style="max-width:660px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group2">
+          <label class="fl2">Transaction ID *</label>
+          <input class="fi2" id="f_txid" placeholder="TXN-001"/>
+        </div>
+        <div class="form-group2">
+          <label class="fl2">Customer ID *</label>
+          <input class="fi2" id="f_custid" placeholder="CLI-1001"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group2">
+          <label class="fl2">Valor (R$) *</label>
+          <input class="fi2" id="f_amount" type="number" placeholder="9800.00" step="0.01"/>
+        </div>
+        <div class="form-group2">
+          <label class="fl2">Data/Hora *</label>
+          <input class="fi2" id="f_datetime" type="datetime-local"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group2">
+          <label class="fl2">Localização *</label>
+          <input class="fi2" id="f_location" placeholder="São Paulo, SP"/>
+        </div>
+        <div class="form-group2">
+          <label class="fl2">Canal *</label>
+          <select class="fi2" id="f_channel">
+            <option value="internet_banking">Internet Banking</option>
+            <option value="mobile">Mobile</option>
+            <option value="atm">ATM</option>
+            <option value="pos">POS</option>
+            <option value="api">API</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+        <div class="form-group2">
+          <label class="fl2">Dispositivo *</label>
+          <input class="fi2" id="f_device" placeholder="dispositivo_desconhecido"/>
+        </div>
+        <div class="form-group2">
+          <label class="fl2">Receiver ID (opcional)</label>
+          <input class="fi2" id="f_receiver" placeholder="CLI-9999"/>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-review" onclick="analyzeTransaction()" id="btnAnalyze" style="background:var(--accent);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analisar (síncrono)
+        </button>
+        <button class="btn-review" onclick="ingestTransaction()" id="btnIngest" style="background:var(--surface3);border:1px solid var(--border);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Ingerir (async 202)
+        </button>
+        <button onclick="fillExample()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer;">Exemplo</button>
+      </div>
+      <div id="analyzeResult" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <!-- ── VIEW: Risco e Recomendações ── -->
+  <div id="view-risk" class="view" style="display:none;">
+    <div class="page-eyebrow">03 / ANÁLISE</div>
+    <div class="page-title">Risco e recomendações</div>
+    <div class="page-sub">Selecione um caso na Área de resultados para ver as recomendações detalhadas.</div>
+    <div class="empty" style="margin-top:40px;">
+      <div style="font-size:32px;margin-bottom:10px;">⚠️</div>
+      Nenhum caso selecionado. Vá para <a onclick="switchView('results')" style="color:var(--accent);cursor:pointer;">Área de resultados</a> e clique em um cartão.
+    </div>
+  </div>
+
+  <!-- ── VIEW: Auditoria ── -->
+  <div id="view-audit" class="view" style="display:none;">
+    <div class="page-eyebrow">04 / GOVERNANÇA</div>
+    <div class="page-title">Trilha de auditoria</div>
+    <div class="page-sub">Histórico de decisões e ações executadas pelo sistema.</div>
+    <div class="empty" style="margin-top:40px;">
+      <div style="font-size:32px;margin-bottom:10px;">📋</div>
+      Selecione um caso para ver o histórico de decisões.
+    </div>
+  </div>
+
+  <!-- ── VIEW: Simulate ── -->
+  <div id="view-simulate" class="view" style="display:none;">
+    <div class="page-eyebrow">05 / SIMULAÇÃO</div>
+    <div class="page-title">Simulador</div>
+    <div class="page-sub">Gera e analisa uma transação fictícia via pipeline completo.</div>
+    <div style="max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px;">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;margin-bottom:16px;">
+        <input type="checkbox" id="forceSuspicious" style="width:15px;height:15px;accent-color:var(--accent);"/>
+        Forçar transação suspeita (≥3 critérios)
+      </label>
+      <button class="btn-review" onclick="simulateOne()" id="btnSimulate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Gerar & Analisar
+      </button>
+      <div id="simulateResult" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+</main><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ══════════════ BOTTOM BAR ══════════════ -->
+<div class="bottom-bar" id="bottomBar">
+  <div class="bb-icon">📋</div>
+  <div class="bb-info" id="bbInfo">
+    <div class="bb-empty">Selecione um caso para revisar</div>
+  </div>
+  <div class="bb-score" id="bbScore" style="display:none;"></div>
+  <button class="btn-review" id="bbBtn" style="display:none;" onclick="openSelectedCase()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    Revisar risco e recomendações
+  </button>
+</div>
+
+<!-- ══════════════ MODAL ══════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Detalhe do Caso</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- form styles inline -->
+<style>
+.fl2{font-size:11px;color:var(--muted);display:block;margin-bottom:4px;font-weight:500;}
+.fi2{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:7px;color:var(--text);padding:8px 10px;font-size:12px;outline:none;
+}
+.fi2:focus{border-color:var(--accent);}
+.fi2 option{background:var(--surface2);}
+</style>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
+const BASE = 'http://localhost:8000';
+const apiKeyEl = document.getElementById('apiKeyInput');
+function api() { return apiKeyEl.value.trim(); }
+function H() { return {'Content-Type':'application/json','X-API-Key':api()}; }
+
+// State
+let allCases = [];
+let filteredCases = [];
+let selectedCaseId = null;
+let currentPage = 1;
+const PAGE_SIZE = 6;
+
+// ═══════════════════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const opts = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'};
+  document.getElementById('topbarDt').textContent = now.toLocaleString('pt-BR', opts).replace(',','');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function toast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `show ${type}`;
+  setTimeout(() => t.className = '', 3200);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(`view-${name}`).style.display = 'block';
+  document.querySelector(`[data-view="${name}"]`).classList.add('active');
+  const labels = {results:'Prevenção de fraudes',ingest:'Entrada de transações',risk:'Risco e recomendações',audit:'Trilha de auditoria',simulate:'Simulação'};
+  document.getElementById('breadcrumbPage').textContent = labels[name] || name;
+  if (name === 'results') loadCases();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHART
+// ═══════════════════════════════════════════════════════════
+function drawChart(cases) {
+  const canvas = document.getElementById('chartCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 36;
+  const H = 150;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Build 8 buckets by hour
+  const buckets = Array.from({length:8}, () => ({count:0, scoreSum:0}));
+  cases.forEach(c => {
+    const i = Math.floor(Math.random() * 8);
+    buckets[i].count++;
+    buckets[i].scoreSum += (c.final_risk_score || 0);
+  });
+  const maxCount = Math.max(...buckets.map(b => b.count), 1);
+  const labels = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00'];
+
+  ctx.clearRect(0, 0, W, H);
+
+  const padL=24, padR=8, padT=8, padB=28;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const barW = (chartW / 8) * 0.5;
+  const barGap = chartW / 8;
+
+  // Grid lines
+  ctx.strokeStyle = '#2a2f42'; ctx.lineWidth = 1;
+  [0, 0.5, 1].forEach(f => {
+    const y = padT + chartH * (1-f);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+chartW, y); ctx.stroke();
+    ctx.fillStyle = '#555d80'; ctx.font = '9px system-ui';
+    ctx.fillText(Math.round(maxCount * f), 2, y+3);
+  });
+
+  // Bars
+  buckets.forEach((b, i) => {
+    const x = padL + i * barGap + (barGap - barW) / 2;
+    const barH2 = (b.count / maxCount) * chartH;
+    const y = padT + chartH - barH2;
+    const grad = ctx.createLinearGradient(0, y, 0, padT+chartH);
+    grad.addColorStop(0, 'rgba(108,99,255,.8)');
+    grad.addColorStop(1, 'rgba(108,99,255,.2)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, barW, barH2, [3,3,0,0]) : ctx.rect(x, y, barW, barH2);
+    ctx.fill();
+  });
+
+  // Score line
+  ctx.strokeStyle = '#e09a2c'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  buckets.forEach((b, i) => {
+    const avg = b.count ? b.scoreSum / b.count : 0;
+    const x = padL + i * barGap + barGap / 2;
+    const y = padT + chartH - (avg / 100) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Dots on line
+  ctx.fillStyle = '#e09a2c';
+  buckets.forEach((b, i) => {
+    const avg = b.count ? b.scoreSum / b.count : 0;
+    const x = padL + i * barGap + barGap / 2;
+    const y = padT + chartH - (avg / 100) * chartH;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2); ctx.fill();
+  });
+
+  // X labels
+  ctx.fillStyle = '#7b82a8'; ctx.font = '9px system-ui'; ctx.textAlign = 'center';
+  labels.forEach((l, i) => {
+    const x = padL + i * barGap + barGap / 2;
+    ctx.fillText(l, x, H - 6);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAD CASES
+// ═══════════════════════════════════════════════════════════
+async function loadCases() {
+  document.getElementById('txnGrid').innerHTML = '<div style="grid-column:1/-1;" class="loading"><span class="spinner"></span>Carregando…</div>';
+  try {
+    const r = await fetch(`${BASE}/api/v1/cases`, {headers: H()});
+    if (!r.ok) { toast('Erro ao carregar casos — verifique a API Key', 'danger'); return; }
+    allCases = await r.json();
+
+    // Sort by risk score desc
+    const order = {critico:4,alto:3,medio:2,baixo:1};
+    allCases.sort((a,b) => {
+      const sa = order[a.final_risk_level] || 0;
+      const sb = order[b.final_risk_level] || 0;
+      if (sb !== sa) return sb - sa;
+      return (b.final_risk_score||0) - (a.final_risk_score||0);
+    });
+
+    updateStats();
+    drawChart(allCases);
+    applyFilters();
+  } catch {
+    document.getElementById('txnGrid').innerHTML = '<div style="grid-column:1/-1;" class="empty">Falha ao conectar — servidor offline ou API Key incorreta.</div>';
+  }
+}
+
+function updateStats() {
+  const total = allCases.length;
+  const escalated = allCases.filter(c => c.processing_status === 'REQUIRES_HUMAN_REVIEW').length;
+  const pending = allCases.filter(c => c.processing_status === 'REQUIRES_HUMAN_REVIEW').length;
+  const pct = total ? ((escalated/total)*100).toFixed(1) : 0;
+
+  document.getElementById('sTxTotal').textContent = total.toLocaleString('pt-BR');
+  document.getElementById('sEscalated').textContent = escalated;
+  document.getElementById('sEscaledPct').textContent = `${pct}% da amostra`;
+  document.getElementById('sPending').textContent = String(pending).padStart(2,'0');
+  document.getElementById('txnCount').textContent = `${total} na amostra`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════════════
+function applyFilters() {
+  const q = document.getElementById('txFilter').value.toLowerCase();
+  const riskF = document.getElementById('filterRisk').value;
+  const stF = document.getElementById('filterStatus').value;
+
+  filteredCases = allCases.filter(c => {
+    const matchQ = !q || (c.case_id||'').toLowerCase().includes(q) || (c.transaction_id||'').toLowerCase().includes(q);
+    const matchR = !riskF || c.final_risk_level === riskF;
+    const matchS = !stF || c.processing_status === stF;
+    return matchQ && matchR && matchS;
+  });
+
+  currentPage = 1;
+  renderGrid();
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER GRID
+// ═══════════════════════════════════════════════════════════
+function riskClass(lvl) {
+  if (lvl === 'critico') return 'rb-critico';
+  if (lvl === 'alto')    return 'rb-alto';
+  if (lvl === 'medio')   return 'rb-medio';
+  return 'rb-baixo';
+}
+function riskLabel(lvl) {
+  if (lvl === 'critico') return 'CRÍTICO';
+  if (lvl === 'alto')    return 'ALTO';
+  if (lvl === 'medio')   return 'MODERADO';
+  return 'BAIXO';
+}
+function fillClass(lvl) {
+  if (lvl === 'critico') return 'fill-critico';
+  if (lvl === 'alto')    return 'fill-alto';
+  if (lvl === 'medio')   return 'fill-medio';
+  return 'fill-baixo';
+}
+function scoreClass(lvl) {
+  return lvl || 'baixo';
+}
+function statusLabel(s) {
+  if (s === 'REQUIRES_HUMAN_REVIEW') return {cls:'st-pending', txt:'Revisão pendente', dot:true};
+  if (s === 'COMPLETED')             return {cls:'st-done',    txt:'Análise concluída', dot:true};
+  if (s === 'ANALYZING')             return {cls:'st-analyzing', txt:'Em análise', dot:true};
+  if (s === 'FAILED')                return {cls:'st-review',  txt:'Falha', dot:true};
+  return {cls:'st-done', txt:s||'—', dot:false};
+}
+function maskAccount(txId) {
+  if (!txId) return '···· ????';
+  const h = txId.replace(/\D/g,'');
+  return `···· ${h.slice(-4) || txId.slice(-4)}`;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('txnGrid');
+  const total = filteredCases.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = filteredCases.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('tfCount').textContent = `${start+1}–${Math.min(start+PAGE_SIZE, total)} de ${total}`;
+
+  if (!total) {
+    grid.innerHTML = '<div style="grid-column:1/-1;" class="empty">Nenhum caso encontrado com esses filtros.</div>';
+    renderPager(0);
+    return;
+  }
+
+  let html = '';
+  page.forEach(c => {
+    const lvl   = c.final_risk_level || 'baixo';
+    const score = c.final_risk_score ?? 0;
+    const st    = statusLabel(c.processing_status);
+    const sel   = c.case_id === selectedCaseId ? ' selected' : '';
+    html += `
+      <div class="txn-card${sel}" onclick="selectCase('${c.case_id}')">
+        <div class="txn-card-top">
+          <span class="risk-badge ${riskClass(lvl)}">${riskLabel(lvl)}</span>
+          <span class="score-chip ${scoreClass(lvl)}">SCORE ${score}</span>
+        </div>
+        <div class="risk-bar"><div class="risk-bar-fill ${fillClass(lvl)}" style="width:${score}%"></div></div>
+        <div class="txn-id">${c.transaction_id || c.case_id}</div>
+        <div class="txn-time">${c.saved_at ? new Date(c.saved_at).toLocaleString('pt-BR') : '—'} · Pix</div>
+        <div class="txn-field">
+          <span class="fl">CONTA</span>
+          <span class="fv">${maskAccount(c.transaction_id)}</span>
+        </div>
+        <div class="txn-field">
+          <span class="fl">VALOR</span>
+          <span class="fv">—</span>
+        </div>
+        <div class="txn-status ${st.cls}">
+          ${st.dot ? `<div class="txn-status-dot"></div>` : ''}
+          ${st.txt}
+        </div>
+      </div>
+    `;
+  });
+
+  // Fill empty slots to keep grid shape
+  const rem = PAGE_SIZE - page.length;
+  for (let i = 0; i < rem; i++) {
+    html += `<div class="txn-card empty-slot"></div>`;
+  }
+
+  grid.innerHTML = html;
+  renderPager(pages);
+}
+
+function renderPager(pages) {
+  const pager = document.getElementById('pager');
+  if (pages <= 1) { pager.innerHTML = ''; return; }
+  let html = '';
+  for (let i = 1; i <= Math.min(pages, 5); i++) {
+    html += `<button class="${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  if (pages > 5) html += `<button onclick="goPage(${pages})">${pages}</button>`;
+  pager.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; renderGrid(); }
+
+// ═══════════════════════════════════════════════════════════
+// CASE SELECTION
+// ═══════════════════════════════════════════════════════════
+function selectCase(caseId) {
+  selectedCaseId = caseId;
+  renderGrid(); // re-render to show selection
+  const c = allCases.find(x => x.case_id === caseId);
+  if (!c) return;
+
+  // Update agents panel
+  document.getElementById('agentsCaseId').textContent = c.transaction_id || caseId;
+  const lvl = c.final_risk_level || 'baixo';
+  document.getElementById('ag1status').textContent = `${c.final_risk_score > 50 ? '3' : '1'} sinais identificados`;
+  document.getElementById('ag2status').textContent = 'Evidências correlacionadas';
+  document.getElementById('ag3status').textContent = `Score ${c.final_risk_score || 0}/100`;
+  document.getElementById('ag4status').textContent = 'Resumo pronto para revisão';
+
+  // Update bottom bar
+  const st = statusLabel(c.processing_status);
+  document.getElementById('bbInfo').innerHTML = `
+    <div class="bb-title">Caso selecionado · ${c.transaction_id || caseId}</div>
+    <div class="bb-sub">${c.recommended_action || 'Clique em revisar para ver recomendações'}</div>
+  `;
+  const scoreColor = lvl === 'critico' ? 'var(--danger)' : lvl === 'alto' ? 'var(--alto)' : lvl === 'medio' ? 'var(--medio)' : 'var(--success)';
+  document.getElementById('bbScore').style.display = 'flex';
+  document.getElementById('bbScore').innerHTML = `
+    <span class="bs-num" style="color:${scoreColor};">${c.final_risk_score ?? '—'} / 100</span>
+    <span style="color:var(--muted);font-size:11px;">·</span>
+    <span style="color:${scoreColor};font-size:11px;font-weight:700;">${riskLabel(lvl)}</span>
+  `;
+  document.getElementById('bbBtn').style.display = 'flex';
+}
+
+function openSelectedCase() {
+  if (!selectedCaseId) return;
+  loadAndOpenModal(selectedCaseId);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+async function loadAndOpenModal(caseId) {
+  document.getElementById('modalTitle').textContent = 'Carregando…';
+  document.getElementById('modalBody').innerHTML = '<div class="loading"><span class="spinner"></span>Buscando caso completo…</div>';
+  document.getElementById('modalOverlay').classList.add('open');
+
+  try {
+    const [cr, ar] = await Promise.all([
+      fetch(`${BASE}/api/v1/cases/${caseId}`, {headers: H()}),
+      fetch(`${BASE}/api/v1/cases/${caseId}/actions`, {headers: H()})
+    ]);
+    if (!cr.ok) { toast('Caso não encontrado', 'danger'); closeModal(); return; }
+    const c = await cr.json();
+    const actData = ar.ok ? await ar.json() : null;
+    renderModal(c, actData);
+  } catch { toast('Erro ao carregar caso', 'danger'); closeModal(); }
+}
+
+function renderModal(c, actData) {
+  const tx = c.transaction || {};
+  const a1 = c.agent_1_detection || {};
+  const a2 = c.agent_2_investigation || {};
+  const a3 = c.agent_3_risk || {};
+  const a4 = c.agent_4_master || {};
+  const lvl = a4.final_risk_level || a3.risk_dimensions?.severity_level || 'baixo';
+  const score = a4.final_risk_score ?? a3.risk_score ?? '—';
+  const er = a4.executive_report || {};
+
+  document.getElementById('modalTitle').innerHTML = `
+    ${c.case_id || '—'}
+    <span class="badge-sm bsm-${lvl === 'baixo' ? 'approved' : lvl === 'medio' ? 'pending' : 'rejected'}" style="margin-left:8px;font-size:11px;">${riskLabel(lvl)}</span>
+    <span style="font-size:12px;color:var(--muted);font-weight:400;margin-left:8px;">${score}/100</span>
+  `;
+
+  const flags = a1.criteria_flags || {};
+  const flagsHit = Object.entries(flags).filter(([,v])=>v).map(([k])=>k.replace(/_/g,' '));
+  const sp = a2.sender_profile || {};
+  const rd = a3.risk_dimensions || {};
+
+  let html = `
+    <div class="m-section">
+      <div class="m-section-title">Transação</div>
+      <div class="m-info-grid">
+        <div class="m-info-item"><div class="mil">Transaction ID</div><div class="miv" style="font-family:monospace;font-size:11px;">${tx.transaction_id||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Customer ID</div><div class="miv">${tx.customer_id||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Valor</div><div class="miv" style="color:var(--medio);">R$ ${(tx.amount||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>
+        <div class="m-info-item"><div class="mil">Data/Hora</div><div class="miv" style="font-size:11px;">${tx.datetime||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Localização</div><div class="miv">${tx.location||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Canal</div><div class="miv">${tx.channel||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Dispositivo</div><div class="miv" style="font-size:11px;">${tx.device||'—'}</div></div>
+        <div class="m-info-item"><div class="mil">Receiver</div><div class="miv">${tx.receiver_id||'—'}</div></div>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <div class="m-section-title">Pipeline de Agentes</div>
+      <div class="m-agents">
+        <div class="m-agent-card">
+          <h4>🔍 Agente 1 — Detector</h4>
+          <ul>
+            <li>Critérios: <span>${a1.total_criteria_met??'—'}/6</span></li>
+            <li>Classificação: <span>${a1.classification||'—'}</span></li>
+            <li>Escalonado: <span>${a1.escalate_to_investigation?'✅ Sim':'❌ Não'}</span></li>
+            ${a1.llm_confidence!=null?`<li>Confiança LLM: <span>${(a1.llm_confidence*100).toFixed(0)}%</span></li>`:''}
+          </ul>
+          ${flagsHit.length?`<div class="tag-list">${flagsHit.map(f=>`<span class="tag">${f}</span>`).join('')}</div>`:''}
+        </div>
+        <div class="m-agent-card">
+          <h4>🔎 Agente 2 — Investigador</h4>
+          <ul>
+            <li>Desvio comportamental: <span>${sp.behavioral_deviation_score!=null?(sp.behavioral_deviation_score*100).toFixed(0)+'%':'—'}</span></li>
+            <li>Status dados: <span>${a2.data_collection_status||'—'}</span></li>
+            ${a2.crossed_indicators?.length?`<li>Indicadores cruzados: <span>${a2.crossed_indicators.length}</span></li>`:''}
+          </ul>
+          ${sp.anomalies_found?.length?`<div class="tag-list">${sp.anomalies_found.map(e=>`<span class="tag">${e}</span>`).join('')}</div>`:''}
+        </div>
+        <div class="m-agent-card">
+          <h4>⚠️ Agente 3 — Avaliador</h4>
+          <ul>
+            <li>Score: <span style="color:var(--medio);font-weight:700;">${a3.risk_score??'—'}/100</span></li>
+            <li>Severidade: <span>${rd.severity_level||'—'}</span></li>
+            <li>Prioridade: <span>${rd.priority_level||'—'}</span></li>
+            <li>Confiança: <span>${rd.confidence_score!=null?(rd.confidence_score*100).toFixed(0)+'%':'—'}</span></li>
+          </ul>
+        </div>
+        <div class="m-agent-card">
+          <h4>🤖 Agente 4 — Consolidador</h4>
+          <ul>
+            <li>Risco final: <span>${riskLabel(lvl)}</span></li>
+            <li>Urgência: <span>${a4.urgency||'—'}</span></li>
+            <li>Status: <span>${a4.processing_status||'—'}</span></li>
+            <li>Ação: <span style="font-size:10px;">${(a4.recommended_action||'—').slice(0,40)}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (er.full_narrative) {
+    html += `
+      <div class="m-section">
+        <div class="m-section-title">Relatório Executivo</div>
+        <div class="narrative">${er.full_narrative}</div>
+      </div>
+    `;
+  }
+
+  if (a4.immediate_actions?.length) {
+    html += `
+      <div class="m-section">
+        <div class="m-section-title">Ações Imediatas</div>
+        <div class="tag-list">${a4.immediate_actions.map(a=>`<span class="tag" style="color:var(--medio);border-color:rgba(224,154,44,.3);">${a}</span>`).join('')}</div>
+      </div>
+    `;
+  }
+
+  if (actData?.suggested_actions?.length) {
+    html += `<div class="m-section"><div class="m-section-title">Ações Sugeridas — Aprovação Humana</div><div class="actions-list">`;
+    actData.suggested_actions.forEach(act => {
+      const isPending = act.status === 'PENDING';
+      html += `
+        <div class="action-item2">
+          <div class="ai-left">
+            <div class="ai-code">${act.action_id} — <code>${act.action_code}</code>
+              <span class="badge-sm bsm-${act.status.toLowerCase()}" style="margin-left:6px;">${act.status}</span>
+            </div>
+            <div class="ai-desc">${act.description}</div>
+          </div>
+          <div class="ai-btns">
+            ${isPending
+              ? `<button class="btn-approve" onclick="approveAction('${c.case_id}','${act.action_id}')">✓ Aprovar</button>
+                 <button class="btn-reject" onclick="rejectAction('${c.case_id}','${act.action_id}')">✗ Rejeitar</button>`
+              : `<span style="font-size:11px;color:var(--muted);">Processado</span>`
+            }
+          </div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  }
+
+  if (a4.alert_message) {
+    html += `
+      <div class="m-section">
+        <details>
+          <summary style="cursor:pointer;font-size:11px;color:var(--muted);margin-bottom:6px;">Ver alerta completo</summary>
+          <pre style="font-size:11px;white-space:pre-wrap;color:var(--text);margin-top:6px;">${a4.alert_message}</pre>
+        </details>
+      </div>
+    `;
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+// ═══════════════════════════════════════════════════════════
+// APPROVE / REJECT ACTIONS
+// ═══════════════════════════════════════════════════════════
+async function approveAction(caseId, actionId) {
+  const analyst = prompt('ID do analista aprovando:', 'analista_01');
+  if (!analyst) return;
+  try {
+    const r = await fetch(`${BASE}/api/v1/cases/${caseId}/actions/${actionId}/approve`, {
+      method:'POST', headers:H(),
+      body: JSON.stringify({decided_by:analyst, decision:'approve'})
+    });
+    const d = await r.json();
+    r.ok ? (toast(`Ação ${actionId} aprovada!`, 'success'), loadAndOpenModal(caseId))
+          : toast(d.detail || 'Erro ao aprovar', 'danger');
+  } catch { toast('Erro de conexão', 'danger'); }
+}
+
+async function rejectAction(caseId, actionId) {
+  const analyst = prompt('ID do analista rejeitando:', 'analista_01');
+  if (!analyst) return;
+  const just = prompt('Justificativa (opcional):');
+  try {
+    const r = await fetch(`${BASE}/api/v1/cases/${caseId}/actions/${actionId}/reject`, {
+      method:'POST', headers:H(),
+      body: JSON.stringify({decided_by:analyst, decision:'reject', justification:just})
+    });
+    const d = await r.json();
+    r.ok ? (toast(`Ação ${actionId} rejeitada.`, 'success'), loadAndOpenModal(caseId))
+          : toast(d.detail || 'Erro ao rejeitar', 'danger');
+  } catch { toast('Erro de conexão', 'danger'); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// INGEST / ANALYZE FORM
+// ═══════════════════════════════════════════════════════════
+function fillExample() {
+  document.getElementById('f_txid').value = 'TXN-'+Math.floor(Math.random()*9000+1000);
+  document.getElementById('f_custid').value = 'CLI-'+Math.floor(Math.random()*900+100);
+  document.getElementById('f_amount').value = (Math.random()*50000+500).toFixed(2);
+  const now = new Date(); now.setMinutes(0,0,0);
+  document.getElementById('f_datetime').value = now.toISOString().slice(0,16);
+  document.getElementById('f_location').value = 'São Paulo, SP';
+  document.getElementById('f_device').value = 'dispositivo_desconhecido';
+}
+
+function getFormPayload() {
+  return {
+    transaction_id: document.getElementById('f_txid').value.trim(),
+    customer_id:    document.getElementById('f_custid').value.trim(),
+    amount:         parseFloat(document.getElementById('f_amount').value),
+    datetime:       document.getElementById('f_datetime').value,
+    location:       document.getElementById('f_location').value.trim(),
+    channel:        document.getElementById('f_channel').value,
+    device:         document.getElementById('f_device').value.trim(),
+    receiver_id:    document.getElementById('f_receiver').value.trim() || null,
+  };
+}
+
+async function analyzeTransaction() {
+  const btn = document.getElementById('btnAnalyze');
+  btn.disabled = true;
+  const res = document.getElementById('analyzeResult');
+  res.innerHTML = '<div class="loading"><span class="spinner"></span>Analisando (10–30s)…</div>';
+  try {
+    const r = await fetch(`${BASE}/api/v1/analyze`, {method:'POST', headers:H(), body:JSON.stringify(getFormPayload())});
+    const d = await r.json();
+    if (r.ok) {
+      toast('Análise concluída!', 'success');
+      const lvl = d.final_risk_level || 'baixo';
+      res.innerHTML = `
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="risk-badge ${riskClass(lvl)}" style="font-size:11px;">${riskLabel(lvl)}</span>
+            <span style="font-size:16px;font-weight:700;">Score ${d.final_risk_score??'—'}/100</span>
+            <span style="font-size:11px;color:var(--muted);">${d.processing_status||''}</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">Case ID: <code>${d.case_id||'—'}</code> · Critérios: ${d.total_criteria_met??'—'}/6 · Escalonado: ${d.escalated?'✅':'❌'}</div>
+          ${d.agent_4_master?.executive_report?.full_narrative?`<div class="narrative" style="margin-top:10px;">${d.agent_4_master.executive_report.full_narrative}</div>`:''}
+        </div>`;
+    } else {
+      res.innerHTML = `<div style="color:var(--danger);font-size:12px;margin-top:10px;">${d.detail||JSON.stringify(d)}</div>`;
+    }
+  } catch(e) { res.innerHTML = `<div style="color:var(--danger);font-size:12px;margin-top:10px;">${e.message}</div>`; }
+  btn.disabled = false;
+}
+
+async function ingestTransaction() {
+  const btn = document.getElementById('btnIngest');
+  btn.disabled = true;
+  try {
+    const r = await fetch(`${BASE}/api/v1/transactions/ingest`, {method:'POST', headers:H(), body:JSON.stringify(getFormPayload())});
+    const d = await r.json();
+    r.ok ? toast(`Aceito! trace: ${d.trace_id}`, 'success') : toast(d.detail||'Erro', 'danger');
+    document.getElementById('analyzeResult').innerHTML = `<pre style="font-size:11px;color:var(--muted);margin-top:10px;white-space:pre-wrap;">${JSON.stringify(d,null,2)}</pre>`;
+  } catch(e) { toast(e.message, 'danger'); }
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATE
+// ═══════════════════════════════════════════════════════════
+async function simulateOne() {
+  const btn = document.getElementById('btnSimulate');
+  btn.disabled = true;
+  const res = document.getElementById('simulateResult');
+  res.innerHTML = '<div class="loading"><span class="spinner"></span>Gerando e analisando…</div>';
+  const force = document.getElementById('forceSuspicious').checked;
+  try {
+    const r = await fetch(`${BASE}/api/v1/simulate/transaction?force_suspicious=${force}`, {method:'POST', headers:H()});
+    const d = await r.json();
+    if (r.ok) {
+      const an = d.analysis || {};
+      const lvl = an.final_risk_level || 'baixo';
+      const tx = d.simulated_transaction || {};
+      toast('Simulação concluída!', 'success');
+      res.innerHTML = `
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span class="risk-badge ${riskClass(lvl)}">${riskLabel(lvl)}</span>
+            <span style="font-size:16px;font-weight:700;">Score ${an.final_risk_score??'—'}/100</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">
+            ID: <code>${tx.transaction_id||'—'}</code> ·
+            Valor: R$ ${(tx.amount||0).toLocaleString('pt-BR',{minimumFractionDigits:2})} ·
+            Critérios: ${an.total_criteria_met??'—'}/6 ·
+            Escalonado: ${an.escalated?'✅':'❌'}
+          </div>
+        </div>`;
+    } else {
+      res.innerHTML = `<div style="color:var(--danger);font-size:12px;margin-top:10px;">${JSON.stringify(d)}</div>`;
+    }
+  } catch(e) { res.innerHTML = `<div style="color:var(--danger);font-size:12px;margin-top:10px;">${e.message}</div>`; }
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════
+function exportReport() {
+  const rows = [['Case ID','Transaction ID','Score','Risco','Status','Urgência','Ação Recomendada']];
+  allCases.forEach(c => rows.push([c.case_id,c.transaction_id,c.final_risk_score,c.final_risk_level,c.processing_status,c.urgency,c.recommended_action]));
+  const csv = rows.map(r => r.map(v => `"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='antfraud_relatorio.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Relatório exportado!', 'success');
+}
+
+// ═══════════════════════════════════════════════════════════
+// WEBSOCKET — alertas em tempo real
+// ═══════════════════════════════════════════════════════════
+let ws = null;
+apiKeyEl.addEventListener('change', () => { initWs(); loadCases(); });
+
+function initWs() {
+  const key = api(); if (!key) return;
+  if (ws) ws.close();
+  const url = `${BASE.replace('http','ws')}/ws/alerts?api_key=${encodeURIComponent(key)}`;
+  ws = new WebSocket(url);
+  ws.onmessage = e => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'fraud_alert') {
+        toast(`🚨 Alerta: ${msg.transaction_id || msg.alert_subject || 'fraude detectada'} — ${(msg.final_risk_level||'').toUpperCase()}`, 'danger');
+        loadCases();
+      }
+    } catch {}
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+loadCases();
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+{
+  "case_id": "SIM-885483_CASE_87D0023F",
+  "trace_id": "87d0023f-4780-482a-a6ce-847cbbcb087b",
+  "transaction_id": "SIM-885483",
+  "transaction": {
+    "transaction_id": "SIM-885483",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1004",
+    "amount": 14111.36,
+    "datetime": "2026-10-23T23:08:13.980702",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "pix_automatico",
+    "device": "smartphone_desconhecido",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-885483",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 14,111.36 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-885483",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 14,111.36 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'smartphone_desconhecido' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1004",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-885483",
+    "case_id": "SIM-885483_CASE_87D0023F",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-885483",
+    "case_id": "SIM-885483_CASE_87D0023F",
+    "trace_id": "87d0023f-4780-482a-a6ce-847cbbcb087b",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-885483 no valor de R$ 14.111,36 foi realizada em 2026-10-23T23:08:13.980702.",
+        "O canal utilizado foi pix_automatico a partir da localização Rio de Janeiro, RJ.",
+        "O dispositivo utilizado foi classificado como 'smartphone_desconhecido'.",
+        "O perfil de simulação indicado é 'alto_valor_madrugada_dispositivo'.",
+        "Três critérios de risco foram confirmados deterministicamente: valor elevado, horário incomum e dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de alto valor, horário noturno e dispositivo não reconhecido eleva a probabilidade de exposição a fraudes.",
+        "É possível que o uso do canal Pix automático em um dispositivo desconhecido represente uma tentativa de desvio de rotinas habituais de segurança do cliente."
+      ],
+      "limitations": [
+        "O histórico completo do cliente CLI-2004 está indisponível para análise comparativa de comportamento.",
+        "A LLM encontrou indisponibilidade, resultando em síntese narrativa gerada automaticamente e dados parciais."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à convergência de três fatores críticos detetados: montante superior ao limiar, horário noturno atípico e uso de dispositivo desconhecido. A confiança na análise permanece limitada a 50% pela ausência do histórico do cliente.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-885483, realizada em 23 de outubro de 2026, no valor de R$ 14.111,36, via Pix automático, originada em Rio de Janeiro, RJ. O sistema identificou três critérios de desvio de padrão: montante elevado, execução em horário noturno e o emprego de um smartphone desconhecido. Esses fatores estruturam um perfil de risco classificado como médio, com score de 42 em 100.\n\nA investigação automatizada apontou coleta parcial de dados, destacando a ausência do histórico comportamental do cliente CLI-2004. Embora o modelo matemático indique relevância nos indicadores cruzados, a falta de dados históricos reduz a assertividade da avaliação para 50%. A operação enquadra-se no perfil de simulação voltado para alertas de alto valor, madrugada e dispositivo atípico.\n\nDiante do cenário exposto, recomenda-se cautela operacional sem a execução de bloqueios diretos. O caso demanda acompanhamento estruturado para mitigar potenciais exposições enquanto se aguardam confirmações adicionais de segurança."
+    },
+    "alert_subject": "Alerta de Monitoramento: Transação de Médio Risco Detectada (SIM-885483)",
+    "alert_message": "Foi identificada a transação SIM-885483 no valor de R$ 14.111,36 associada a múltiplos indicadores de desvio, incluindo dispositivo desconhecido e horário incomum. Recomenda-se o acionamento dos protocolos de verificação e monitoramento intensivo para mitigar riscos potenciais.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:42:46.776135",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:42:50.164839"
+}

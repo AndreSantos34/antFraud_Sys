@@ -1,0 +1,169 @@
+{
+  "case_id": "SIM-834662_CASE_F03924F8",
+  "trace_id": "f03924f8-c94d-4b90-988a-0bfff87cef13",
+  "transaction_id": "SIM-834662",
+  "transaction": {
+    "transaction_id": "SIM-834662",
+    "customer_id": "CLI-2005",
+    "receiver_id": "CLI-1005",
+    "amount": 9809.81,
+    "datetime": "2026-10-23T23:59:21.150748",
+    "location": "Belo Horizonte, MG",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-834662",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 9,809.81 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-834662",
+    "sender_profile": {
+      "customer_id": "CLI-2005",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 9,809.81 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1005",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-834662",
+    "case_id": "SIM-834662_CASE_F03924F8",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é considerado médio devido ao valor elevado da transação (R$ 9.809,81), que supera o limiar padrão de R$ 5.000,00, representando uma exposição financeira moderada para o cliente.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, pois foram confirmados três critérios de risco (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção proporcional sem caráter de emergência iminente.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de dados históricos completos do cliente (faixa de valores típicos, horários habituais e dispositivos conhecidos), embora os indicadores comportamentais atuais apontem desvio."
+    },
+    "critical_evidence": [
+      "Transação com valor de R$ 9.809,81 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 23h59, fora do horário habitual (definido entre 22h e 6h como período de maior risco).",
+      "Utilização de dispositivo desconhecido ('dispositivo_desconhecido_B')."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental calculado em 0.50.",
+      "Três critérios de risco confirmados deterministicamente pelo sistema."
+    ],
+    "weak_evidence": [
+      "Perfil do recebedor (CLI-1005) sem histórico prévio em outras transações suspeitas, porém com dados cadastrais limitados."
+    ],
+    "refutation_points": [
+      "Não há histórico de fraudes associadas ao recebedor (CLI-1005).",
+      "O canal utilizado (internet_banking) é formal e autenticado por padrão."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do titular antes de prosseguir com a transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente por canal secundário verificado devido ao uso de dispositivo desconhecido em horário incomum.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível (faixa de valor típico, horários usuais, localizações e dispositivos conhecidos).",
+      "Dado não disponível sobre o perfil detalhado do receiver_id."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-834662",
+    "case_id": "SIM-834662_CASE_F03924F8",
+    "trace_id": "f03924f8-c94d-4b90-988a-0bfff87cef13",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-834662 no valor de R$ 9.809,81 foi realizada em 2026-10-23T23:59:21.150748 a partir de Belo Horizonte, MG.",
+        "O canal utilizado foi o internet_banking através do 'dispositivo_desconhecido_B'.",
+        "O cliente remetente é CLI-2005 e o recebedor é CLI-1005.",
+        "Três critérios de risco foram confirmados deterministicamente: valor elevado (acima de R$ 5.000,00), horário incomum (23h59) e uso de dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário noturno avançado e dispositivo desconhecido aponta para um desvio comportamental moderado.",
+        "É possível que o acesso via dispositivo desconhecido indique uma tentativa de acesso não autorizado ou a troca recente de aparelho pelo cliente.",
+        "Os dados sugerem que o risco é moderado (score 42/100), sustentado pela ausência de histórico prévio de fraudes para o recebedor CLI-1005 e pelo uso do canal formal internet_banking."
+      ],
+      "limitations": [
+        "O histórico completo do cliente (faixa de valores típicos, horários habituais e dispositivos conhecidos) está indisponível.",
+        "Não há dados disponíveis sobre o perfil detalhado do receiver_id (CLI-1005).",
+        "A coleta de dados encontra-se em status parcial."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à convergência de três fatores anômalos (valor de R$ 9.809,81, horário às 23h59 e dispositivo desconhecido), mitigados pela ausência de alertas anteriores para o recebedor e pela utilização de um canal autenticado, resultando em uma exposição financeira moderada.",
+      "full_narrative": "O presente relatório analisa a transação SIM-834662, realizada em 23 de outubro de 2026 às 23h59, no valor de R$ 9.809,81, originada em Belo Horizonte, MG. A operação foi executada via internet_banking utilizando o 'dispositivo_desconhecido_B'. A detecção automatizada confirmou três critérios de desvio: montante superior ao limiar de R$ 5.000,00, horário classificado como de maior risco (22h às 6h) e a ausência de reconhecimento prévio do dispositivo empregado.\n\nA investigação realizada evidenciou limitações significativas na base de dados, destacando a ausência do histórico comportamental do cliente CLI-2005 e a falta de informações detalhadas sobre o recebedor CLI-1005. Apesar dessas lacunas, o modelo de risco atribuiu um score de 42/100, caracterizando um nível de risco médio com urgência moderada. Fatores mitigadores importantes foram identificados, como a ausência de histórico de fraudes associadas ao recebedor e a natureza formal do canal internet_banking.\n\nCom base no cruzamento das evidências e das limitações apontadas, a situação requer atenção proporcional sem caráter de emergência iminente. Recomenda-se a adoção de medidas cautelares de verificação de identidade e autenticação, visando validar a legitimidade da operação frente ao perfil de risco apresentado antes de qualquer conclusão definitiva."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita com Dispositivo Desconhecido e Horário Incomum (SIM-834662)",
+    "alert_message": "Uma transação no valor de R$ 9.809,81 (ID SIM-834662) foi detectada em horário incomum (23h59) utilizando um dispositivo desconhecido ('dispositivo_desconhecido_B'). O risco foi avaliado como médio (42/100) devido à presença de múltiplos indicadores de desvio comportamental.\n\nRecomenda-se o acionamento imediato dos protocolos de monitoramento intensivo e a verificação adicional da identidade do titular por canal seguro, considerando a lacuna de dados históricos do cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:56:55.737346",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:56:59.374658"
+}

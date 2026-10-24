@@ -1,0 +1,135 @@
+{
+  "case_id": "TEST-PIPE-01_CASE",
+  "transaction_id": "TEST-PIPE-01",
+  "transaction": {
+    "transaction_id": "TEST-PIPE-01",
+    "customer_id": "CLI-PIPE",
+    "receiver_id": "CLI-RECV",
+    "amount": 9800.0,
+    "datetime": "2024-06-10T02:37:00",
+    "location": "Miami, EUA",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido"
+  },
+  "agent_1_risk": {
+    "transaction_id": "TEST-PIPE-01",
+    "criteria_evaluation": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": true,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 4,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "confidence": 0.98,
+    "justification": "A transação atendeu a 4 critérios: valor elevado (R$ 9800.0), horário incomum (02:37), mudança geográfica (Miami, EUA) e dispositivo desconhecido."
+  },
+  "agent_2_investigation": {
+    "transaction_id": "TEST-PIPE-01",
+    "sender_profile": {
+      "customer_id": "CLI-PIPE",
+      "typical_transaction_range": "Sem histórico disponível",
+      "typical_hours": "Sem histórico disponível",
+      "typical_locations": [
+        "Não informado"
+      ],
+      "known_devices": [
+        "Não informado"
+      ],
+      "transaction_frequency": "Sem histórico disponível",
+      "behavioral_deviation_score": 0.98,
+      "anomalies_found": [
+        "valor elevado",
+        "horário incomum",
+        "mudança geográfica",
+        "dispositivo desconhecido"
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-RECV",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Nenhum registro anterior encontrado em outras transações anômalas."
+    },
+    "crossed_indicators": [
+      "Transação de alto valor realizada em horário de madrugada (02:37) a partir de uma localização geográfica atípica (Miami, EUA) utilizando um dispositivo desconhecido."
+    ],
+    "investigation_summary": "A transação TEST-PIPE-01 foi escalada após atingir 4 critérios críticos de risco, incluindo valor elevado, horário incomum, mudança geográfica e uso de dispositivo desconhecido. A ausência de histórico prévio para o cliente intensifica o perfil de risco, sugerindo possível conta recém-comprometida ou uso de identidade sintética. Recomenda-se o bloqueio preventivo da transação e contato imediato com o titular para confirmação de identidade.",
+    "data_collection_status": "completo",
+    "missing_data": []
+  },
+  "agent_3_evidence": {
+    "transaction_id": "TEST-PIPE-01",
+    "case_id": "TEST-PIPE-01_CASE",
+    "suspicion_confirmed": true,
+    "confirmation_confidence": 0.95,
+    "refutation_arguments": [
+      "O destinatário não possui histórico em outras transações suspeitas."
+    ],
+    "confirmation_arguments": [
+      "A transação atende a 4 critérios críticos de risco simultaneamente (valor elevado, horário incomum, mudança geográfica e dispositivo desconhecido).",
+      "Ausência completa de histórico prévio para o cliente, elevando o risco de conta recém-comprometida ou identidade sintética.",
+      "Alto desvio comportamental detectado (score de 0.98)."
+    ],
+    "evidence_summary": {
+      "critical_evidence": [
+        "Transação de alto valor (R$ 9800.0) realizada de madrugada (02:37).",
+        "Uso de dispositivo desconhecido a partir de localização geográfica atípica (Miami, EUA).",
+        "Score de desvio comportamental de 0.98."
+      ],
+      "supporting_evidence": [
+        "Ausência de histórico anterior de transações para o cliente (perfil sem dados basais)."
+      ],
+      "weak_evidence": [
+        "O destinatário (CLI-RECV) não possui registros prévios em outras análises de fraude."
+      ]
+    },
+    "consolidated_case": {
+      "transaction": "Transação de R$ 9800.0 via internet_banking no dia 2024-06-10 às 02:37, partindo de Miami, EUA, utilizando um dispositivo desconhecido.",
+      "sender_summary": "Cliente CLI-PIPE sem histórico prévio de transações, horários ou locais conhecidos, apresentando desvio comportamental crítico de 0.98.",
+      "receiver_summary": "Destinatário CLI-RECV sem histórico prévio em outras transações suspeitas.",
+      "timeline": "2024-06-10T02:37:00 - Execução da transação anômala a partir de dispositivo desconhecido e geolocalização atípica.",
+      "total_criteria_met": 4,
+      "criteria_list": [
+        "valor_elevado",
+        "horario_incomum",
+        "mudanca_geografica",
+        "dispositivo_desconhecido"
+      ]
+    },
+    "data_quality": "alta",
+    "information_gaps": [],
+    "recommendation_to_master": "Calcular o score de risco considerando a forte evidência de fraude devido à combinação de múltiplos fatores de alto risco (valor, horário, local e dispositivo) associados à ausência de histórico do cliente."
+  },
+  "agent_4_master": {
+    "transaction_id": "TEST-PIPE-01",
+    "case_id": "TEST-PIPE-01_CASE",
+    "risk_score": 90,
+    "risk_level": "critico",
+    "urgency": "maxima",
+    "score_breakdown": {
+      "base_criteria_score": 35,
+      "behavioral_deviation_score": 25,
+      "evidence_quality_score": 15,
+      "crossed_indicators_score": 10,
+      "confirmation_score": 5
+    },
+    "recommended_action": "bloquear_imediato",
+    "cybersecurity_alert": {
+      "subject": "⚠️ ALERTA DE FRAUDE — CRÍTICO — TEST-PIPE-01",
+      "priority": "CRÍTICA",
+      "timestamp": "2024-06-10T02:37:00",
+      "message": "Uma tentativa de transação fraudulenta de alto risco foi detectada em 2024-06-10 às 02:37, envolvendo o cliente CLI-PIPE e o destinatário CLI-RECV. A operação no valor de R$ 9.800,00 foi realizada via internet banking a partir de uma geolocalização atípica em Miami, EUA, utilizando um dispositivo totalmente desconhecido. O Agente 1 identificou 4 critérios críticos simultâneos, enquanto o Agente 2 apontou um desvio comportamental extremo (0.98) e ausência de histórico basal, sugerindo conta comprometida ou identidade sintética. O Agente 3 confirmou a suspeita com alta confiança (0.95), validando o cenário de fraude iminente. Recomenda-se o bloqueio imediato da transação, a suspensão preventiva do acesso via internet banking e o acionamento urgente do titular por canal seguro.",
+      "immediate_actions": [
+        "Bloquear transação imediatamente",
+        "Suspender acesso ao internet banking do cliente CLI-PIPE",
+        "Contatar cliente via canal seguro para verificação de identidade"
+      ],
+      "case_summary": "Transação de R$ 9.800,00 realizada de madrugada (02:37) a partir de Miami, EUA, usando dispositivo desconhecido em conta sem histórico e com desvio comportamental crítico (0.98). Suspeita confirmada pelos três agentes do sistema de prevenção."
+    },
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana."
+  },
+  "_saved_at": "2026-10-23T17:14:28.712214"
+}

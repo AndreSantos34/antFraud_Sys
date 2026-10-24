@@ -1,0 +1,153 @@
+{
+  "case_id": "SIM-240546_CASE_C0963BD5",
+  "trace_id": "c0963bd5-e300-48ec-968f-9ce3553f8f47",
+  "transaction_id": "SIM-240546",
+  "transaction": {
+    "transaction_id": "SIM-240546",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1001",
+    "amount": 10320.81,
+    "datetime": "2026-10-23T02:21:21.344311",
+    "location": "Lagos, Nigéria",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-240546",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 10,320.81 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 10.320,81, que excede o limite estabelecido, e a ocorrência em horário incomum às 02:21. Adicionalmente, a operação foi realizada utilizando o dispositivo_desconhecido_A, reforçando o perfil de risco com múltiplos fatores atípicos.",
+    "llm_confidence": 0.95
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-240546",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 10,320.81 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-240546",
+    "case_id": "SIM-240546_CASE_C0963BD5",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "Score 42/100 com 3 critério(s) confirmado(s). Impacto potencial calculado deterministicamente.",
+      "priority_level": "media",
+      "priority_justification": "Urgência definida como 'media' com base no score.",
+      "confidence_score": 0.5,
+      "confidence_justification": "Confiança de 50% baseada em 3 critério(s) e qualidade dos dados (parcial)."
+    },
+    "critical_evidence": [],
+    "supporting_evidence": [],
+    "weak_evidence": [],
+    "refutation_points": [],
+    "recommendations": [
+      {
+        "action_code": "monitorar_intensivamente",
+        "description": "Manter em monitoramento intensivo e verificar histórico do cliente.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "LLM indisponível — justificativas geradas automaticamente.",
+      "Histórico do cliente não disponível para comparação."
+    ],
+    "score_is_fallback": true,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-240546",
+    "case_id": "SIM-240546_CASE_C0963BD5",
+    "trace_id": "c0963bd5-e300-48ec-968f-9ce3553f8f47",
+    "processing_status": "REQUIRES_HUMAN_REVIEW",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "monitorar_intensivamente",
+    "executive_report": {
+      "observed_facts": [
+        "Transação SIM-240546 no valor de R$ 10.320,81 realizada em 23/10/2026 às 02:21:21.",
+        "Origem no cliente CLI-2004 com destino ao recebedor CLI-1001.",
+        "Canal utilizado: internet_banking através do 'dispositivo_desconhecido_A'.",
+        "Localização da transação registrada em Lagos, Nigéria.",
+        "Três critérios de risco confirmados deterministicamente: valor elevado (> R$ 5.000,00), horário incomum (madrugada) e dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de múltiplos fatores atípicos (valor, horário e dispositivo) eleva a probabilidade de acesso não autorizado.",
+        "É possível que a localização em Lagos, Nigéria, associada a um dispositivo desconhecido, indique o uso de VPN ou comprometimento de credenciais.",
+        "Os dados sugerem que a operação possui características condizentes com perfis de fraude simulados de risco crítico."
+      ],
+      "limitations": [
+        "Histórico do cliente CLI-2004 indisponível para comparação de comportamento prévio.",
+        "LLM indisponível durante a etapa de investigação, resultando em coleta parcial e ausência de síntese narrativa pelo Agente 2.",
+        "Confiança da análise limitada a 50% devido à qualidade parcial dos dados."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à convergência de três indicadores determinísticos críticos: transação de alto valor, horário atípico e uso de dispositivo desconhecido. A ausência do histórico do cliente limita uma avaliação mais aprofundada, exigindo cautela na tratativa do alerta.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-240546, executada em 23 de outubro de 2026, no valor de R$ 10.320,81, originada pela conta CLI-2004 com destino a CLI-1001. A operação ocorreu por meio do canal internet_banking, a partir da localidade de Lagos, Nigéria, utilizando um equipamento classificado como 'dispositivo_desconhecido_A' em horário de madrugada (02:21).\n\nA fase de investigação determinou a confirmação de três critérios de risco essenciais: o valor transacionado excede o limiar estabelecido, o horário foge do padrão habitual de operações, e o dispositivo empregado não possui registro prévio de confiabilidade. Embora o score de risco tenha atingido 42/100 (classificação média), a análise enfrentou limitações técnicas decorrentes da indisponibilidade do histórico do cliente e de falhas na geração de síntese narrativa por LLM no agente anterior.\n\nDiante do exposto, o cenário evidencia uma operação atípica que requer atenção do analista SOC. Recomenda-se a adoção de procedimentos consultivos de checagem para mitigar eventuais exposições de segurança, garantindo que o monitoramento permaneça intensivo até a validação completa da autenticidade da requisição."
+    },
+    "alert_subject": "Alerta de Segurança SOC: Transação Atípica Detectada (SIM-240546)",
+    "alert_message": "Uma transação no valor de R$ 10.320,81 foi identificada com múltiplos indicadores de risco, incluindo horário incomum, alto valor e utilização de um dispositivo desconhecido localizado em Lagos, Nigéria. Solicita-se atenção imediata da equipe de monitoramento para a verificação dos dados disponíveis.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:48:44.036802",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:48:57.761833"
+}

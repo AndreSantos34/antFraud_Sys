@@ -1,0 +1,174 @@
+{
+  "case_id": "SIM-927377_CASE_2A228451",
+  "trace_id": "2a228451-46e4-4163-b7c8-5f76c4d8f74c",
+  "transaction_id": "SIM-927377",
+  "transaction": {
+    "transaction_id": "SIM-927377",
+    "customer_id": "CLI-2004",
+    "receiver_id": "CLI-1001",
+    "amount": 13817.87,
+    "datetime": "2026-10-23T23:32:15.141934",
+    "location": "Rio de Janeiro, RJ",
+    "channel": "pix_automatico",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "alto_valor_madrugada_dispositivo"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-927377",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 13,817.87 excede o limiar de R$ 5,000.00.",
+      "Transação às 23h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-927377",
+    "sender_profile": {
+      "customer_id": "CLI-2004",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 13,817.87 excede o limiar de R$ 5,000.00.",
+        "Transação às 23h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-927377",
+    "case_id": "SIM-927377_CASE_2A228451",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "A severidade é média pois envolve uma quantia de R$ 13.817.87 via PIX automático, que supera o limiar padrão de R$ 5.000,00, embora o score total de risco calculado tenha sido moderado (42/100).",
+      "priority_level": "media",
+      "priority_justification": "A prioridade é média, impulsionada pela combinação de valor elevado, horário atípico (23:32) e uso de dispositivo desconhecido, exigindo atenção moderada da operação.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança é moderada devido ao suporte de dados comportamentais parciais e ausência de histórico consolidado do cliente, limitando uma visão mais profunda do perfil."
+    },
+    "critical_evidence": [
+      "Transação no valor de R$ 13.817.87 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 23h32, fora do horário habitual de perfil.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Score de desvio comportamental calculado em 0.50.",
+      "Três critérios de risco confirmados deterministicamente (valor_elevado, horario_incomum, dispositivo_desconhecido)."
+    ],
+    "weak_evidence": [
+      "Perfil do recebedor sem histórico em outras transações suspeitas, porém com dados parciais."
+    ],
+    "refutation_points": [
+      "Receiver_id CLI-1001 não aparece em outras listas de suspeitos."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a intenção da transação devido ao uso de dispositivo desconhecido e horário incomum.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o fluxo de processamento.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas interações originadas pelo dispositivo_desconhecido_B.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível.",
+      "Faixa de valor típica e horários habituais não informados (Dado não disponível)."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-927377",
+    "case_id": "SIM-927377_CASE_2A228451",
+    "trace_id": "2a228451-46e4-4163-b7c8-5f76c4d8f74c",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-927377 no valor de R$ 13.817,87 foi realizada em 23/10/2026 às 23:32:15, a partir da localização Rio de Janeiro, RJ.",
+        "O canal utilizado foi pix_automatico, com o remetente CLI-2004 e recebedor CLI-1001.",
+        "O dispositivo utilizado foi classificado como 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar padrão de R$ 5.000,00 e o horário está fora do intervalo habitual (22h-6h).",
+        "O histórico do cliente encontra-se indisponível e o recebedor CLI-1001 não consta em listas de suspeitos."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário noturno e dispositivo desconhecido eleva o risco de fraude, resultando em um score de 42/100 (risco médio).",
+        "É possível que a ausência de histórico do cliente tenha limitado a precisão da análise comportamental.",
+        "Os dados sugerem que a operação requer verificação adicional por envolver um canal automatizado em condições atípicas."
+      ],
+      "limitations": [
+        "Histórico do cliente indisponível.",
+        "Faixa de valor típica e horários habituais não informados.",
+        "Sintaxe narrativa do Agente 2 indisponível devido a falha na LLM."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela superação do limiar financeiro, horário atípico e uso de dispositivo desconhecido, embora atenuado pela ausência de alertas prévios para o recebedor e limitação de dados históricos.",
+      "full_narrative": "O sistema identificou a transação SIM-927377, originada pelo cliente CLI-2004 com destino a CLI-1001, no valor de R$ 13.817,87, realizada via pix_automatico às 23:32 do dia 23/10/2026. A operação apresentou desvios comportamentais importantes, incluindo o uso de um 'dispositivo_desconhecido_B', valor superior ao limiar padrão de R$ 5.000,00 e execução em horário noturno atípico.\n\nA análise de risco automatizada atribuiu um score de 42/100, classificando a ocorrência como de nível médio e urgência moderada. A avaliação foi impactada por lacunas informacionais, destacando-se a indisponibilidade do histórico completo do cliente e a ausência de parâmetros detalhados de faixa de valor e horários habituais. Em contrapartida, o recebedor CLI-1001 não possui histórico em listas de suspeitos, ponderando a gravidade do evento.\n\nDiante do cenário exposto, recomenda-se cautela operacional com a adoção de verificação adicional por canal seguro. A preservação da integridade do processo exige o acompanhamento rigoroso do dispositivo desconhecido e a confirmação da legitimidade da intenção do usuário antes de qualquer consolidação do fluxo."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação PIX Automático Atípica (SIM-927377)",
+    "alert_message": "Detectada a transação SIM-927377 no valor de R$ 13.817,87 via pix_automatico, realizada em horário incomum (23:32) e a partir de dispositivo desconhecido. O caso requer atenção devido aos indicadores de desvio comportamental combinados com a indisponibilidade do histórico do cliente.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:38:48.882404",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:38:52.350711"
+}

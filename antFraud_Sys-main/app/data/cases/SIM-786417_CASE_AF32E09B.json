@@ -1,0 +1,171 @@
+{
+  "case_id": "SIM-786417_CASE_AF32E09B",
+  "trace_id": "af32e09b-ac7b-4e7c-9180-9a87688099f0",
+  "transaction_id": "SIM-786417",
+  "transaction": {
+    "transaction_id": "SIM-786417",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1003",
+    "amount": 7702.33,
+    "datetime": "2026-10-23T03:25:15.823590",
+    "location": "Lagos, Nigéria",
+    "channel": "caixa_eletronico",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-786417",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 7,702.33 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-786417",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 7,702.33 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1003",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "valor_elevado confirmado",
+      "horario_incomum confirmado",
+      "dispositivo_desconhecido confirmado"
+    ],
+    "correlated_events": [],
+    "investigation_summary": "Análise automática: 3 critério(s) confirmado(s) deterministicamente. Score de desvio: 0.50. LLM indisponível — síntese narrativa não gerada.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Histórico do cliente indisponível."
+    ],
+    "llm_generated": false
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-786417",
+    "case_id": "SIM-786417_CASE_AF32E09B",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado, refletido pelo score de risco 42/100, devido ao valor de R$ 7.702.33 que supera o limiar padrão de R$ 5.000.00, associado a uma localização em Lagos (Nigéria), indicando exposição financeira relevante.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, pois foram confirmados 3 critérios de risco (valor elevado, horário incomum às 03h25 e uso de dispositivo desconhecido), exigindo atenção moderada sem caracterizar emergência crítica imediata.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à ausência de dados históricos do cliente (faixa de valor típica, horários habituais e locais frequentes indisponíveis), limitando a precisão do perfil comportamental, embora os indicadores atuais sejam claros."
+    },
+    "critical_evidence": [
+      "Transação no valor de R$ 7.702.33, excedendo o limiar de R$ 5.000.00.",
+      "Horário da transação às 03:25, fora do período habitual de atividade.",
+      "Utilização do 'dispositivo_desconhecido_A', não associado previamente ao cliente."
+    ],
+    "supporting_evidence": [
+      "Localização registrada em Lagos, Nigéria.",
+      "Canal utilizado: caixa_eletronico.",
+      "Score de desvio comportamental calculado em 0.5."
+    ],
+    "weak_evidence": [
+      "Dado não disponível — receiver_id ausente nas notas do recebedor (embora ID esteja presente na transação)."
+    ],
+    "refutation_points": [
+      "O recebedor (CLI-1003) não aparece em outras transações suspeitas registradas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+        "description": "Solicitar autenticação adicional (2FA) do cliente para confirmar a legitimidade da operação realizada de dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO",
+        "description": "Manter em monitoramento intensivo as próximas movimentações originadas pelo cliente CLI-2001.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente sobre a transação atípica realizada de madrugada.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Histórico do cliente indisponível (typical_amount_range, typical_hours, typical_locations e known_devices ausentes)."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-786417",
+    "case_id": "SIM-786417_CASE_AF32E09B",
+    "trace_id": "af32e09b-ac7b-4e7c-9180-9a87688099f0",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-786417 no valor de R$ 7.702,33 foi realizada pelo cliente CLI-2001 para o recebedor CLI-1003 em 2026-10-23T03:25:15.823590.",
+        "A operação ocorreu no canal 'caixa_eletronico', localizada em Lagos, Nigéria, utilizando o 'dispositivo_desconhecido_A'.",
+        "Três critérios de risco foram confirmados deterministicamente: valor superior ao limiar de R$ 5.000,00, horário incomum às 03h25 e uso de dispositivo desconhecido."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de localização internacional (Lagos, Nigéria) e horário de madrugada pode indicar exposição a risco geográfico atípico.",
+        "É possível que a utilização de um dispositivo não reconhecido aponte para um acesso não autorizado ou troca de equipamento pelo titular.",
+        "Os dados sugerem que o perfil comportamental do cliente pode estar divergindo de seus padrões habituais devido à conjunção de múltiplos fatores anômalos."
+      ],
+      "limitations": [
+        "O histórico completo do cliente CLI-2001 está indisponível, incluindo faixa de valor típica, horários habituais, locais frequentes e dispositivos conhecidos.",
+        "A coleta de dados foi parcial, limitando a precisão da análise comportamental avançada."
+      ],
+      "risk_justification": "O risco foi classificado como médio (score 42/100) devido à presença de múltiplos indicadores anômalos confirmados (valor elevado, horário de madrugada e dispositivo desconhecido), mitigados parcialmente pela ausência de alertas prévios sobre o recebedor.",
+      "full_narrative": "O presente relatório detalha a análise da transação SIM-786417, efetuada no valor de R$ 7.702,33 pelo cliente CLI-2001 em favor do recebedor CLI-1003. A operação foi registrada em 23 de outubro de 2026, às 03h25, por meio de um caixa eletrônico localizado em Lagos, Nigéria, utilizando um equipamento classificado como dispositivo_desconhecido_A. A detecção automática apontou três violações de critérios de segurança estabelecidos, englobando o montante acima do limiar padrão de R$ 5.000,00, o horário periférico e a utilização de um terminal não mapeado previamente no perfil do usuário.\n\nA investigação identificou um score de desvio de 0.50, evidenciando uma exposição moderada a potenciais desvios comportamentais. Embora o recebedor CLI-1003 não possua histórico de envolvimento em fraudes conhecidas, a conjunção de fatores como a geolocalização na Nigéria e a execução durante a madrugada eleva a incerteza operacional. A ausência de dados históricos consolidados do cliente restringe a visibilidade sobre seus hábitos transacionais cotidianos, impondo cautela na interpretação definitiva do evento.\n\nDiante do exposto, o nível de risco atribuído foi médio (42/100), com urgência moderada de resposta. A recomendação analítica aponta para a necessidade de checagens adicionais por meio de canais seguros de comunicação com o titular, visando esclarecer a legitimidade da operação originada no exterior sem interromper sumariamente as atividades legítimas."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica em Caixa Eletrônico (SIM-786417)",
+    "alert_message": "Foi identificada a transação SIM-786417 no valor de R$ 7.702.33, originada de Lagos, Nigéria, às 03h25, utilizando um dispositivo desconhecido. A operação cumpre múltiplos critérios de desvio comportamental e requer atenção dos analistas para validação de segurança.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:41:49.732312",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:41:53.949898"
+}

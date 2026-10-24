@@ -1,0 +1,180 @@
+{
+  "case_id": "SIM-402811_CASE_99E974EB",
+  "trace_id": "99e974eb-a759-42a1-9edb-54ae53ac48b1",
+  "transaction_id": "SIM-402811",
+  "transaction": {
+    "transaction_id": "SIM-402811",
+    "customer_id": "CLI-2002",
+    "receiver_id": "CLI-1001",
+    "amount": 5783.24,
+    "datetime": "2026-10-23T03:24:42.754442",
+    "location": "Lagos, Nigéria",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-402811",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 5,783.24 excede o limiar de R$ 5,000.00.",
+      "Transação às 03h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": "A transação apresenta indicadores de suspeita devido à combinação de um valor elevado de R$ 5.783,24, que excede o limiar estabelecido, realizada durante o horário incomum das 03h. Além disso, a operação foi efetuada utilizando um dispositivo desconhecido, o que aumenta o risco analítico da operação.",
+    "llm_confidence": 0.9
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-402811",
+    "sender_profile": {
+      "customer_id": "CLI-2002",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 5,783.24 excede o limiar de R$ 5,000.00.",
+        "Transação às 03h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada de madrugada (03h24) coincidente com o uso de um dispositivo desconhecido e localização em Lagos, Nigéria."
+    ],
+    "correlated_events": [
+      "A transação SIM-402811 apresenta valor elevado (R$ 5.783,24) superior ao limiar de R$ 5.000,00, ocorrida em horário incomum (03h) via dispositivo desconhecido."
+    ],
+    "investigation_summary": "A transação SIM-402811, no valor de R$ 5.783,24, apresenta indicadores de risco como horário incomum às 03h24, operação a partir de Lagos, Nigéria, e o uso de um dispositivo desconhecido. O perfil do remetente (CLI-2002) registra desvio comportamental de 0.5 e anomalias confirmadas para valor, horário e dispositivo. A análise é limitada pela ausência de histórico de transações e dados típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — faixa típica de valores do remetente.",
+      "Dado não disponível — horários típicos do remetente.",
+      "Dado não disponível — localizações típicas do remetente.",
+      "Dado não disponível — dispositivos conhecidos do remetente.",
+      "Dado não disponível — histórico de transações do remetente."
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-402811",
+    "case_id": "SIM-402811_CASE_99E974EB",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é classificado como moderado devido ao valor elevado da transação (R$ 5.783,24, acima do limiar de R$ 5.000,00) originado de uma localização internacional (Lagos, Nigéria) e executado em horário de madrugada (03h24), fatores que elevam a exposição financeira caso a operação não seja autorizada pelo titular.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, refletindo um score de risco de 42/100 com 3 critérios confirmados (valor elevado, horário incomum e dispositivo desconhecido), exigindo atenção moderada da equipe de segurança sem configurar uma emergência crítica imediata.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial (status de coleta de dados 'parcial'), pois embora haja confirmação de anomalias no dispositivo, horário e valor, há lacunas significativas na base de dados, como a ausência de histórico de transações, faixa típica de valores, horários, localizações e dispositivos conhecidos do remetente."
+    },
+    "critical_evidence": [
+      "Transação realizada no valor de R$ 5.783,24, superando o limiar de R$ 5.000,00.",
+      "Operação executada às 03h24, horário classificado como incomum (fora do intervalo habitual entre 22h e 6h).",
+      "Utilização de um dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Localização da transação registrada em Lagos, Nigéria.",
+      "Desvio comportamental do remetente pontuado em 0.5.",
+      "Coincidência temporal entre o horário de madrugada, o dispositivo desconhecido e a localização internacional."
+    ],
+    "weak_evidence": [
+      "Receiver_id CLI-1001 não aparece em outras transações suspeitas, fornecendo sinal fraco sobre a reputação do recebedor."
+    ],
+    "refutation_points": [
+      "Dado não disponível — notas sobre o receiver_id estão ausentes, limitando a conclusão sobre o destino dos fundos."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_AUTENTICACAO_ADICIONAL_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do cliente CLI-2002 na transação SIM-402811.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o fluxo da transação.",
+        "proportional": true
+      },
+      {
+        "action_code": "MANTER_MONITORAMENTO_INTENSIVO",
+        "description": "Manter a conta do remetente em monitoramento intensivo para novas tentativas fora do padrão.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — faixa típica de valores do remetente.",
+      "Dado não disponível — horários típicos do remetente.",
+      "Dado não disponível — localizações típicas do remetente.",
+      "Dado não disponível — dispositivos conhecidos do remetente.",
+      "Dado não disponível — histórico de transações do remetente."
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-402811",
+    "case_id": "SIM-402811_CASE_99E974EB",
+    "trace_id": "99e974eb-a759-42a1-9edb-54ae53ac48b1",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_AUTENTICACAO_ADICIONAL_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-402811 no valor de R$ 5.783,24 foi realizada pelo cliente CLI-2002 para o destinatário CLI-1001 em 2026-10-23T03:24:42.754442.",
+        "A operação ocorreu através do canal app_mobile a partir de Lagos, Nigéria, utilizando o dispositivo desconhecido_B.",
+        "O horário da transação (03h24) está fora do intervalo habitual entre 22h e 6h.",
+        "O perfil do remetente registra desvio comportamental de 0.5 e anomalias confirmadas para valor, horário e dispositivo, com score de risco de 42/100 (nível médio)."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário de madrugada e localização internacional (Lagos, Nigéria) sugere uma possível exposição financeira a ser validada.",
+        "É possível que o uso de um dispositivo desconhecido em conjunto com uma geolocalização atípica indique acesso não autorizado ou mudança de contexto do usuário."
+      ],
+      "limitations": [
+        "Ausência de histórico de transações do remetente.",
+        "Dados não disponíveis sobre faixa típica de valores, horários, localizações e dispositivos conhecidos do remetente CLI-2002.",
+        "Ausência de notas sobre o receiver_id (CLI-1001), limitando a conclusão sobre o destino dos fundos."
+      ],
+      "risk_justification": "O risco médio (score 42/100) é justificado pela soma de múltiplos fatores anômalos — valor superior ao limiar, horário de madrugada e origem em Lagos, Nigéria — mitigado parcialmente pela coleta de dados ainda incompleta.",
+      "full_narrative": "A transação SIM-402811, no valor de R$ 5.783,24, foi submetida em 23 de outubro de 2026 às 03h24 via aplicativo móvel. A operação apresenta múltiplos indicadores de alerta, incluindo valor acima do limiar de R$ 5.000,00, execução em horário de madrugada e geolocalização em Lagos, Nigéria, além do uso de um dispositivo classificado como desconhecido_B pelo sistema.\n\nA análise integrada identificou um desvio comportamental de 0.5 para o cliente remetente CLI-2002, resultando em um escore de risco de 42/100, classificado como nível médio. A investigação aponta correlações fortes entre a anomalia de horário e a utilização do novo dispositivo, embora o cenário analítico permaneça parcial devido à escassez de dados históricos de referência sobre o cliente e seu destinatário (CLI-1001).\n\nDiante do perfil de risco apresentado, recomenda-se cautela operacional e verificação adicional por meio de canais seguros. A ausência de notas sobre o destino dos fundos e de parâmetros históricos consolidados reforça a necessidade de acompanhamento intensivo para assegurar a autenticidade da operação sem intervenções definitivas precipitadas."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Atípica em Horário de Madrugada e Origem Externa (SIM-402811)",
+    "alert_message": "Foi identificada a transação SIM-402811 no valor de R$ 5.783,24, originada em Lagos, Nigéria, às 03h24, utilizando um dispositivo desconhecido pelo cliente CLI-2002. O escore de risco calculado é de 42/100, exigindo monitoramento e checagem de segurança.\n\nRecomenda-se acionar o protocolo SOC de monitoramento intensivo e solicitar confirmação do cliente via canal seguro para validar a legitimidade da atividade.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:36:58.968935",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:37:02.294483"
+}

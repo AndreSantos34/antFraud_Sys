@@ -1,0 +1,181 @@
+{
+  "case_id": "SIM-181767_CASE_24B0F49E",
+  "trace_id": "24b0f49e-d66f-4bf6-8449-1d4b858785ee",
+  "transaction_id": "SIM-181767",
+  "transaction": {
+    "transaction_id": "SIM-181767",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1001",
+    "amount": 18260.2,
+    "datetime": "2026-10-23T02:27:31.370297",
+    "location": "Tóquio, Japão",
+    "channel": "internet_banking",
+    "device": "dispositivo_desconhecido_B",
+    "simulated": true,
+    "simulation_profile": "critico_multiplos_indicadores"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-181767",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 18,260.20 excede o limiar de R$ 5,000.00.",
+      "Transação às 02h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-181767",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 18,260.20 excede o limiar de R$ 5,000.00.",
+        "Transação às 02h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_B' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "O valor elevado da transação (R$ 18.260,20) cruza com o horário incomum (02h27) e o uso de um dispositivo desconhecido (dispositivo_desconhecido_B), reforçando o perfil de risco crítico da operação."
+    ],
+    "correlated_events": [
+      "A transação SIM-181767 ocorreu em horário considerado fora do habitual (22h–6h), utilizando um canal de internet banking via um dispositivo não reconhecido pelo sistema e com valor acima do limiar padrão de R$ 5.000,00."
+    ],
+    "investigation_summary": "A transação SIM-181767, no valor de R$ 18.260,20, apresenta indicadores de risco associados a valor elevado, horário incomum (02h27) e utilização de dispositivo desconhecido pelo remetente CLI-2001. O perfil comportamental aponta desvio de pontuação 0.5 e anomalias confirmadas em relação aos limites e padrões operacionais. A análise é limitada pela ausência de dados históricos de transações e perfis típicos do cliente.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "faixa de valores típicos do remetente",
+      "horários típicos do remetente",
+      "localizações típicas do remetente",
+      "dispositivos conhecidos do remetente",
+      "histórico de transações do remetente"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-181767",
+    "case_id": "SIM-181767_CASE_24B0F49E",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é moderado devido ao valor elevado da transação (R$ 18.260,20) que excede o limiar padrão de R$ 5.000,00, combinado com o uso de um dispositivo desconhecido e horário incomum.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, sustentada por um score de 42/100 e pela confirmação de 3 critérios de risco, exigindo atenção para mitigar exposição a fraudes.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial, limitada pela ausência de dados históricos do cliente (faixa de valores, horários e dispositivos típicos), embora haja forte confirmação de anomalias pontuais."
+    },
+    "critical_evidence": [
+      "Valor R$ 18.260,20 excede o limiar de R$ 5.000,00.",
+      "Transação realizada às 02h27 fora do horário habitual.",
+      "Utilização de dispositivo desconhecido (dispositivo_desconhecido_B)."
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com pontuação de 0.5.",
+      "Canal utilizado foi o internet banking."
+    ],
+    "weak_evidence": [
+      "Localização informada como Tóquio, Japão, sem dados históricos para comparação."
+    ],
+    "refutation_points": [
+      "Receiver_id não aparece em outras transações suspeitas."
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a identidade do remetente.",
+        "proportional": true
+      },
+      {
+        "action_code": "ANALISE_NIVEL_2",
+        "description": "Encaminhar para análise Nível 2 devido ao acúmulo de indicadores de risco.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO",
+        "description": "Aguardar confirmação do cliente por canal seguro antes de prosseguir com o fluxo.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "faixa de valores típicos do remetente",
+      "horários típicos do remetente",
+      "localizações típicas do remetente",
+      "dispositivos conhecidos do remetente",
+      "histórico de transações do remetente"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-181767",
+    "case_id": "SIM-181767_CASE_24B0F49E",
+    "trace_id": "24b0f49e-d66f-4bf6-8449-1d4b858785ee",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-181767 no valor de R$ 18.260,20 foi realizada em 2026-10-23T02:27:31.370297 pelo cliente CLI-2001 para o recebedor CLI-1001.",
+        "A operação ocorreu no canal internet_banking a partir da localização 'Tóquio, Japão', utilizando o 'dispositivo_desconhecido_B'.",
+        "O valor excede o limiar padrão de R$ 5.000,00 e o horário de 02h27 está fora do intervalo habitual (22h–6h).",
+        "O score de risco atribuído foi de 42/100, classificado como nível médio com urgência média.",
+        "O receiver_id não aparece em outras transações suspeitas e o status da coleta de dados é parcial."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de valor elevado, horário atípico e uso de dispositivo desconhecido reforça um perfil de risco crítico e potencial desvio comportamental.",
+        "É possível que a operação tenha sido realizada por um terceiro não autorizado devido ao uso de um dispositivo não reconhecido.",
+        "Os dados sugerem que a ausência de histórico de transações limita a precisão da modelagem comportamental, mantendo a confiança em 50%."
+      ],
+      "limitations": [
+        "Ausência de faixa de valores típicos do remetente.",
+        "Ausência de horários e localizações típicas do remetente.",
+        "Ausência de dispositivos conhecidos do remetente e histórico completo de transações."
+      ],
+      "risk_justification": "O risco é considerado médio (score 42/100) devido à convergência de valor elevado (R$ 18.260,20), horário incomum às 02h27 e uso de dispositivo desconhecido, embora limitado pela ausência de dados históricos do cliente.",
+      "full_narrative": "O presente relatório analisa a transação SIM-181767, executada pelo cliente CLI-2001 no valor de R$ 18.260,20, direcionada ao recebedor CLI-1001. A operação foi realizada via internet_banking a partir de Tóquio, Japão, utilizando um dispositivo classificado como desconhecido_B às 02h27 da madrugada. Esses elementos ativam múltiplos critérios de alerta, uma vez que o montante supera o limite de R$ 5.000,00 e o horário foge do padrão operacional habitual.\n\nA investigação apontou que a coleta de dados é parcial, carecendo de informações cruciais sobre o histórico comportamental do remetente, tais como faixas de valores, horários, localizações e dispositivos habituais. Apesar dessas lacunas, o cruzamento de indicadores evidencia anomalias pontuais relevantes que sustentam a classificação da transação como suspeita, resultando em um score de risco de 42/100 com grau de confiança de 50%.\n\nDiante do exposto, recomenda-se cautela no tratamento da operação, priorizando a verificação da identidade do remetente e a validação do canal de acesso. A atuação do analista SOC deve concentrar-se no monitoramento intensivo e na aplicação de protocolos de checagem adicionais para mitigar eventuais exposições a fraudes financeiras."
+    },
+    "alert_subject": "Alerta SOC: Transação Suspeita Detectada - CLI-2001 (SIM-181767)",
+    "alert_message": "Uma transação no valor de R$ 18.260,20 foi identificada com múltiplos indicadores de risco, incluindo horário atípico (02h27) e uso de dispositivo desconhecido em Tóquio, Japão. Solicita-se atenção imediata para validação e acompanhamento do caso.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:48:56.494293",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:48:59.685002"
+}

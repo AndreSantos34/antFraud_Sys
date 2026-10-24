@@ -1,0 +1,190 @@
+{
+  "case_id": "SIM-624609_CASE_5F9679F1",
+  "trace_id": "5f9679f1-a98e-4699-b264-c18c3da43cdf",
+  "transaction_id": "SIM-624609",
+  "transaction": {
+    "transaction_id": "SIM-624609",
+    "customer_id": "CLI-2001",
+    "receiver_id": "CLI-1001",
+    "amount": 6217.89,
+    "datetime": "2026-10-23T01:47:36.492718",
+    "location": "Miami, EUA",
+    "channel": "app_mobile",
+    "device": "dispositivo_desconhecido_A",
+    "simulated": true,
+    "simulation_profile": "geo_suspeita_dispositivo_madrugada"
+  },
+  "agent_1_detection": {
+    "transaction_id": "SIM-624609",
+    "criteria_flags": {
+      "valor_elevado": true,
+      "horario_incomum": true,
+      "frequencia_elevada": false,
+      "valor_repetido": false,
+      "mudanca_geografica": false,
+      "dispositivo_desconhecido": true
+    },
+    "total_criteria_met": 3,
+    "escalate_to_investigation": true,
+    "classification": "suspeita",
+    "deterministic_evidence": [
+      "Valor R$ 6,217.89 excede o limiar de R$ 5,000.00.",
+      "Transação às 01h está fora do horário habitual (22h–6h).",
+      "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+    ],
+    "llm_justification": null,
+    "llm_confidence": null
+  },
+  "agent_2_investigation": {
+    "transaction_id": "SIM-624609",
+    "sender_profile": {
+      "customer_id": "CLI-2001",
+      "typical_amount_range": null,
+      "typical_hours": null,
+      "typical_locations": [],
+      "known_devices": [],
+      "behavioral_deviation_score": 0.5,
+      "anomalies_found": [
+        "Valor R$ 6,217.89 excede o limiar de R$ 5,000.00.",
+        "Transação às 01h está fora do horário habitual (22h–6h).",
+        "Dispositivo 'dispositivo_desconhecido_A' classificado como desconhecido."
+      ]
+    },
+    "receiver_profile": {
+      "receiver_id": "CLI-1001",
+      "appears_in_other_suspicious": false,
+      "receiver_notes": "Dado não disponível — receiver_id ausente."
+    },
+    "crossed_indicators": [
+      "Transação realizada no horário incomum das 01h47 com um dispositivo desconhecido (dispositivo_desconhecido_A)",
+      "Valor elevado de R$ 6.217,89 associado a um desvio comportamental com pontuação de 0.50"
+    ],
+    "correlated_events": [
+      "A transação ocorreu em Miami, EUA, utilizando um canal app_mobile e um dispositivo desconhecido_A fora do horário habitual (22h–6h)",
+      "O valor de R$ 6.217,89 excede o limiar de R$ 5.000,00 estabelecido nas anomalias encontradas"
+    ],
+    "investigation_summary": "A transação SIM-624609, realizada pelo cliente CLI-2001, apresenta indicadores de risco como valor elevado de R$ 6.217,89, horário incomum às 01h47 e uso de um dispositivo desconhecido em Miami, EUA. O perfil do remetente aponta um desvio comportamental com pontuação de 0.5 e anomalias confirmadas para os critérios de valor, horário e dispositivo. O destinatário CLI-1001 não aparece em outras transações suspeitas e o histórico de transações anteriores está vazio.",
+    "data_collection_status": "parcial",
+    "missing_data": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — histórico do remetente",
+      "Dado não disponível — receiver_notes"
+    ],
+    "llm_generated": true
+  },
+  "agent_3_risk": {
+    "transaction_id": "SIM-624609",
+    "case_id": "SIM-624609_CASE_5F9679F1",
+    "risk_score": 42,
+    "risk_dimensions": {
+      "severity_level": "medio",
+      "severity_justification": "O impacto potencial é médio, refletido no score de 42/100, devido ao valor elevado da transação (R$ 6.217,89) que excede o limiar de R$ 5.000,00, associado a um desvio comportamental com pontuação de 0.50.",
+      "priority_level": "media",
+      "priority_justification": "A urgência operacional é média, pois a transação combina múltiplos critérios confirmados (valor elevado, horário incomum às 01h47 e uso de dispositivo desconhecido em Miami, EUA), exigendo averiguação moderada.",
+      "confidence_score": 0.5,
+      "confidence_justification": "A confiança nas evidências é parcial devido à coleta de dados incompleta, havendo ausência de faixa de valor típica, horários típicos, locais habituais, dispositivos conhecidos e histórico do remetente."
+    },
+    "critical_evidence": [
+      "Valor de R$ 6.217,89 excede o limiar de R$ 5.000,00",
+      "Transação realizada às 01h47, fora do horário habitual (22h–6h)",
+      "Uso de dispositivo desconhecido (dispositivo_desconhecido_A)"
+    ],
+    "supporting_evidence": [
+      "Desvio comportamental com pontuação de 0.50",
+      "Localização registrada em Miami, EUA via app_mobile"
+    ],
+    "weak_evidence": [
+      "O canal utilizado foi app_mobile"
+    ],
+    "refutation_points": [
+      "O destinatário CLI-1001 não aparece em outras transações suspeitas"
+    ],
+    "recommendations": [
+      {
+        "action_code": "SOLICITAR_2FA",
+        "description": "Solicitar autenticação adicional (2FA) para confirmar a legitimidade da transação realizada em horário incomum e dispositivo desconhecido.",
+        "proportional": true
+      },
+      {
+        "action_code": "AGUARDAR_CONFIRMACAO_CLIENTE",
+        "description": "Aguardar confirmação do cliente devido ao desvio comportamental e valor acima do limiar.",
+        "proportional": true
+      },
+      {
+        "action_code": "MONITORAMENTO_INTENSIVO",
+        "description": "Manter em monitoramento intensivo as próximas interações do cliente CLI-2001.",
+        "proportional": true
+      }
+    ],
+    "information_gaps": [
+      "Dado não disponível — typical_amount_range",
+      "Dado não disponível — typical_hours",
+      "Dado não disponível — typical_locations",
+      "Dado não disponível — known_devices",
+      "Dado não disponível — histórico do remetente",
+      "Dado não disponível — receiver_notes"
+    ],
+    "score_is_fallback": false,
+    "score_notes": [
+      "+15 valor_elevado",
+      "+12 horario_incomum",
+      "+15 dispositivo_desconhecido"
+    ]
+  },
+  "agent_4_master": {
+    "transaction_id": "SIM-624609",
+    "case_id": "SIM-624609_CASE_5F9679F1",
+    "trace_id": "5f9679f1-a98e-4699-b264-c18c3da43cdf",
+    "processing_status": "COMPLETED",
+    "final_risk_score": 42,
+    "final_risk_level": "medio",
+    "urgency": "media",
+    "recommended_action": "SOLICITAR_2FA",
+    "executive_report": {
+      "observed_facts": [
+        "A transação SIM-624609 no valor de R$ 6.217,89 foi realizada em 2026-10-23T01:47:36.492718.",
+        "O cliente remetente é CLI-2001 e o destinatário é CLI-1001.",
+        "A operação ocorreu em Miami, EUA, via canal app_mobile utilizando o 'dispositivo_desconhecido_A'.",
+        "O valor de R$ 6.217,89 excede o limiar de R$ 5.000,00.",
+        "O horário da transação (01h47) está fora do horário habitual (22h–6h).",
+        "O perfil comportamental apresenta pontuação de 0.5 com anomalias confirmadas para valor, horário e dispositivo.",
+        "O destinatário CLI-1001 não possui registros em outras transações suspeitas."
+      ],
+      "ai_hypotheses": [
+        "A IA infere que a combinação de horário madrugador, valor elevado e dispositivo desconhecido aponta para um potencial desvio comportamental do cliente CLI-2001.",
+        "É possível que a transação tenha sido realizada por um terceiro não autorizado devido ao uso de um dispositivo desconhecido em localização internacional (Miami, EUA).",
+        "Os dados sugerem que, apesar dos alertas, o baixo histórico de suspeitas do destinatário mitiga parcialmente a gravidade extrema do evento."
+      ],
+      "limitations": [
+        "Ausência de faixa de valor típica (typical_amount_range).",
+        "Ausência de horários típicos habituais (typical_hours).",
+        "Ausência de locais habituais do cliente (typical_locations).",
+        "Ausência de dispositivos conhecidos (known_devices).",
+        "Ausência de histórico do remetente (histórico do remetente vazio).",
+        "Ausência de notas sobre o destinatário (receiver_notes)."
+      ],
+      "risk_justification": "O risco médio (score 42/100) justifica-se pela convergência de um valor expressivo acima do limiar, horário incomum e uso de dispositivo desconhecido em outra localidade, contrabalanceado pela ausência de histórico inidôneo do destinatário e coleta parcial de dados.",
+      "full_narrative": "A análise da transação SIM-624609, realizada pelo cliente CLI-2001 em favor de CLI-1001, revelou múltiplos indicadores de alerta que totalizam um score de risco de 42/100, classificado como nível médio. A operação ocorreu às 01h47 da madrugada, fora da janela de horário habitual, movimentando a quantia de R$ 6.217,89 — montante este que excede o limiar de segurança de R$ 5.000,00 estabelecido pelo sistema. Adicionalmente, o acesso foi efetuado a partir de Miami, EUA, utilizando o canal de aplicativo móvel em conjunction com o 'dispositivo_desconhecido_A'.\n\nA investigação evidenciou que o perfil comportamental do remetente apresenta desvio pontuado em 0.50, com anomalias confirmadas nos critérios de valor, horário e dispositivo. Em contrapartida, o histórico de transações anteriores encontra-se vazio e o destinatário CLI-1001 não possui registros em outras ocorrências suspeitas, atuando como fator atenuante na avaliação de gravidade global. A confiança na análise foi estimada em 50% em virtude de lacunas informacionais significativas, tais como a ausência de faixas de valores típicos, horários habituais, locais frequentes e dispositivos previamente conhecidos do cliente.\n\nDiante do cenário exposto, a prioridade operacional é considerada média, exigindo averiguação moderada e monitoramento contínuo. As recomendações analíticas orientam a validação reforçada da identidade e a verificação do contexto da operação por meio de canais seguros, resguardando a instituição e o correntista contra eventuais exposições a fraudes financeiras transfronteiriças ou automatizadas."
+    },
+    "alert_subject": "Alerta de Risco Médio: Transação Incomum Detectada para CLI-2001",
+    "alert_message": "Foi identificada a transação SIM-624609 no valor de R$ 6.217,89, originada de Miami, EUA, às 01h47, utilizando um dispositivo desconhecido e fora do padrão habitual do cliente CLI-2001. A operação apresenta desvio comportamental com score 42/100.\n\nRecomenda-se o encaminhamento para revisão humana de Nível 2 e a solicitação de confirmação do cliente via canal seguro para atestar a legitimidade da atividade.",
+    "immediate_actions": [
+      "Encaminhar para revisão humana de Nível 2",
+      "Solicitar confirmação do cliente via canal seguro",
+      "Acionar protocolo SOC de monitoramento intensivo"
+    ],
+    "pipeline_stages_completed": [
+      "agent_1_detection",
+      "agent_2_investigation",
+      "agent_3_risk_assessment"
+    ],
+    "pipeline_errors": [],
+    "completed_at": "2026-10-23T17:44:55.234311",
+    "disclaimer": "Sistema acadêmico de apoio à triagem. Decisão final sob responsabilidade humana. Este sistema NÃO executa operações financeiras."
+  },
+  "pipeline_errors": [],
+  "_saved_at": "2026-10-23T17:44:59.378557"
+}
