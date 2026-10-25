@@ -392,6 +392,83 @@ def list_case_actions(case_id: str):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# Demo reset
+# ══════════════════════════════════════════════════════════════════════════════
+
+@router.post(
+    "/demo/reset",
+    summary="Limpa todos os casos e reprocessa as transações do dataset",
+    dependencies=[Depends(require_api_key)],
+)
+def demo_reset():
+    """
+    Utilitário de demonstração:
+
+    1. Apaga todos os arquivos em app/data/cases/ (casos e decisões).
+    2. Reprocessa cada transação do dataset pelo pipeline completo.
+    3. Retorna um resumo dos casos gerados.
+
+    **Atenção:** operação destrutiva — todos os casos existentes serão perdidos.
+    Deve ser usado exclusivamente para fins de demonstração.
+    """
+    import os, glob as _glob
+
+    # 1. Limpar casos
+    cases_dir = os.path.join(os.path.dirname(__file__), "..", "data", "cases")
+    cases_dir = os.path.abspath(cases_dir)
+    removed = 0
+    for f in _glob.glob(os.path.join(cases_dir, "*.json")):
+        try:
+            os.remove(f)
+            removed += 1
+        except OSError as exc:
+            logger.warning("[DemoReset] Não foi possível remover %s: %s", f, exc)
+
+    logger.info("[DemoReset] %d arquivos removidos de %s", removed, cases_dir)
+
+    # 2. Reprocessar transações
+    transactions = orchestrator.get_all_transactions()
+    results = []
+    escalated = 0
+    errors = 0
+    for tx in transactions:
+        try:
+            result = orchestrator.analyze_transaction(tx)
+            was_escalated = result.get("escalated", False)
+            if was_escalated:
+                escalated += 1
+            results.append({
+                "transaction_id": tx.get("transaction_id"),
+                "escalated": was_escalated,
+                "risk_level": result.get("final_risk_level"),
+                "risk_score": result.get("final_risk_score"),
+                "case_id": result.get("case_id"),
+            })
+        except Exception as exc:
+            logger.error("[DemoReset] Erro ao processar %s: %s", tx.get("transaction_id"), exc)
+            errors += 1
+            results.append({
+                "transaction_id": tx.get("transaction_id"),
+                "escalated": False,
+                "error": str(exc),
+            })
+
+    logger.info(
+        "[DemoReset] Reset concluído: %d tx processadas, %d escaladas, %d erros",
+        len(transactions), escalated, errors,
+    )
+
+    return {
+        "status": "ok",
+        "files_removed": removed,
+        "transactions_processed": len(transactions),
+        "escalated": escalated,
+        "errors": errors,
+        "results": results,
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # Simulação
 # ══════════════════════════════════════════════════════════════════════════════
 

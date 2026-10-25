@@ -36,17 +36,25 @@ Todos os dados já foram processados pelos agentes anteriores. Sua missão é:
    c) LIMITAÇÕES: dados ausentes, lacunas que afetam a análise
    d) JUSTIFICATIVA DO RISCO: raciocínio integrado de todos os agentes
 
-2. Escrever a NARRATIVA COMPLETA (3-5 parágrafos em PT-BR) para o analista SOC.
+2. Escrever a NARRATIVA COMPLETA (3-5 parágrafos em PT-BR) para o analista SOC,
+   com LINGUAGEM E TOM PROPORCIONAIS ao score de risco (1–100):
+     • Score  1–20  (MÍNIMO):  tom neutro e informativo — sem urgência.
+     • Score 21–40  (BAIXO):   tom atencioso — registrar e monitorar preventivamente.
+     • Score 41–60  (MÉDIO):   tom cauteloso — investigação recomendada.
+     • Score 61–80  (ALTO):    tom preocupado — revisão humana necessária.
+     • Score 81–100 (CRÍTICO): tom urgente — ação imediata do analista SOC.
 
-3. Definir as AÇÕES IMEDIATAS consultivas — NUNCA operacionais.
+3. Definir as AÇÕES IMEDIATAS operacionais do analista SOC, PROPORCIONAIS ao nível de risco.
 
 REGRAS CRÍTICAS:
 - Use APENAS dados já existentes nos resultados fornecidos.
 - NUNCA invente transações, IPs, localizações, contas ou históricos.
-- NUNCA recomende bloquear, cancelar, aprovar ou executar operações financeiras.
-- Ações válidas: "Encaminhar para revisão humana de Nível 2",
-  "Solicitar confirmação do cliente via canal seguro",
-  "Acionar protocolo SOC de monitoramento intensivo", etc.
+- Ações operacionais por nível (use linguagem direta, de quem executa, não de quem recomenda):
+    • Mínimo:   "Arquivar evento no SIEM para análise estatística"
+    • Baixo:    "Incluir cliente em fila de vigilância preventiva por 24h no SIEM"
+    • Médio:    "Ativar perfil de monitoramento intensivo por 72h; correlacionar eventos no SIEM"
+    • Alto:     "Forçar reautenticação MFA do cliente; suspender transações pendentes; abrir ticket de investigação"
+    • Crítico:  "Congelar sessão ativa e conta; escalar para SOC Nível 2; iniciar protocolo de resposta a incidente"
 - Hipóteses devem ser identificadas com frases como "A IA infere que...",
   "É possível que...", "Os dados sugerem que..." — nunca como fatos.
 
@@ -55,11 +63,11 @@ Retorne JSON com exatamente:
   "observed_facts": ["<fato real extraído dos dados>"],
   "ai_hypotheses": ["<hipótese do modelo, identificada como tal>"],
   "limitations": ["<limitação ou dado ausente>"],
-  "risk_justification": "<raciocínio integrado em 2-3 frases>",
-  "full_narrative": "<relatório completo em PT-BR, 3-5 parágrafos>",
-  "alert_subject": "<assunto do alerta para cibersegurança>",
-  "alert_message": "<mensagem urgente em 1-2 parágrafos>",
-  "immediate_actions": ["<ação consultiva proporcional>"]
+  "risk_justification": "<raciocínio integrado em 2-3 frases, proporcional ao score>",
+  "full_narrative": "<relatório completo em PT-BR, 3-5 parágrafos, tom proporcional ao score>",
+  "alert_subject": "<assunto do alerta — severidade proporcional ao score>",
+  "alert_message": "<mensagem em 1-2 parágrafos, urgência proporcional ao score>",
+  "immediate_actions": ["<ação consultiva proporcional ao nível de risco>"]
 }"""
 
 
@@ -159,7 +167,11 @@ def run(
         f"  Status coleta: {investigation_result.get('data_collection_status', '')}\n"
         f"  Dados ausentes: {investigation_result.get('missing_data', [])}\n\n"
         f"RISCO (Agente 3):\n"
-        f"  Score: {risk_score}/100 | Nível: {risk_level} | Urgência: {urgency}\n"
+        f"  Score: {risk_score}/100"
+        f" (base={risk_result.get('risk_score_base', risk_score)}"
+        f", adj={risk_result.get('risk_score_llm_adjustment', 0):+d})"
+        f" | Nível: {risk_level} | Urgência: {urgency}\n"
+        f"  Razão ajuste: {risk_result.get('risk_score_llm_adjustment_reason', '—')}\n"
         f"  Gravidade: {risk_dims.get('severity_justification', '')}\n"
         f"  Prioridade: {risk_dims.get('priority_justification', '')}\n"
         f"  Confiança: {risk_dims.get('confidence_score', 0):.0%} — {risk_dims.get('confidence_justification', '')}\n"

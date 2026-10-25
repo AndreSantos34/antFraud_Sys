@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend (uvicorn)",
+      "type": "shell",
+      "command": ".venv/Scripts/uvicorn.exe",
+      "args": ["main:app", "--reload", "--port", "8000"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "label": "Backend",
+        "group": "AntFraud",
+        "reveal": "always",
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend (http.server)",
+      "type": "shell",
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-m", "http.server", "3000", "--directory", "frontend"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "label": "Frontend",
+        "group": "AntFraud",
+        "reveal": "always",
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "AntFraud: Iniciar tudo",
+      "dependsOn": ["Backend (uvicorn)", "Frontend (http.server)"],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

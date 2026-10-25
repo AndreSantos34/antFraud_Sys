@@ -41,9 +41,24 @@ def _load_dataset() -> list[dict]:
         return json.load(f)
 
 
-def _build_customer_index(transactions: list[dict]) -> dict[str, list[dict]]:
+def _primary_transactions(dataset: list[dict]) -> list[dict]:
+    """
+    Retorna apenas as transações primárias do dataset — exclui registros marcados
+    como `"_history_record": true`, que existem apenas para fornecer contexto
+    histórico a outras transações e não devem ser processados como casos independentes.
+    """
+    return [t for t in dataset if not t.get("_history_record", False)]
+
+
+def _build_customer_history_index(dataset: list[dict]) -> dict[str, list[dict]]:
+    """
+    Constrói um índice cliente→histórico a partir dos registros de histórico embutidos
+    (`"_history_record": true`) e também das transações primárias que precedem a atual.
+
+    Registros com `"_history": [...]` embutido têm sua própria lista de histórico explícita.
+    """
     index: dict[str, list[dict]] = {}
-    for tx in transactions:
+    for tx in dataset:
         cid = tx.get("customer_id", "")
         index.setdefault(cid, []).append(tx)
     return index
@@ -160,8 +175,9 @@ def analyze_transaction(
     except Exception as exc:
         logger.error("[Orchestrator] Agente 3 falhou: %s", exc)
         pipeline_errors.append(f"Agente3: {exc}")
-        # Fallback determinístico para score
-        fallback_score = min(total_criteria * 13, 78)
+        # Fallback determinístico para score — usa pesos médios do novo sistema
+        # Média dos pesos: (16+14+20+14+19+17)/6 ≈ 16.7 pts por critério
+        fallback_score = min(total_criteria * 17, 85)
         fallback_score = max(fallback_score, 40)
         risk = {
             "transaction_id": tx_id,
@@ -263,16 +279,38 @@ def analyze_transaction(
 
 # ── Análise em lote ────────────────────────────────────────────────────────────
 
+def _resolve_history(tx: dict, customer_index: dict[str, list[dict]]) -> list[dict]:
+    """
+    Determina o histórico relevante para uma transação.
+
+    Prioridade:
+      1. Se a transação tem campo `"_history": [...]` embutido, usa essa lista diretamente.
+      2. Caso contrário, usa todas as transações do mesmo cliente que NÃO são a transação atual
+         e NÃO são registros de histórico de outros clientes.
+    """
+    embedded = tx.get("_history")
+    if embedded and isinstance(embedded, list):
+        return embedded
+
+    tx_id = tx.get("transaction_id", "")
+    all_client_tx = customer_index.get(tx.get("customer_id", ""), [])
+    return [t for t in all_client_tx if t.get("transaction_id") != tx_id]
+
+
 def analyze_all_transactions() -> list[dict[str, Any]]:
-    """Executa o pipeline em todas as transações do dataset."""
-    transactions = _load_dataset()
-    customer_index = _build_customer_index(transactions)
+    """
+    Executa o pipeline apenas nas transações PRIMÁRIAS do dataset.
+    Registros marcados com `_history_record: true` fornecem contexto histórico
+    mas não são processados como casos independentes.
+    """
+    dataset = _load_dataset()
+    customer_index = _build_customer_history_index(dataset)
+    primaries = _primary_transactions(dataset)
     results = []
 
-    for tx in transactions:
-        all_client_tx = customer_index.get(tx.get("customer_id", ""), [])
-        history = [t for t in all_client_tx if t.get("transaction_id") != tx.get("transaction_id")]
-        result = analyze_transaction(tx, history, transactions)
+    for tx in primaries:
+        history = _resolve_history(tx, customer_index)
+        result = analyze_transaction(tx, history, primaries)
         results.append(result)
 
     return results
@@ -280,19 +318,18 @@ def analyze_all_transactions() -> list[dict[str, Any]]:
 
 def analyze_single_by_id(transaction_id: str) -> dict[str, Any] | None:
     """Localiza e analisa uma transação do dataset pelo ID."""
-    transactions = _load_dataset()
-    customer_index = _build_customer_index(transactions)
+    dataset = _load_dataset()
+    customer_index = _build_customer_history_index(dataset)
 
-    target = next((t for t in transactions if t.get("transaction_id") == transaction_id), None)
+    target = next((t for t in dataset if t.get("transaction_id") == transaction_id), None)
     if target is None:
         return None
 
-    history = [
-        t for t in customer_index.get(target.get("customer_id", ""), [])
-        if t.get("transaction_id") != transaction_id
-    ]
-    return analyze_transaction(target, history, transactions)
+    history = _resolve_history(target, customer_index)
+    primaries = _primary_transactions(dataset)
+    return analyze_transaction(target, history, primaries)
 
 
 def get_all_transactions() -> list[dict]:
-    return _load_dataset()
+    """Retorna apenas as transações primárias (sem registros de histórico)."""
+    return _primary_transactions(_load_dataset())

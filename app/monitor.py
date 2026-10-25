@@ -183,19 +183,25 @@ class FraudMonitor:
         uptime = None
         if self._started_at:
             uptime = str(datetime.now() - self._started_at).split(".")[0]
-        escalation_rate = (
-            round(self._escalated / self._processed * 100, 1)
+        suspicion_rate = (
+            round(self._escalated / self._processed, 4)
             if self._processed > 0 else 0.0
         )
         return {
-            "running":                    self.running,
-            "started_at":                 self._started_at.isoformat() if self._started_at else None,
-            "uptime":                     uptime,
+            # Chaves canônicas usadas pelo frontend e health check
+            "running":             self.running,
+            "started_at":         self._started_at.isoformat() if self._started_at else None,
+            "uptime":             uptime,
+            "processed":          self._processed,
+            "escalated":          self._escalated,
+            "requires_review":    self._requires_review,
+            "failed":             self._failed,
+            "suspicion_rate":     suspicion_rate,
+            # Aliases para compatibilidade com health check existente
             "transactions_processed":     self._processed,
             "escalated_to_investigation": self._escalated,
             "requires_human_review":      self._requires_review,
-            "failed":                     self._failed,
-            "escalation_rate_pct":        escalation_rate,
+            "escalation_rate_pct":        round(suspicion_rate * 100, 1),
         }
 
 

@@ -336,9 +336,14 @@ class TestAgent3RiskAnalyzer:
                 TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
                 INVESTIGATION_RESULT, "CASE-001"
             )
-        # 4 critérios devem gerar score > 0
+        # 4 critérios: valor_elevado(16) + horario_incomum(14) + mudanca_geografica(19)
+        #              + dispositivo_desconhecido(17) = 66
+        # + magnitude_valor: R$9.8k > R$5k → +0 (tier 5k dá +0)
+        # + desvio_comportamental(0.75 > 0.7) → +6
+        # Total: 72 (fallback, sem LLM) → alto
         assert result["risk_score"] > 0
         assert result["risk_score"] <= 100
+        assert result["risk_score"] >= 60, "4 critérios devem gerar score >= 60 (alto)"
 
     def test_risk_dimensions_present(self):
         from app.agents import agent_risk_analyzer
@@ -363,6 +368,81 @@ class TestAgent3RiskAnalyzer:
             )
         assert result["score_is_fallback"] is True
 
+    def test_new_score_fields_present(self):
+        """Verifica que os novos campos de score (base, ajuste, razão) estão presentes."""
+        from app.agents import agent_risk_analyzer
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result = agent_risk_analyzer.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, "CASE-001"
+            )
+        assert "risk_score_base" in result
+        assert "risk_score_llm_adjustment" in result
+        assert result["risk_score_llm_adjustment"] == 0  # fallback: sem ajuste LLM
+        assert result["risk_score"] == result["risk_score_base"]
+
+    def test_llm_adjustment_applied_correctly(self):
+        """Verifica que um ajuste LLM válido é aplicado ao score base."""
+        from app.agents import agent_risk_analyzer
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.return_value = {
+                "score_adjustment": 8,
+                "score_adjustment_reason": "Combinação de localização internacional + madrugada agrava o risco.",
+                "severity_justification": "Risco elevado.",
+                "priority_justification": "Urgência alta.",
+                "confidence_justification": "Dados suficientes.",
+                "critical_evidence": ["valor_elevado", "mudanca_geografica"],
+                "supporting_evidence": [],
+                "weak_evidence": [],
+                "refutation_points": [],
+                "recommendations": [{"action_code": "solicitar_2fa_e_revisar", "description": "Solicitar 2FA.", "proportional": True}],
+                "information_gaps": [],
+            }
+            result = agent_risk_analyzer.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, "CASE-001"
+            )
+        assert result["risk_score_llm_adjustment"] == 8
+        assert result["risk_score"] == result["risk_score_base"] + 8
+        assert result["score_is_fallback"] is False
+
+    def test_llm_adjustment_clamped_above_max(self):
+        """Garante que um ajuste LLM > _LLM_SCORE_ADJ_MAX é cortado."""
+        from app.agents import agent_risk_analyzer
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.return_value = {
+                "score_adjustment": 99,  # inválido — deve ser cortado em 12
+                "severity_justification": "x", "priority_justification": "x",
+                "confidence_justification": "x", "critical_evidence": [],
+                "supporting_evidence": [], "weak_evidence": [], "refutation_points": [],
+                "recommendations": [], "information_gaps": [],
+            }
+            result = agent_risk_analyzer.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, "CASE-001"
+            )
+        assert result["risk_score_llm_adjustment"] == 12
+        assert result["risk_score"] == result["risk_score_base"] + 12
+
+    def test_llm_adjustment_clamped_below_min(self):
+        """Garante que um ajuste LLM < _LLM_SCORE_ADJ_MIN é cortado."""
+        from app.agents import agent_risk_analyzer
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.return_value = {
+                "score_adjustment": -99,  # inválido — deve ser cortado em -10
+                "severity_justification": "x", "priority_justification": "x",
+                "confidence_justification": "x", "critical_evidence": [],
+                "supporting_evidence": [], "weak_evidence": [], "refutation_points": [],
+                "recommendations": [], "information_gaps": [],
+            }
+            result = agent_risk_analyzer.run(
+                TX_SUSPICIOUS, DETECTION_RESULT_SUSPICIOUS,
+                INVESTIGATION_RESULT, "CASE-001"
+            )
+        assert result["risk_score_llm_adjustment"] == -10
+        assert result["risk_score"] == max(0, result["risk_score_base"] - 10)
+
     def test_recommendations_are_consultive_not_operational(self):
         from app.agents import agent_risk_analyzer
         with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
@@ -373,13 +453,38 @@ class TestAgent3RiskAnalyzer:
             )
         recs = result.get("recommendations", [])
         assert len(recs) > 0
-        # Nenhuma recomendação deve mencionar bloqueio/cancelamento
         for r in recs:
             desc = r.get("description", "").lower()
             assert "bloquear" not in desc or "preventivo" in desc or "nível" in desc
 
+    def test_3_criteria_score_in_medio_range(self):
+        """3 critérios (limiar de escalada) deve cair em médio (41–60) sem ajuste LLM."""
+        from app.agents import agent_risk_analyzer
+        # horario_incomum(14) + mudanca_geografica(19) + dispositivo_desconhecido(17) = 50
+        detection_3 = {
+            **DETECTION_RESULT_SUSPICIOUS,
+            "total_criteria_met": 3,
+            "criteria_flags": {
+                "valor_elevado": False,
+                "horario_incomum": True,
+                "frequencia_elevada": False,
+                "valor_repetido": False,
+                "mudanca_geografica": True,
+                "dispositivo_desconhecido": True,
+            },
+        }
+        tx_low = {**TX_SUSPICIOUS, "amount": 300.00}  # abaixo do limiar de valor
+        inv_no_dev = {**INVESTIGATION_RESULT, "sender_profile": {**INVESTIGATION_RESULT["sender_profile"], "behavioral_deviation_score": 0.5}}
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result = agent_risk_analyzer.run(tx_low, detection_3, inv_no_dev, "CASE-001")
+        assert 41 <= result["risk_score"] <= 60, (
+            f"3 critérios sem valor_elevado devem gerar médio (41–60), obtido: {result['risk_score']}"
+        )
+
     def test_high_criteria_gives_high_score(self):
         from app.agents import agent_risk_analyzer
+        # Todos os 6 critérios = 16+14+20+14+19+17 = 100
         detection_6 = {
             **DETECTION_RESULT_SUSPICIOUS,
             "total_criteria_met": 6,
@@ -390,7 +495,33 @@ class TestAgent3RiskAnalyzer:
             result = agent_risk_analyzer.run(
                 TX_SUSPICIOUS, detection_6, INVESTIGATION_RESULT, "CASE-001"
             )
-        assert result["risk_score"] >= 60
+        # 6 critérios = 100 (peso exato) → crítico
+        assert result["risk_score"] >= 81, f"6 critérios devem ser crítico (>=81), obtido: {result['risk_score']}"
+
+    def test_value_magnitude_bonus_applied(self):
+        """Valor muito alto (> R$20k) ativa bônus de magnitude quando valor_elevado ativo."""
+        from app.agents import agent_risk_analyzer
+        tx_high = {**TX_SUSPICIOUS, "amount": 47500.00}
+        detection_val = {
+            **DETECTION_RESULT_SUSPICIOUS,
+            "total_criteria_met": 3,
+            "criteria_flags": {
+                "valor_elevado": True,
+                "horario_incomum": True,
+                "frequencia_elevada": False,
+                "valor_repetido": False,
+                "mudanca_geografica": False,
+                "dispositivo_desconhecido": True,
+            },
+        }
+        inv_no_dev = {**INVESTIGATION_RESULT, "sender_profile": {**INVESTIGATION_RESULT["sender_profile"], "behavioral_deviation_score": 0.3}}
+        with patch("app.agents.agent_risk_analyzer.gemini_client") as mock_gc:
+            mock_gc.generate_json.side_effect = Exception("LLM down")
+            result_high = agent_risk_analyzer.run(tx_high, detection_val, inv_no_dev, "CASE-001")
+        # valor_elevado(16) + horario_incomum(14) + dispositivo_desconhecido(17) = 47
+        # + magnitude R$47k > R$20k → +6 = 53
+        assert result_high["risk_score"] >= 50, f"Valor R$47k deve gerar bônus de magnitude, score: {result_high['risk_score']}"
+        assert any("magnitude_valor" in n for n in result_high.get("score_notes", [])), "score_notes deve mencionar magnitude_valor"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -638,8 +769,10 @@ class TestDatasetAndSimulator:
     def test_dataset_has_normal_and_suspicious(self):
         from app.orchestrator import get_all_transactions
         labels = [t.get("label") for t in get_all_transactions()]
+        # Dataset uses descriptive labels: normal, medio, alto, critico
         assert "normal" in labels
-        assert "suspeita" in labels
+        non_normal = [l for l in labels if l != "normal"]
+        assert len(non_normal) > 0, "Dataset must contain at least one suspicious/risk transaction"
 
     def test_simulator_required_fields(self):
         from app.simulator import generate_single

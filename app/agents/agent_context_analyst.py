@@ -152,11 +152,12 @@ def _detect_receiver_suspicion(
         if t.get("receiver_id") == receiver_id or t.get("customer_id") == receiver_id
     ]
 
-    # Considera suspeitos os que têm device desconhecido ou horário incomum
+    # Considera suspeitos os que têm device desconhecido ou label de risco elevado
+    _SUSPICIOUS_LABELS = {"suspeita", "medio", "alto", "critico"}
     suspicious_related = [
         t for t in related
         if "desconhecido" in str(t.get("device", "")).lower()
-        or t.get("label") == "suspeita"
+        or t.get("label") in _SUSPICIOUS_LABELS
     ]
 
     if suspicious_related:

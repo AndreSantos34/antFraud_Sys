@@ -22,49 +22,64 @@ logger = logging.getLogger(__name__)
 # Em produção, cada action_code mapearia para um endpoint específico do banco.
 
 _SIMULATED_RESPONSES: dict[str, dict] = {
+    # ── Crítico (score 81–100) ─────────────────────────────────────────────────
+    "congelar_conta_e_escalar_soc": {
+        "success_note": "Sessão ativa encerrada e conta congelada preventivamente. "
+                        "Caso escalado para SOC Nível 2 — Ticket: INC-{ref}. "
+                        "Protocolo de resposta a incidente iniciado. Analista de plantão notificado.",
+        "failure_note": "Falha ao congelar conta no core bancário (timeout). "
+                        "Escalone manualmente para SOC Nível 2 e notifique o analista de plantão.",
+    },
+    # ── Alto (score 61–80) ────────────────────────────────────────────────────
+    "forcar_reautenticacao_e_investigar": {
+        "success_note": "Reautenticação MFA forçada — sessão atual invalidada. "
+                        "Transações pendentes suspensas por 60 min. "
+                        "Ticket de investigação aberto no SIEM: INV-{ref}.",
+        "failure_note": "Falha ao forçar reautenticação. Invalide a sessão manualmente e abra ticket no SIEM.",
+    },
+    # ── Médio (score 41–60) ───────────────────────────────────────────────────
+    "ativar_monitoramento_intensivo": {
+        "success_note": "Perfil de monitoramento intensivo ativado por 72h. "
+                        "Alertas em tempo real configurados para qualquer nova transação. "
+                        "Ref: MON-{ref}. Correlação com eventos recentes iniciada no SIEM.",
+        "failure_note": "Sistema de monitoramento indisponível. Registre manualmente e acione analista de plantão.",
+    },
+    # ── Baixo (score 21–40) ───────────────────────────────────────────────────
+    "registrar_e_vigiar": {
+        "success_note": "Evento registrado no log de auditoria do SIEM. "
+                        "Cliente incluído em fila de vigilância preventiva por 24h. Ref: VIG-{ref}.",
+        "failure_note": "Falha ao registrar no SIEM. Documente manualmente no sistema de auditoria.",
+    },
+    # ── Mínimo (score 1–20) ───────────────────────────────────────────────────
+    "arquivar_sem_acao": {
+        "success_note": "Evento arquivado no SIEM para análise estatística. "
+                        "Nenhuma ação operacional necessária. Ref: AUD-{ref}.",
+        "failure_note": "Falha ao arquivar no SIEM. Registre manualmente no log de auditoria.",
+    },
+    # ── Legado — mantidos para compatibilidade com casos já persistidos ────────
     "bloquear_conta_temporariamente": {
-        "success_note": "Conta bloqueada preventivamente por 24h. Código de ocorrência: BLQ-{ref}. "
-                        "Cliente notificado via SMS e e-mail cadastrado.",
-        "failure_note": "Falha ao contatar core bancário (timeout). Bloqueio pendente — escalone manualmente.",
+        "success_note": "Conta bloqueada preventivamente. Ref: BLQ-{ref}.",
+        "failure_note": "Falha ao bloquear conta. Escalone manualmente.",
     },
     "encaminhar_nivel2_imediato": {
-        "success_note": "Caso encaminhado à equipe SOC Nível 2. Ticket criado: SOC-{ref}. "
-                        "Analista de plantão notificado.",
-        "failure_note": "Sistema de ticketing indisponível. Notifique manualmente o responsável SOC.",
-    },
-    "encaminhar_nivel2": {
-        "success_note": "Caso encaminhado à equipe SOC Nível 2. Ticket criado: SOC-{ref}. "
-                        "Analista de plantão notificado.",
-        "failure_note": "Sistema de ticketing indisponível. Notifique manualmente o responsável SOC.",
+        "success_note": "Caso encaminhado para SOC Nível 2. Ticket: SOC-{ref}.",
+        "failure_note": "Sistema de ticketing indisponível. Notifique o SOC manualmente.",
     },
     "solicitar_2fa_e_revisar": {
-        "success_note": "Solicitação de autenticação adicional (2FA) enviada ao cliente. "
-                        "Transação em espera por 30 minutos. Ref: 2FA-{ref}.",
-        "failure_note": "Falha ao enviar solicitação 2FA. Verifique dados de contato do cliente.",
-    },
-    "solicitar_confirmacao_cliente": {
-        "success_note": "Contato enviado ao cliente via canal seguro (app + SMS). "
-                        "Aguardando resposta por até 2h. Ref: CONF-{ref}.",
-        "failure_note": "Canal de contato indisponível. Acione equipe de atendimento manualmente.",
+        "success_note": "Autenticação adicional solicitada ao cliente. Ref: 2FA-{ref}.",
+        "failure_note": "Falha ao enviar 2FA. Verifique dados de contato do cliente.",
     },
     "monitorar_intensivamente": {
-        "success_note": "Conta incluída no perfil de monitoramento intensivo por 72h. "
-                        "Alertas automáticos ativados. Ref: MON-{ref}.",
-        "failure_note": "Sistema de monitoramento indisponível. Registre acompanhamento manual.",
-    },
-    "monitorar": {
-        "success_note": "Conta incluída em fila de monitoramento padrão. Ref: MON-{ref}.",
-        "failure_note": "Sistema de monitoramento indisponível. Registre acompanhamento manual.",
+        "success_note": "Monitoramento intensivo ativado por 72h. Ref: MON-{ref}.",
+        "failure_note": "Sistema de monitoramento indisponível.",
     },
     "registrar_e_arquivar": {
-        "success_note": "Evento registrado no log de auditoria. Arquivado para análise estatística. "
-                        "Ref: AUD-{ref}.",
-        "failure_note": "Falha ao registrar no sistema de auditoria. Registre manualmente.",
+        "success_note": "Evento arquivado. Ref: AUD-{ref}.",
+        "failure_note": "Falha ao arquivar. Registre manualmente.",
     },
     "revisao_humana": {
-        "success_note": "Caso marcado para revisão humana prioritária. Ref: REV-{ref}. "
-                        "Analista designado será notificado.",
-        "failure_note": "Falha ao criar registro de revisão. Notifique o analista diretamente.",
+        "success_note": "Caso marcado para revisão. Ref: REV-{ref}.",
+        "failure_note": "Falha ao criar registro. Notifique o analista diretamente.",
     },
 }
 
@@ -73,8 +88,17 @@ _DEFAULT_RESPONSE = {
     "failure_note": "Falha ao executar ação. Registre e escalone manualmente.",
 }
 
-# Simula ~90% de taxa de sucesso (realista para ambiente de produção)
-_SIMULATED_SUCCESS_RATE = 0.90
+# Taxa de sucesso simulada por action_code.
+# Ações críticas têm taxa 100% — em demo não faz sentido simular falha num congelamento.
+# Ações de monitoramento/arquivo têm ~5% de falha (infra menos crítica).
+_SUCCESS_RATE_BY_ACTION: dict[str, float] = {
+    "congelar_conta_e_escalar_soc":       1.00,   # crítico — sempre executa
+    "forcar_reautenticacao_e_investigar": 1.00,   # alto    — sempre executa
+    "ativar_monitoramento_intensivo":     0.97,   # médio
+    "registrar_e_vigiar":                 0.95,   # baixo
+    "arquivar_sem_acao":                  0.95,   # mínimo
+}
+_DEFAULT_SUCCESS_RATE = 0.90   # fallback para códigos legados
 
 
 def execute_action(
@@ -109,7 +133,8 @@ def execute_action(
     )
 
     templates = _SIMULATED_RESPONSES.get(action_code, _DEFAULT_RESPONSE)
-    success = random.random() < _SIMULATED_SUCCESS_RATE
+    rate = _SUCCESS_RATE_BY_ACTION.get(action_code, _DEFAULT_SUCCESS_RATE)
+    success = random.random() < rate
 
     if success:
         note = templates["success_note"].format(ref=ref)

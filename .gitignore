@@ -1,0 +1,26 @@
+# -- Ambiente virtual
+.venv/
+
+# -- Variaveis de ambiente
+.env
+
+# -- Bytecode Python
+__pycache__/
+*.pyc
+*.pyo
+
+# -- Ferramentas de teste
+.pytest_cache/
+.coverage
+htmlcov/
+
+# -- Casos persistidos (dados de execucao)
+app/data/cases/*.json
+
+# -- IDEs
+.vscode/settings.json
+.idea/
+
+# -- Sistema operacional
+.DS_Store
+Thumbs.db

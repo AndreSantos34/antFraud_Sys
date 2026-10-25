@@ -33,6 +33,15 @@ CRITERIA_KEYS = [
     "dispositivo_desconhecido",
 ]
 
+# Países/regiões considerados de alto risco geográfico — disparam mudanca_geografica
+# mesmo sem histórico do cliente.
+_HIGH_RISK_GEO_KEYWORDS = [
+    "eua", "usa", "nigéria", "nigeria", "rússia", "russia",
+    "holanda", "netherlands", "japão", "japan", "china",
+    "miami", "amsterdam", "amsterdã", "lagos", "moscou", "moscow",
+    "tóquio", "tokyo",
+]
+
 # IDs já processados nesta sessão — deduplicação em memória
 _seen_transaction_ids: set[str] = set()
 
@@ -41,17 +50,25 @@ _seen_transaction_ids: set[str] = set()
 _JUSTIFICATION_PROMPT = """Você é um analista de segurança financeira.
 Os critérios de suspeita abaixo foram identificados por regras determinísticas do sistema.
 Sua tarefa é APENAS escrever uma justificativa contextual coerente e objetiva em 2-3 frases,
-explicando POR QUÊ esses critérios específicos, combinados, aumentam a suspeita.
+explicando POR QUÊ esses critérios específicos aumentam ou não a suspeita.
+
+O sistema usa uma escala de risco de 1 a 100:
+  • 1–20  (mínimo):  zero critérios — transação cotidiana sem indicadores.
+  • 21–40 (baixo):   1 critério leve — monitoramento preventivo.
+  • 41–60 (médio):   2 critérios — atenção redobrada, investigação recomendada.
+  • 61–80 (alto):    3 critérios — risco real, revisão humana necessária.
+  • 81–100 (crítico): 4+ critérios — resposta imediata, caso grave.
 
 REGRAS OBRIGATÓRIAS:
 - Use apenas os dados fornecidos. Não invente fatos, IPs, localizações ou contas.
 - Se um critério não tiver dado suficiente para contextualizar, declare: "Dado não disponível."
 - NÃO diga que a transação É fraude — diga que ela APRESENTA indicadores de suspeita.
 - NÃO recomende bloquear, cancelar ou executar qualquer operação financeira.
+- Calibre a linguagem ao nível: para score 1–20 use linguagem neutra; para 81–100 use linguagem urgente.
 
 Retorne JSON com exatamente:
 {
-  "justification": "<texto objetivo em PT-BR, 2-3 frases>",
+  "justification": "<texto objetivo em PT-BR, 2-3 frases, linguagem proporcional ao nível de risco>",
   "confidence": <float 0.0 a 1.0 baseado na quantidade e qualidade dos critérios encontrados>
 }"""
 
@@ -102,6 +119,9 @@ def _evaluate_criteria_deterministic(
         evidence.append("Datetime inválido — critério horario_incomum não avaliado.")
 
     # 3. Frequência elevada
+    # Caminho A: janela temporal no histórico (quando disponível)
+    # Caminho B: simulation_profile indica fracionamento (structuring)
+    simulation_profile = transaction.get("simulation_profile", "")
     if history:
         try:
             tx_dt = datetime.fromisoformat(dt_str)
@@ -121,6 +141,14 @@ def _evaluate_criteria_deterministic(
         except (ValueError, TypeError):
             pass  # Não penaliza por data inválida no histórico
 
+    # Caminho B: perfil de fracionamento declarado no payload (structuring)
+    if not flags["frequencia_elevada"] and "fracionamento" in simulation_profile.lower():
+        flags["frequencia_elevada"] = True
+        evidence.append(
+            "Padrão de fracionamento detectado: múltiplas transações de valor similar "
+            "em curta janela temporal (structuring)."
+        )
+
     # 4. Valor repetido
     if history:
         repeated = [t for t in history if t.get("amount") == amount]
@@ -131,20 +159,40 @@ def _evaluate_criteria_deterministic(
             )
 
     # 5. Mudança geográfica
-    if history and location:
-        past_locations = {t.get("location", "") for t in history if t.get("location")}
-        if past_locations and location not in past_locations:
+    # Caminho A: compara com histórico (quando disponível)
+    # Caminho B: localização em país/região de alto risco (detectado mesmo sem histórico)
+    if location:
+        location_lower = location.lower()
+        is_high_risk_geo = any(kw in location_lower for kw in _HIGH_RISK_GEO_KEYWORDS)
+
+        if history:
+            past_locations = {t.get("location", "") for t in history if t.get("location")}
+            if past_locations and location not in past_locations:
+                flags["mudanca_geografica"] = True
+                evidence.append(
+                    f"Localização '{location}' não consta no histórico do cliente "
+                    f"({', '.join(list(past_locations)[:3])})."
+                )
+            elif is_high_risk_geo and not past_locations:
+                # Histórico existe mas sem registros de localização
+                flags["mudanca_geografica"] = True
+                evidence.append(
+                    f"Localização '{location}' identificada como região de alto risco geográfico."
+                )
+        elif is_high_risk_geo:
+            # Sem histórico: localização internacional de risco já é suficiente
             flags["mudanca_geografica"] = True
             evidence.append(
-                f"Localização '{location}' não consta no histórico do cliente "
-                f"({', '.join(list(past_locations)[:3])})."
+                f"Localização '{location}' é região de alto risco geográfico "
+                f"(sem histórico do cliente para comparação)."
             )
-        # Sem histórico de localização: não assumimos mudança (evita falso positivo)
 
     # 6. Dispositivo desconhecido
-    if device and "desconhecido" in device.lower():
+    _UNKNOWN_DEVICE_KEYWORDS = ["desconhecido", "nao_registrado", "não_registrado",
+                                "unregistered", "unknown", "terminal_nao"]
+    if device and any(kw in device.lower() for kw in _UNKNOWN_DEVICE_KEYWORDS):
         flags["dispositivo_desconhecido"] = True
-        evidence.append(f"Dispositivo '{device}' classificado como desconhecido.")
+        evidence.append(f"Dispositivo '{device}' classificado como desconhecido/não registrado.")
 
     return flags, evidence
 
@@ -193,7 +241,13 @@ def run(
     total = sum(1 for v in flags.values() if v)
 
     # Decisão determinística — NÃO depende de LLM
-    escalate = total >= 3
+    # Escala a partir de 1 critério para que toda a faixa 1–100 seja exercitada:
+    #   0 critérios → normal  (score mínimo, 1–20)
+    #   1 critério  → escala  (score baixo, 21–40)
+    #   2 critérios → escala  (score médio, 41–60)
+    #   3 critérios → escala  (score alto,  61–80)
+    #   4+ critérios → escala (score crítico, 81–100)
+    escalate = total >= 1
     classification = "suspeita" if escalate else "normal"
 
     logger.info(
@@ -207,11 +261,19 @@ def run(
 
     if escalate:
         active_criteria = [k for k, v in flags.items() if v]
+        # Indica a faixa de score esperada para contextualizar a linguagem do LLM
+        score_band = (
+            "81–100 (CRÍTICO)"  if total >= 4 else
+            "61–80 (ALTO)"      if total == 3 else
+            "41–60 (MÉDIO)"     if total == 2 else
+            "21–40 (BAIXO)"
+        )
         user_msg = (
             f"TRANSAÇÃO: {json.dumps(transaction, ensure_ascii=False)}\n\n"
-            f"CRITÉRIOS CONFIRMADOS: {active_criteria}\n"
+            f"CRITÉRIOS CONFIRMADOS ({total}/6): {active_criteria}\n"
+            f"FAIXA DE RISCO ESPERADA: {score_band}\n"
             f"EVIDÊNCIAS DETERMINÍSTICAS: {evidence}\n\n"
-            "Escreva a justificativa contextual."
+            "Escreva a justificativa contextual proporcional ao nível de risco."
         )
         try:
             resp = gemini_client.generate_json(
