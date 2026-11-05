@@ -1,26 +1,41 @@
-# -- Ambiente virtual
+
+# Ambiente virtual
 .venv/
+venv/
+env/
 
-# -- Variaveis de ambiente
+# Variáveis de ambiente e segredos
 .env
+.env.*
+!.env.example
 
-# -- Bytecode Python
+# Bytecode Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 
-# -- Ferramentas de teste
+# Ferramentas de teste
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 
-# -- Casos persistidos (dados de execucao)
+# Dados de execução
 app/data/cases/*.json
 
-# -- IDEs
-.vscode/settings.json
+# Logs
+*.log
+logs/
+
+# IDEs
+.vscode/
 .idea/
 
-# -- Sistema operacional
+# Sistema operacional
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# Arquivos temporários
+*.tmp
+*.bak
